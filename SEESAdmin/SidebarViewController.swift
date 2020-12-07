@@ -47,6 +47,7 @@ class SidebarViewController: UIViewController {
         
         configureCollectionView()
         configureDataSource()
+        applyInitialSnapshot()
     }
     
     // MARK: - Configuration Functions
@@ -84,6 +85,27 @@ class SidebarViewController: UIViewController {
             case .row: return collectionView.dequeueConfiguredReusableCell(using: rowResgistration, for: indexPath, item: item)
             }
         }
+    }
+    
+    private func mainSnapshot() -> NSDiffableDataSourceSectionSnapshot<SidebarItem> {
+        var snapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
+        let header = SidebarItem.header(title: "SEES App")
+        let items: [SidebarItem] = [
+            .row(title: "Students", subtitle: nil, image: UIImage(systemName: "person.3.fill"), id: RowIdentifier.students),
+            .row(title: "Majors", subtitle: nil, image: UIImage(systemName: "text.book.closed.fill"), id: RowIdentifier.majors),
+            .row(title: "Events", subtitle: nil, image: UIImage(systemName: "calendar"), id: RowIdentifier.events),
+            .row(title: "Contacts", subtitle: nil, image: UIImage(systemName: "person.crop.circle.fill"), id: RowIdentifier.contacts)
+        ]
+        
+        snapshot.append([header])
+        snapshot.expand([header])
+        snapshot.append(items, to: header)
+        
+        return snapshot
+    }
+    
+    private func applyInitialSnapshot() {
+        self.dataSource.apply(mainSnapshot(), to: .main, animatingDifferences: false)
     }
     
     // MARK: - Functions
