@@ -40,11 +40,13 @@ class SidebarViewController: UIViewController {
     }
     
     private var collectionView: UICollectionView!
+    private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureCollectionView()
+        configureDataSource()
     }
     
     // MARK: - Configuration Functions
@@ -54,6 +56,34 @@ class SidebarViewController: UIViewController {
         collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
         view.addSubview(collectionView)
+    }
+    
+    private func configureDataSource() {
+        let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
+            var contentConfiguration = UIListContentConfiguration.sidebarHeader()
+            contentConfiguration.text = item.title
+            contentConfiguration.textProperties.font = .preferredFont(forTextStyle: .subheadline)
+            contentConfiguration.textProperties.color = .secondaryLabel
+            
+            cell.contentConfiguration = contentConfiguration
+            cell.accessories = [.outlineDisclosure()]
+        }
+        
+        let rowResgistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
+            var contentConfiguration = UIListContentConfiguration.sidebarSubtitleCell()
+            contentConfiguration.text = item.title
+            contentConfiguration.secondaryText = item.subtitle
+            contentConfiguration.image = item.image
+            
+            cell.contentConfiguration = contentConfiguration
+        }
+        
+        dataSource = UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>(collectionView: self.collectionView) { (collectionView, indexPath, item) -> UICollectionViewCell in
+            switch item.type {
+            case .header: return collectionView.dequeueConfiguredReusableCell(using: headerRegistration, for: indexPath, item: item)
+            case .row: return collectionView.dequeueConfiguredReusableCell(using: rowResgistration, for: indexPath, item: item)
+            }
+        }
     }
     
     // MARK: - Functions
