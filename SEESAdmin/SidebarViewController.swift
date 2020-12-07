@@ -45,17 +45,25 @@ class SidebarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        configureView()
         configureCollectionView()
         configureDataSource()
         applyInitialSnapshot()
     }
     
     // MARK: - Configuration Functions
+    private func configureView() {
+        self.navigationController?.navigationBar.tintColor = .systemTeal
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.title = "SEES App"
+    }
+    
     private func configureCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
+        collectionView.tintColor = .systemTeal
         view.addSubview(collectionView)
     }
     
@@ -89,10 +97,10 @@ class SidebarViewController: UIViewController {
     
     private func mainSnapshot() -> NSDiffableDataSourceSectionSnapshot<SidebarItem> {
         var snapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
-        let header = SidebarItem.header(title: "SEES App")
+        let header = SidebarItem.header(title: "Data")
         let items: [SidebarItem] = [
-            .row(title: "Students", subtitle: nil, image: UIImage(systemName: "person.3.fill"), id: RowIdentifier.students),
-            .row(title: "Majors", subtitle: nil, image: UIImage(systemName: "text.book.closed.fill"), id: RowIdentifier.majors),
+            .row(title: "Students", subtitle: nil, image: UIImage(systemName: "person.2.fill"), id: RowIdentifier.students),
+            .row(title: "Majors", subtitle: nil, image: UIImage(systemName: "studentdesk"), id: RowIdentifier.majors),
             .row(title: "Events", subtitle: nil, image: UIImage(systemName: "calendar"), id: RowIdentifier.events),
             .row(title: "Contacts", subtitle: nil, image: UIImage(systemName: "person.crop.circle.fill"), id: RowIdentifier.contacts)
         ]
@@ -120,8 +128,18 @@ class SidebarViewController: UIViewController {
         
         return layout
     }
+    
+    private func listViewController() -> ViewController? {
+        guard let splitVC = self.splitViewController, let listVC = splitVC.viewController(for: .supplementary) else { return nil }
+        return listVC as? ViewController
+    }
 }
 
 extension SidebarViewController: UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case SidebarSection.main.rawValue: print("tapped")
+        default: collectionView.deselectItem(at: indexPath, animated: true)
+        }
+    }
 }

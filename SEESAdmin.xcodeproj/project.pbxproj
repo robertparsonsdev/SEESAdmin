@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		234A3F16332BE87511337EC9 /* Pods_SEESAdmin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E45BA8A9D80F5A15B61DB0E /* Pods_SEESAdmin.framework */; };
 		EE05291B257DC30F00200184 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE05291A257DC30F00200184 /* SidebarViewController.swift */; };
+		EE05291F257DE6F900200184 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE05291E257DE6F900200184 /* DetailViewController.swift */; };
+		EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE052921257DE75800200184 /* SplitViewDelgate.swift */; };
 		EE946902257DB3C400E9730A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE946901257DB3C400E9730A /* AppDelegate.swift */; };
 		EE946904257DB3C400E9730A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE946903257DB3C400E9730A /* SceneDelegate.swift */; };
 		EE946906257DB3C400E9730A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE946905257DB3C400E9730A /* ViewController.swift */; };
@@ -23,6 +25,8 @@
 		6F5B050ABFD64E46A3B5DB2D /* Pods-SEESAdmin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SEESAdmin.release.xcconfig"; path = "Target Support Files/Pods-SEESAdmin/Pods-SEESAdmin.release.xcconfig"; sourceTree = "<group>"; };
 		AB48D3F23D94C8A97611B696 /* Pods-SEESAdmin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SEESAdmin.debug.xcconfig"; path = "Target Support Files/Pods-SEESAdmin/Pods-SEESAdmin.debug.xcconfig"; sourceTree = "<group>"; };
 		EE05291A257DC30F00200184 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
+		EE05291E257DE6F900200184 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		EE052921257DE75800200184 /* SplitViewDelgate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewDelgate.swift; sourceTree = "<group>"; };
 		EE9468FE257DB3C400E9730A /* SEESAdmin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SEESAdmin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE946901257DB3C400E9730A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EE946903257DB3C400E9730A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -93,6 +97,8 @@
 				EE94690F257DB3C500E9730A /* Info.plist */,
 				EE946917257DB45000E9730A /* GoogleService-Info.plist */,
 				EE05291A257DC30F00200184 /* SidebarViewController.swift */,
+				EE05291E257DE6F900200184 /* DetailViewController.swift */,
+				EE052921257DE75800200184 /* SplitViewDelgate.swift */,
 			);
 			path = SEESAdmin;
 			sourceTree = "<group>";
@@ -212,8 +218,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */,
 				EE946906257DB3C400E9730A /* ViewController.swift in Sources */,
 				EE946902257DB3C400E9730A /* AppDelegate.swift in Sources */,
+				EE05291F257DE6F900200184 /* DetailViewController.swift in Sources */,
 				EE946904257DB3C400E9730A /* SceneDelegate.swift in Sources */,
 				EE05291B257DC30F00200184 /* SidebarViewController.swift in Sources */,
 			);

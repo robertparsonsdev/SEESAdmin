@@ -8,12 +8,21 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    static let storyboardID = "ViewControllerID"
+    static func instantiateFromStoryboard() -> ViewController? {
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        return storyboard.instantiateViewController(identifier: storyboardID) as? ViewController
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        configureViewController()
     }
-
-
+    
+    private func configureViewController() {
+        self.view.backgroundColor = .systemBackground
+        self.navigationController?.navigationBar.tintColor = .systemTeal
+    }
 }
 
