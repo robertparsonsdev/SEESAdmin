@@ -24,5 +24,8 @@ class ListViewController: UIViewController {
         self.view.backgroundColor = .systemBackground
         self.navigationController?.navigationBar.tintColor = .systemTeal
     }
+    
+    func show(_ color: UIColor) {
+        self.view.backgroundColor = color
+    }
 }
-

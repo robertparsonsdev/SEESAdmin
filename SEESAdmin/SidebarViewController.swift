@@ -13,7 +13,7 @@ class SidebarViewController: UIViewController {
     }
     
     private enum SidebarSection: Int {
-        case main
+        case data
     }
     
     private struct SidebarItem: Hashable, Identifiable {
@@ -95,7 +95,7 @@ class SidebarViewController: UIViewController {
         }
     }
     
-    private func mainSnapshot() -> NSDiffableDataSourceSectionSnapshot<SidebarItem> {
+    private func dataSnapshot() -> NSDiffableDataSourceSectionSnapshot<SidebarItem> {
         var snapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
         let header = SidebarItem.header(title: "Data")
         let items: [SidebarItem] = [
@@ -113,7 +113,7 @@ class SidebarViewController: UIViewController {
     }
     
     private func applyInitialSnapshot() {
-        self.dataSource.apply(mainSnapshot(), to: .main, animatingDifferences: false)
+        self.dataSource.apply(dataSnapshot(), to: .data, animatingDifferences: false)
     }
     
     // MARK: - Functions
@@ -137,9 +137,23 @@ class SidebarViewController: UIViewController {
 
 extension SidebarViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let sidebarItem = self.dataSource.itemIdentifier(for: indexPath) else { return }
+        
         switch indexPath.section {
-        case SidebarSection.main.rawValue: print("tapped")
+        case SidebarSection.data.rawValue: didSelectDataItem(sidebarItem, at: indexPath)
         default: collectionView.deselectItem(at: indexPath, animated: true)
+        }
+    }
+    
+    private func didSelectDataItem(_ sidebarItem: SidebarItem, at indexPath: IndexPath) {
+        guard let listVC = listViewController() else { return }
+        
+        switch sidebarItem.id {
+        case RowIdentifier.students: listVC.show(.systemGreen)
+        case RowIdentifier.majors: listVC.show(.systemBlue)
+        case RowIdentifier.events: listVC.show(.systemPink)
+        case RowIdentifier.contacts: listVC.show(.systemOrange)
+        default: break
         }
     }
 }
