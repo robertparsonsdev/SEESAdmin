@@ -55,7 +55,7 @@ class SidebarViewController: UIViewController {
     private func configureView() {
         self.navigationController?.navigationBar.tintColor = .systemTeal
         self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.title = "SEES App"
+        self.title = "SEES Admin"
     }
     
     private func configureCollectionView() {
@@ -129,9 +129,9 @@ class SidebarViewController: UIViewController {
         return layout
     }
     
-    private func listViewController() -> ViewController? {
+    private func listViewController() -> ListViewController? {
         guard let splitVC = self.splitViewController, let listVC = splitVC.viewController(for: .supplementary) else { return nil }
-        return listVC as? ViewController
+        return listVC as? ListViewController
     }
 }
 

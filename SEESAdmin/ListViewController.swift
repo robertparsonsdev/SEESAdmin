@@ -7,11 +7,11 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-    static let storyboardID = "ViewControllerID"
-    static func instantiateFromStoryboard() -> ViewController? {
+class ListViewController: UIViewController {
+    static let storyboardID = "ListViewControllerID"
+    static func instantiateFromStoryboard() -> ListViewController? {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        return storyboard.instantiateViewController(identifier: storyboardID) as? ViewController
+        return storyboard.instantiateViewController(identifier: storyboardID) as? ListViewController
     }
     
     override func viewDidLoad() {

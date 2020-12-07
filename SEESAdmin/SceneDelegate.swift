@@ -26,16 +26,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 extension SceneDelegate {
     private func createThreeColumnSplitViewController() -> UISplitViewController? {
-        guard let vc = ViewController.instantiateFromStoryboard() else { return nil }
-        
+        guard let listVC = ListViewController.instantiateFromStoryboard() else { return nil }
         let sidebarVC = SidebarViewController()
+        let detailVC = DetailViewController(style: .plain)
         
-        let splitVC = UISplitViewController(style: .doubleColumn)
+        let splitVC = UISplitViewController(style: .tripleColumn)
         splitVC.primaryBackgroundStyle = .sidebar
-        splitVC.preferredDisplayMode = .oneBesideSecondary
+        splitVC.preferredDisplayMode = .twoBesideSecondary
         
         splitVC.setViewController(sidebarVC, for: .primary)
-        splitVC.setViewController(vc, for: .secondary)
+        splitVC.setViewController(listVC, for: .supplementary)
+        splitVC.setViewController(detailVC, for: .secondary)
         
         return splitVC
     }

@@ -7,11 +7,11 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
-
+class DetailViewController: UITableViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.backgroundColor = .systemGreen
+        self.view.backgroundColor = .systemBackground
     }
 }
