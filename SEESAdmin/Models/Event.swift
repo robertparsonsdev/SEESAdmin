@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Event {
+struct Event: DataProtocol {
     let startDate: Date
     let endDate: Date
     let eventName: String

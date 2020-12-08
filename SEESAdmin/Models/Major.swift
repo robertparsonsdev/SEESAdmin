@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Option: Codable, Hashable {
+struct Option: DataProtocol {
     let optionName: String
     let curriculumSheet: String
     let flowchart: String
@@ -17,16 +17,15 @@ struct Option: Codable, Hashable {
         self.optionName = dictionary[FirebaseValue.optionName] as? String ?? "optionNameError"
         self.curriculumSheet = dictionary[FirebaseValue.curriculumSheet] as? String ?? "curriculumSheetError"
         self.flowchart = dictionary[FirebaseValue.flowchart] as? String ?? "flowchartError"
-        self.roadMap = dictionary[FirebaseValue.roadMap] as? String ?? "roadMapError"
-    }
+        self.roadMap = dictionary[FirebaseValue.roadMap] as? String ?? "roadMapError"    }
 }
 
-struct Major: Codable, Hashable {
+struct Major: DataProtocol {
     var options: [Option] = []
-    
-    init(dictionary: [String: [String: Any]]) {
+
+    init(dictionary: [String : Any]) {
         for(_, value) in dictionary {
-            options.append(Option(dictionary: value))
+            options.append(Option(dictionary: value as! [String: Any]))
         }
     }
 }

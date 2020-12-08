@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Student: Codable, Hashable {
+struct Student: DataProtocol {
     let advisor: String
     let advisorOffice: String
     let broncoID: String
@@ -23,4 +23,8 @@ struct Student: Codable, Hashable {
         self.firstName = dictionary[FirebaseValue.firstName] as? String ?? "firstNameError"
         self.lastName = dictionary[FirebaseValue.lastName] as? String ?? "lastNameError"
     }
+}
+
+protocol DataProtocol {
+    init(dictionary: [String: Any])
 }
