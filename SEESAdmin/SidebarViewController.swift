@@ -149,10 +149,10 @@ extension SidebarViewController: UICollectionViewDelegate {
         guard let listVC = listViewController() else { return }
         
         switch sidebarItem.id {
-        case RowIdentifier.students: listVC.show(.systemGreen)
-        case RowIdentifier.majors: listVC.show(.systemBlue)
-        case RowIdentifier.events: listVC.show(.systemPink)
-        case RowIdentifier.contacts: listVC.show(.systemOrange)
+        case RowIdentifier.students: listVC.show(.students)
+        case RowIdentifier.majors: listVC.show(.majors)
+        case RowIdentifier.events: listVC.show(.events)
+        case RowIdentifier.contacts: listVC.show(.contacts)
         default: break
         }
     }
