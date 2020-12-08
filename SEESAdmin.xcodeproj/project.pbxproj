@@ -11,6 +11,14 @@
 		EE05291B257DC30F00200184 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE05291A257DC30F00200184 /* SidebarViewController.swift */; };
 		EE05291F257DE6F900200184 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE05291E257DE6F900200184 /* DetailViewController.swift */; };
 		EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE052921257DE75800200184 /* SplitViewDelgate.swift */; };
+		EE71A51E257EF5DB002BA583 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A51D257EF5DB002BA583 /* NetworkManager.swift */; };
+		EE71A525257EF666002BA583 /* Major.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A521257EF666002BA583 /* Major.swift */; };
+		EE71A526257EF666002BA583 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A522257EF666002BA583 /* Contact.swift */; };
+		EE71A527257EF666002BA583 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A523257EF666002BA583 /* Event.swift */; };
+		EE71A528257EF666002BA583 /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A524257EF666002BA583 /* Student.swift */; };
+		EE71A52C257EF6A1002BA583 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A52B257EF6A1002BA583 /* Enums.swift */; };
+		EE71A532257EF75B002BA583 /* StringExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A530257EF75B002BA583 /* StringExt.swift */; };
+		EE71A533257EF75B002BA583 /* DateExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A531257EF75B002BA583 /* DateExt.swift */; };
 		EE946902257DB3C400E9730A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE946901257DB3C400E9730A /* AppDelegate.swift */; };
 		EE946904257DB3C400E9730A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE946903257DB3C400E9730A /* SceneDelegate.swift */; };
 		EE946906257DB3C400E9730A /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE946905257DB3C400E9730A /* ListViewController.swift */; };
@@ -27,6 +35,14 @@
 		EE05291A257DC30F00200184 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
 		EE05291E257DE6F900200184 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		EE052921257DE75800200184 /* SplitViewDelgate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewDelgate.swift; sourceTree = "<group>"; };
+		EE71A51D257EF5DB002BA583 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		EE71A521257EF666002BA583 /* Major.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Major.swift; sourceTree = "<group>"; };
+		EE71A522257EF666002BA583 /* Contact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
+		EE71A523257EF666002BA583 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		EE71A524257EF666002BA583 /* Student.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
+		EE71A52B257EF6A1002BA583 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		EE71A530257EF75B002BA583 /* StringExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExt.swift; sourceTree = "<group>"; };
+		EE71A531257EF75B002BA583 /* DateExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateExt.swift; sourceTree = "<group>"; };
 		EE9468FE257DB3C400E9730A /* SEESAdmin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SEESAdmin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE946901257DB3C400E9730A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EE946903257DB3C400E9730A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -67,6 +83,42 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		EE71A51C257EF5D2002BA583 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				EE71A51D257EF5DB002BA583 /* NetworkManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		EE71A520257EF653002BA583 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				EE71A522257EF666002BA583 /* Contact.swift */,
+				EE71A523257EF666002BA583 /* Event.swift */,
+				EE71A521257EF666002BA583 /* Major.swift */,
+				EE71A524257EF666002BA583 /* Student.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		EE71A52A257EF693002BA583 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				EE71A52B257EF6A1002BA583 /* Enums.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		EE71A52F257EF741002BA583 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				EE71A531257EF75B002BA583 /* DateExt.swift */,
+				EE71A530257EF75B002BA583 /* StringExt.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		EE9468F5257DB3C400E9730A = {
 			isa = PBXGroup;
 			children = (
@@ -88,6 +140,10 @@
 		EE946900257DB3C400E9730A /* SEESAdmin */ = {
 			isa = PBXGroup;
 			children = (
+				EE71A52F257EF741002BA583 /* Extensions */,
+				EE71A52A257EF693002BA583 /* Utilities */,
+				EE71A520257EF653002BA583 /* Models */,
+				EE71A51C257EF5D2002BA583 /* Managers */,
 				EE946901257DB3C400E9730A /* AppDelegate.swift */,
 				EE946903257DB3C400E9730A /* SceneDelegate.swift */,
 				EE946905257DB3C400E9730A /* ListViewController.swift */,
@@ -218,12 +274,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE71A526257EF666002BA583 /* Contact.swift in Sources */,
+				EE71A532257EF75B002BA583 /* StringExt.swift in Sources */,
 				EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */,
 				EE946906257DB3C400E9730A /* ListViewController.swift in Sources */,
+				EE71A528257EF666002BA583 /* Student.swift in Sources */,
 				EE946902257DB3C400E9730A /* AppDelegate.swift in Sources */,
+				EE71A527257EF666002BA583 /* Event.swift in Sources */,
+				EE71A51E257EF5DB002BA583 /* NetworkManager.swift in Sources */,
 				EE05291F257DE6F900200184 /* DetailViewController.swift in Sources */,
+				EE71A533257EF75B002BA583 /* DateExt.swift in Sources */,
 				EE946904257DB3C400E9730A /* SceneDelegate.swift in Sources */,
 				EE05291B257DC30F00200184 /* SidebarViewController.swift in Sources */,
+				EE71A52C257EF6A1002BA583 /* Enums.swift in Sources */,
+				EE71A525257EF666002BA583 /* Major.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
