@@ -15,8 +15,10 @@ class ListViewController: UIViewController {
     }
     
     private let networkManager = NetworkManager.shared
-    var studentSectionDictionary: [StudentsSection: [Student]] = [StudentsSection: [Student]]()
-    
+    private var studentSectionDictionary = [String: [Student]]()
+    private var majorSectionDictionary = [String: [Major]]()
+    private var eventSectionDictionary = [String: [Event]]()
+    private var contactSectionDictionary = [String: [Contact]]()
     
     private var activeCollectionView: DataCollectionView! {
         didSet {
@@ -72,17 +74,14 @@ class ListViewController: UIViewController {
     }
     
     private func configure(studentData: [Student]) {
-        let sortedStudents = studentData.sorted { $0.lastName < $1.lastName }
-        
-        for student in sortedStudents {
-            let letter = String(student.lastName.first!)
-            let key = StudentsSection(rawValue: letter)!
+        for student in studentData {
+            let letter = String(student.lastName.first ?? Character("error")).uppercased()
             
-            if var array = self.studentSectionDictionary[key] {
+            if var array = self.studentSectionDictionary[letter] {
                 array.append(student)
             } else {
-                self.studentSectionDictionary[key] = []
-                self.studentSectionDictionary[key]?.append(student)
+                self.studentSectionDictionary[letter] = []
+                self.studentSectionDictionary[letter]?.append(student)
             }
         }
     }

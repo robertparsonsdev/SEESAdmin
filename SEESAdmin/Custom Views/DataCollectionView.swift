@@ -8,7 +8,6 @@
 import UIKit
 
 protocol DataCollectionViewDelegate {
-    func configureDiffableDataSource()
     func applySnapshot()
 }
 
@@ -34,10 +33,13 @@ class DataCollectionView: UICollectionView {
         }
     }
     
+    var diffableDataSource: UICollectionViewDiffableDataSource<ListItem, ListItem>!
+    
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
         
         configureCollectionView()
+        configureDiffableDataSource()
     }
     
     required init?(coder: NSCoder) {
@@ -48,6 +50,16 @@ class DataCollectionView: UICollectionView {
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
         backgroundColor = .systemBackground
         tintColor = .systemTeal
+    }
+    
+    private func configureDiffableDataSource() {
+        diffableDataSource = UICollectionViewDiffableDataSource<ListItem, ListItem>(collectionView: self, cellProvider: { [weak self] (collectionView, indexPath, item) -> UICollectionViewCell? in
+            guard let self = self else { return nil }
+            switch item.type {
+            case .header: return collectionView.dequeueConfiguredReusableCell(using: self.headerRegistration, for: indexPath, item: item)
+            case .row: return collectionView.dequeueConfiguredReusableCell(using: self.rowRegistration, for: indexPath, item: item)
+            }
+        })
     }
     
     enum ListItemType: Int {

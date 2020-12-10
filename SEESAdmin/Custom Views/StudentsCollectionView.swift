@@ -8,14 +8,12 @@
 import UIKit
 
 class StudentsCollectionView: DataCollectionView {
-    private var diffableDataSource: UICollectionViewDiffableDataSource<StudentsSection, ListItem>!
-    private let sectionDictionary: [StudentsSection: [Student]]
+    private let sectionDictionary: [String: [Student]]
 
-    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, sectionDictionary: [StudentsSection: [Student]]) {
+    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, sectionDictionary: [String: [Student]]) {
         self.sectionDictionary = sectionDictionary
         super.init(frame: frame, collectionViewLayout: layout)
         
-        configureDiffableDataSource()
         applySnapshot()
     }
     
@@ -25,40 +23,35 @@ class StudentsCollectionView: DataCollectionView {
 }
 
 extension StudentsCollectionView: DataCollectionViewDelegate {
-    func configureDiffableDataSource() {
-        diffableDataSource = UICollectionViewDiffableDataSource<StudentsSection, ListItem>(collectionView: self, cellProvider: { [weak self] (collectionView, indexPath, item) -> UICollectionViewCell? in
-            guard let self = self else { return nil }
-            switch item.type {
-            case .header: return collectionView.dequeueConfiguredReusableCell(using: self.headerRegistration, for: indexPath, item: item)
-            case .row: return collectionView.dequeueConfiguredReusableCell(using: self.rowRegistration, for: indexPath, item: item)
-            }
-        })
-    }
-    
     func applySnapshot() {
-        var snapshot: NSDiffableDataSourceSectionSnapshot<ListItem>
-        var header: ListItem
-        var rows: [ListItem]
+        let sections = StudentsSection.allCases
+        var headers: [ListItem] = []
+        for section in sections {
+            headers.append(.header(title: section.rawValue))
+        }
         
-        for (key, value) in self.sectionDictionary {
-            snapshot = NSDiffableDataSourceSectionSnapshot<ListItem>()
-            header = .header(title: key.rawValue)
+        var sectionSnapshot: NSDiffableDataSourceSectionSnapshot<ListItem>
+        var rows: [ListItem]
+        for header in headers {
+            sectionSnapshot = NSDiffableDataSourceSectionSnapshot<ListItem>()
+            sectionSnapshot.append([header])
+            sectionSnapshot.expand([header])
             rows = []
-
-            for student in value {
-                rows.append(.row(title: "\(student.lastName), \(student.firstName)"))
+            
+            if let students = self.sectionDictionary[header.title] {
+                for student in students {
+                    rows.append(.row(title: "\(student.lastName), \(student.firstName)"))
+                }
+                
+                sectionSnapshot.append(rows, to: header)
+                self.diffableDataSource.apply(sectionSnapshot, to: header, animatingDifferences: true, completion: nil)
             }
-
-            snapshot.append([header])
-            snapshot.expand([header])
-            snapshot.append(rows, to: header)
-
-            self.diffableDataSource.apply(snapshot, to: key, animatingDifferences: true, completion: nil)
         }
     }
 }
 
 enum StudentsSection: String, CaseIterable {
     case a = "A", b = "B", c = "C", d = "D", e = "E", f = "F", g = "G", h = "H", i = "I", j = "J", k = "K", l = "L",
-         m = "M", n = "N", o = "O", p = "P", q = "Q", r = "R", s = "S", t = "T", u = "U", v = "V", w = "W", x = "X", y = "Y", z = "Z"
+         m = "M", n = "N", o = "O", p = "P", q = "Q", r = "R", s = "S", t = "T", u = "U", v = "V", w = "W", x = "X", y = "Y", z = "Z",
+         error = "error"
 }

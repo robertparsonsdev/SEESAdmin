@@ -59,7 +59,7 @@ class SidebarViewController: UIViewController {
     }
     
     private func configureCollectionView() {
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UIHelper.createSidebarLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
@@ -117,18 +117,6 @@ class SidebarViewController: UIViewController {
     }
     
     // MARK: - Functions
-    private func createLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewCompositionalLayout() { (secionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
-            var configuration = UICollectionLayoutListConfiguration(appearance: .sidebar)
-            configuration.showsSeparators = true
-            configuration.headerMode = .firstItemInSection
-            let section = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
-            return section
-        }
-        
-        return layout
-    }
-    
     private func listViewController() -> ListViewController? {
         guard let splitVC = self.splitViewController, let listVC = splitVC.viewController(for: .supplementary) else { return nil }
         return listVC as? ListViewController

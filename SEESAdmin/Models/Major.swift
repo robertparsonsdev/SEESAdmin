@@ -21,11 +21,16 @@ struct Option: DataProtocol {
 }
 
 struct Major: DataProtocol {
+    let majorName: String
     var options: [Option] = []
 
     init(dictionary: [String : Any]) {
+        self.majorName = dictionary[FirebaseValue.majorName] as? String ?? "majorNameError"
+        
         for(_, value) in dictionary {
-            options.append(Option(dictionary: value as! [String: Any]))
+            if let optionsDictionary = value as? [String: Any] {
+                options.append(Option(dictionary: optionsDictionary))
+            }
         }
     }
 }

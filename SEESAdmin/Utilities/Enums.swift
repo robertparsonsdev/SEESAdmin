@@ -84,6 +84,7 @@ enum FirebaseValue: Hashable {
     static let firstName = "firstName"
     static let lastName = "lastName"
     
+    static let majorName = "majorName"
     static let biology = "biology"
     static let biotechnology = "biotechnology"
     static let chemistry = "chemistry"
