@@ -16,7 +16,7 @@ class ListViewController: UIViewController {
     
     private let networkManager = NetworkManager.shared
     private var studentSectionDictionary = [String: [Student]]()
-    private var majorSectionDictionary = [String: [Major]]()
+    private var majorSectionDictionary = [String: [Option]]()
     private var eventSectionDictionary = [String: [Event]]()
     private var contactSectionDictionary = [String: [Contact]]()
     
@@ -29,9 +29,9 @@ class ListViewController: UIViewController {
     private lazy var studentsCollectionView: StudentsCollectionView = {
         return StudentsCollectionView(frame: self.view.bounds, collectionViewLayout: UIHelper.createDataLayout(), sectionDictionary: self.studentSectionDictionary)
     }()
-//    private lazy var majorsCollectionView: MajorsCollectionView = {
-//        return MajorsCollectionView(frame: self.view.bounds, collectionViewLayout: UIHelper.createDataLayout(), data: self.majors)
-//    }()
+    private lazy var majorsCollectionView: MajorsCollectionView = {
+        return MajorsCollectionView(frame: self.view.bounds, collectionViewLayout: UIHelper.createDataLayout(), sectionDictionary: self.majorSectionDictionary)
+    }()
     
     // MARK: - View Controller Lifecycle Functions
     override func viewDidLoad() {
@@ -51,7 +51,7 @@ class ListViewController: UIViewController {
     public func show(_ data: SEESData) {
         switch data {
         case .students: self.activeCollectionView = self.studentsCollectionView
-        case .majors: ()
+        case .majors: self.activeCollectionView = self.majorsCollectionView
         case .events: ()
         case .contacts: ()
         }
@@ -64,10 +64,7 @@ class ListViewController: UIViewController {
             switch result {
             case .success(let dataDictionary):
                 self.configure(studentData: dataDictionary[.students] as! [Student])
-//                self.students = dataDictionary[.students] as! [Student]; self.configure(studentData: self.students)
-//                self.majors = dataDictionary[.majors] as! [Major]
-//                self.events = dataDictionary[.events] as! [Event]
-//                self.contacts = dataDictionary[.contacts] as! [Contact]
+                self.configure(majorData: dataDictionary[.majors] as! [Major])
             case .failure(let error): print(error)
             }
         }
@@ -82,6 +79,19 @@ class ListViewController: UIViewController {
             } else {
                 self.studentSectionDictionary[letter] = []
                 self.studentSectionDictionary[letter]?.append(student)
+            }
+        }
+    }
+    
+    private func configure(majorData: [Major]) {
+        for major in majorData {
+            let majorName = major.majorName.lowercased()
+            
+            if var array = self.majorSectionDictionary[majorName] {
+                array.append(contentsOf: major.options)
+            } else {
+                self.majorSectionDictionary[majorName] = []
+                self.majorSectionDictionary[majorName]?.append(contentsOf: major.options)
             }
         }
     }

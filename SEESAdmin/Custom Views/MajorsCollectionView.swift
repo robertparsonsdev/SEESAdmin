@@ -8,14 +8,56 @@
 import UIKit
 
 class MajorsCollectionView: DataCollectionView {
+    private let sectionDictionary: [String: [Option]]
 
-    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, data: [DataProtocol]) {
+    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, sectionDictionary: [String: [Option]]) {
+        self.sectionDictionary = sectionDictionary
         super.init(frame: frame, collectionViewLayout: layout)
         
-        backgroundColor = .systemPink
+        applySnapshot()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+extension MajorsCollectionView: DataCollectionViewDelegate {
+    func applySnapshot() {
+        let sections = MajorsSection.allCases
+        var headers: [ListItem] = []
+        for section in sections {
+            headers.append(.header(title: section.rawValue))
+        }
+        
+        var sectionSnapshot: NSDiffableDataSourceSectionSnapshot<ListItem>
+        var rows: [ListItem]
+        for header in headers {
+            sectionSnapshot = NSDiffableDataSourceSectionSnapshot<ListItem>()
+            sectionSnapshot.append([header])
+            sectionSnapshot.expand([header])
+            rows = []
+            
+            if let options = self.sectionDictionary[header.title] {
+                for option in options {
+                    rows.append(.row(title: option.optionName))
+                }
+                
+                sectionSnapshot.append(rows, to: header)
+                self.diffableDataSource.apply(sectionSnapshot, to: header, animatingDifferences: true, completion: nil)
+            }
+        }
+    }
+}
+
+enum MajorsSection: String, CaseIterable {
+    case biology = "biology"
+    case biotech = "biotechnology"
+    case chem = "chemistry"
+    case cs = "computer science"
+    case envBio = "environmental biology"
+    case geo = "geology"
+    case kin = "kinesiology"
+    case math = "mathematics"
+    case phy = "physics"
 }
