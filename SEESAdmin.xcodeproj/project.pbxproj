@@ -28,6 +28,8 @@
 		EE946918257DB45000E9730A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EE946917257DB45000E9730A /* GoogleService-Info.plist */; };
 		EE96E005258327F200F4D4A3 /* EventsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE96E004258327F200F4D4A3 /* EventsCollectionView.swift */; };
 		EE96E00825832AF800F4D4A3 /* ContactsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE96E00725832AF800F4D4A3 /* ContactsCollectionView.swift */; };
+		EE96E00C2583349200F4D4A3 /* UIViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE96E00B2583349200F4D4A3 /* UIViewControllerExt.swift */; };
+		EE96E00F258334AE00F4D4A3 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE96E00E258334AE00F4D4A3 /* UIViewExtension.swift */; };
 		EE9B18A72581376A00076769 /* DataCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9B18A62581376A00076769 /* DataCollectionView.swift */; };
 		EE9B18AA258172AC00076769 /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9B18A9258172AC00076769 /* UIHelper.swift */; };
 		EE9B18AD2581794100076769 /* StudentsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9B18AC2581794100076769 /* StudentsCollectionView.swift */; };
@@ -60,6 +62,8 @@
 		EE946917257DB45000E9730A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EE96E004258327F200F4D4A3 /* EventsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsCollectionView.swift; sourceTree = "<group>"; };
 		EE96E00725832AF800F4D4A3 /* ContactsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsCollectionView.swift; sourceTree = "<group>"; };
+		EE96E00B2583349200F4D4A3 /* UIViewControllerExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerExt.swift; sourceTree = "<group>"; };
+		EE96E00E258334AE00F4D4A3 /* UIViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		EE9B18A62581376A00076769 /* DataCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectionView.swift; sourceTree = "<group>"; };
 		EE9B18A9258172AC00076769 /* UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
 		EE9B18AC2581794100076769 /* StudentsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentsCollectionView.swift; sourceTree = "<group>"; };
@@ -126,8 +130,10 @@
 		EE71A52F257EF741002BA583 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				EE96E00E258334AE00F4D4A3 /* UIViewExtension.swift */,
 				EE71A531257EF75B002BA583 /* DateExt.swift */,
 				EE71A530257EF75B002BA583 /* StringExt.swift */,
+				EE96E00B2583349200F4D4A3 /* UIViewControllerExt.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -302,9 +308,11 @@
 			files = (
 				EE9B18A72581376A00076769 /* DataCollectionView.swift in Sources */,
 				EE71A526257EF666002BA583 /* Contact.swift in Sources */,
+				EE96E00F258334AE00F4D4A3 /* UIViewExtension.swift in Sources */,
 				EE71A532257EF75B002BA583 /* StringExt.swift in Sources */,
 				EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */,
 				EE9B18BE25818A9F00076769 /* MajorsCollectionView.swift in Sources */,
+				EE96E00C2583349200F4D4A3 /* UIViewControllerExt.swift in Sources */,
 				EE946906257DB3C400E9730A /* DataViewController.swift in Sources */,
 				EE71A528257EF666002BA583 /* Student.swift in Sources */,
 				EE946902257DB3C400E9730A /* AppDelegate.swift in Sources */,

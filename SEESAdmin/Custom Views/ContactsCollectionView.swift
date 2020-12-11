@@ -10,9 +10,10 @@ import UIKit
 class ContactsCollectionView: DataCollectionView {
     private let sectionDictionary: [String: [Contact]]
     
-    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, sectionDictionary: [String: [Contact]]) {
+    init(frame: CGRect, sectionDictionary: [String: [Contact]], delegate: UICollectionViewDelegate) {
         self.sectionDictionary = sectionDictionary
-        super.init(frame: frame, collectionViewLayout: layout)
+        super.init(frame: frame, collectionViewLayout: UIHelper.createDataLayout())
+        self.delegate = delegate
         
         applyInitialSnapshot()
     }

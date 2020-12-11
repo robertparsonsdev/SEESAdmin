@@ -10,9 +10,10 @@ import UIKit
 class MajorsCollectionView: DataCollectionView {
     private let sectionDictionary: [String: [Option]]
 
-    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, sectionDictionary: [String: [Option]]) {
+    init(frame: CGRect, sectionDictionary: [String: [Option]], delegate: UICollectionViewDelegate) {
         self.sectionDictionary = sectionDictionary
-        super.init(frame: frame, collectionViewLayout: layout)
+        super.init(frame: frame, collectionViewLayout: UIHelper.createDataLayout())
+        self.delegate = delegate
         
         applyInitialSnapshot()
     }

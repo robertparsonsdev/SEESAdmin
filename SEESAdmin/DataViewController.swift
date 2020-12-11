@@ -20,23 +20,23 @@ class DataViewController: UIViewController {
     private var eventSectionDictionary = [String: [Event]]()
     private var contactSectionDictionary = [String: [Contact]]()
     
-    private var activeCollectionView: DataCollectionView! {
+    private var activeCollectionView: DataCollectionView? {
         didSet {
-            activeCollectionView.removeFromSuperview()
-            self.view.addSubview(activeCollectionView)
+            activeCollectionView?.removeFromSuperview()
+            self.view.addSubview(activeCollectionView!)
         }
     }
     private lazy var studentsCollectionView: StudentsCollectionView = {
-        return StudentsCollectionView(frame: self.view.bounds, collectionViewLayout: UIHelper.createDataLayout(), sectionDictionary: self.studentSectionDictionary)
+        return StudentsCollectionView(frame: self.view.bounds, sectionDictionary: self.studentSectionDictionary, delegate: self)
     }()
     private lazy var majorsCollectionView: MajorsCollectionView = {
-        return MajorsCollectionView(frame: self.view.bounds, collectionViewLayout: UIHelper.createDataLayout(), sectionDictionary: self.majorSectionDictionary)
+        return MajorsCollectionView(frame: self.view.bounds, sectionDictionary: self.majorSectionDictionary, delegate: self)
     }()
     private lazy var eventsCollectionView: EventsCollectionView = {
-        return EventsCollectionView(frame: self.view.bounds, collectionViewLayout: UIHelper.createDataLayout(), sectionDictionary: self.eventSectionDictionary)
+        return EventsCollectionView(frame: self.view.bounds, sectionDictionary: self.eventSectionDictionary, delegate: self)
     }()
     private lazy var contactsCollectionView: ContactsCollectionView = {
-        return ContactsCollectionView(frame: self.view.bounds, collectionViewLayout: UIHelper.createDataLayout(), sectionDictionary: self.contactSectionDictionary)
+        return ContactsCollectionView(frame: self.view.bounds, sectionDictionary: self.contactSectionDictionary, delegate: self)
     }()
     
     // MARK: - View Controller Lifecycle Functions
@@ -64,6 +64,7 @@ class DataViewController: UIViewController {
     }
     
     private func fetchData() {
+        showLoadingView()
         self.networkManager.fetchData { [weak self] (result) in
             guard let self = self else { return }
             
@@ -73,8 +74,10 @@ class DataViewController: UIViewController {
                 self.configure(majorData: dataDictionary[.majors] as! [Major])
                 self.configure(eventsData: dataDictionary[.events] as! [Event])
                 self.configure(contactsData: dataDictionary[.contacts] as! [Contact])
-            case .failure(let error): print(error)
+            case .failure(let error):
+                self.presentErrorOnMainThread(withError: .unableToFetchData, optionalMessage: "\n\n\(error.localizedDescription)")
             }
+            self.dismissLoadingView()
         }
     }
     
@@ -114,5 +117,8 @@ class DataViewController: UIViewController {
 }
 
 extension DataViewController: UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let listItem = self.activeCollectionView?.diffableDataSource.itemIdentifier(for: indexPath) else { return }
+        print(listItem.title)
+    }
 }

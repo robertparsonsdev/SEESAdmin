@@ -10,9 +10,10 @@ import UIKit
 class EventsCollectionView: DataCollectionView {
     private let sectionDictionary: [String: [Event]]
     
-    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, sectionDictionary: [String: [Event]]) {
+    init(frame: CGRect, sectionDictionary: [String: [Event]], delegate: UICollectionViewDelegate) {
         self.sectionDictionary = sectionDictionary
-        super.init(frame: frame, collectionViewLayout: layout)
+        super.init(frame: frame, collectionViewLayout: UIHelper.createDataLayout())
+        self.delegate = delegate
         
         applyInitialSnapshot()
     }

@@ -10,10 +10,11 @@ import UIKit
 class StudentsCollectionView: DataCollectionView {
     private let sectionDictionary: [String: [Student]]
 
-    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, sectionDictionary: [String: [Student]]) {
+    init(frame: CGRect, sectionDictionary: [String: [Student]], delegate: UICollectionViewDelegate) {
         self.sectionDictionary = sectionDictionary
-        super.init(frame: frame, collectionViewLayout: layout)
-        
+        super.init(frame: frame, collectionViewLayout: UIHelper.createDataLayout())
+        self.delegate = delegate
+
         applyInitialSnapshot()
     }
     
@@ -49,6 +50,14 @@ extension StudentsCollectionView: DataCollectionViewDelegate {
         }
     }
 }
+
+//extension StudentsCollectionView: UICollectionViewDelegate {
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        guard let listItem = self.diffableDataSource.itemIdentifier(for: indexPath) else { return }
+//
+//        print(listItem.title)
+//    }
+//}
 
 enum StudentsSection: String, CaseIterable {
     case a = "A", b = "B", c = "C", d = "D", e = "E", f = "F", g = "G", h = "H", i = "I", j = "J", k = "K", l = "L",
