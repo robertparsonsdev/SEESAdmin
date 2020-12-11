@@ -45,7 +45,7 @@ extension ContactsCollectionView: DataCollectionViewDelegate {
                 }
                 
                 sectionSnapshot.append(rows, to: header)
-                self.diffableDataSource.apply(sectionSnapshot, to: header, animatingDifferences: true, completion: nil)
+                self.diffableDataSource.apply(sectionSnapshot, to: header, animatingDifferences: false, completion: nil)
             }
         }
     }
