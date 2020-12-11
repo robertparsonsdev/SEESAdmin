@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  DataViewController.swift
 //  SEESAdmin
 //
 //  Created by Robert Parsons on 12/6/20.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-class ListViewController: UIViewController {
+class DataViewController: UIViewController {
     static let storyboardID = "ListViewControllerID"
-    static func instantiateFromStoryboard() -> ListViewController? {
+    static func instantiateFromStoryboard() -> DataViewController? {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        return storyboard.instantiateViewController(identifier: storyboardID) as? ListViewController
+        return storyboard.instantiateViewController(identifier: storyboardID) as? DataViewController
     }
     
     private let networkManager = NetworkManager.shared
@@ -31,6 +31,12 @@ class ListViewController: UIViewController {
     }()
     private lazy var majorsCollectionView: MajorsCollectionView = {
         return MajorsCollectionView(frame: self.view.bounds, collectionViewLayout: UIHelper.createDataLayout(), sectionDictionary: self.majorSectionDictionary)
+    }()
+    private lazy var eventsCollectionView: EventsCollectionView = {
+        return EventsCollectionView(frame: self.view.bounds, collectionViewLayout: UIHelper.createDataLayout(), sectionDictionary: self.eventSectionDictionary)
+    }()
+    private lazy var contactsCollectionView: ContactsCollectionView = {
+        return ContactsCollectionView(frame: self.view.bounds, collectionViewLayout: UIHelper.createDataLayout(), sectionDictionary: self.contactSectionDictionary)
     }()
     
     // MARK: - View Controller Lifecycle Functions
@@ -52,8 +58,8 @@ class ListViewController: UIViewController {
         switch data {
         case .students: self.activeCollectionView = self.studentsCollectionView
         case .majors: self.activeCollectionView = self.majorsCollectionView
-        case .events: ()
-        case .contacts: ()
+        case .events: self.activeCollectionView = self.eventsCollectionView
+        case .contacts: self.activeCollectionView = self.contactsCollectionView
         }
     }
     
@@ -65,6 +71,8 @@ class ListViewController: UIViewController {
             case .success(let dataDictionary):
                 self.configure(studentData: dataDictionary[.students] as! [Student])
                 self.configure(majorData: dataDictionary[.majors] as! [Major])
+                self.configure(eventsData: dataDictionary[.events] as! [Event])
+                self.configure(contactsData: dataDictionary[.contacts] as! [Contact])
             case .failure(let error): print(error)
             }
         }
@@ -95,8 +103,16 @@ class ListViewController: UIViewController {
             }
         }
     }
+    
+    private func configure(eventsData: [Event]) {
+        self.eventSectionDictionary[EventsSection.events.rawValue] = eventsData.sorted { $0.startDate < $1.startDate }
+    }
+    
+    private func configure(contactsData: [Contact]) {
+        self.contactSectionDictionary[ContactsSection.contacts.rawValue] = contactsData.sorted { $0.order < $1.order }
+    }
 }
 
-extension ListViewController: UICollectionViewDelegate {
+extension DataViewController: UICollectionViewDelegate {
     
 }

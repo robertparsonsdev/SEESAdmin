@@ -14,7 +14,7 @@ class MajorsCollectionView: DataCollectionView {
         self.sectionDictionary = sectionDictionary
         super.init(frame: frame, collectionViewLayout: layout)
         
-        applySnapshot()
+        applyInitialSnapshot()
     }
     
     required init?(coder: NSCoder) {
@@ -23,7 +23,7 @@ class MajorsCollectionView: DataCollectionView {
 }
 
 extension MajorsCollectionView: DataCollectionViewDelegate {
-    func applySnapshot() {
+    func applyInitialSnapshot() {
         let sections = MajorsSection.allCases
         var headers: [ListItem] = []
         for section in sections {

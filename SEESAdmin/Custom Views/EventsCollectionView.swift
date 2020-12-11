@@ -1,16 +1,16 @@
 //
-//  StudentsCollectionView.swift
+//  EventsCollectionView.swift
 //  SEESAdmin
 //
-//  Created by Robert Parsons on 12/9/20.
+//  Created by Robert Parsons on 12/10/20.
 //
 
 import UIKit
 
-class StudentsCollectionView: DataCollectionView {
-    private let sectionDictionary: [String: [Student]]
-
-    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, sectionDictionary: [String: [Student]]) {
+class EventsCollectionView: DataCollectionView {
+    private let sectionDictionary: [String: [Event]]
+    
+    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, sectionDictionary: [String: [Event]]) {
         self.sectionDictionary = sectionDictionary
         super.init(frame: frame, collectionViewLayout: layout)
         
@@ -22,9 +22,9 @@ class StudentsCollectionView: DataCollectionView {
     }
 }
 
-extension StudentsCollectionView: DataCollectionViewDelegate {
+extension EventsCollectionView: DataCollectionViewDelegate {
     func applyInitialSnapshot() {
-        let sections = StudentsSection.allCases
+        let sections = EventsSection.allCases
         var headers: [ListItem] = []
         for section in sections {
             headers.append(.header(title: section.rawValue))
@@ -38,9 +38,9 @@ extension StudentsCollectionView: DataCollectionViewDelegate {
             sectionSnapshot.expand([header])
             rows = []
             
-            if let students = self.sectionDictionary[header.title] {
-                for student in students {
-                    rows.append(.row(title: "\(student.lastName), \(student.firstName)"))
+            if let events = self.sectionDictionary[header.title] {
+                for event in events {
+                    rows.append(.row(title: event.eventName))
                 }
                 
                 sectionSnapshot.append(rows, to: header)
@@ -50,8 +50,6 @@ extension StudentsCollectionView: DataCollectionViewDelegate {
     }
 }
 
-enum StudentsSection: String, CaseIterable {
-    case a = "A", b = "B", c = "C", d = "D", e = "E", f = "F", g = "G", h = "H", i = "I", j = "J", k = "K", l = "L",
-         m = "M", n = "N", o = "O", p = "P", q = "Q", r = "R", s = "S", t = "T", u = "U", v = "V", w = "W", x = "X", y = "Y", z = "Z",
-         error = "error"
+enum EventsSection: String, CaseIterable {
+    case events = "events"
 }

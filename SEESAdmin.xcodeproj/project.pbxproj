@@ -21,11 +21,13 @@
 		EE71A533257EF75B002BA583 /* DateExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A531257EF75B002BA583 /* DateExt.swift */; };
 		EE946902257DB3C400E9730A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE946901257DB3C400E9730A /* AppDelegate.swift */; };
 		EE946904257DB3C400E9730A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE946903257DB3C400E9730A /* SceneDelegate.swift */; };
-		EE946906257DB3C400E9730A /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE946905257DB3C400E9730A /* ListViewController.swift */; };
+		EE946906257DB3C400E9730A /* DataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE946905257DB3C400E9730A /* DataViewController.swift */; };
 		EE946909257DB3C400E9730A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE946907257DB3C400E9730A /* Main.storyboard */; };
 		EE94690B257DB3C500E9730A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE94690A257DB3C500E9730A /* Assets.xcassets */; };
 		EE94690E257DB3C500E9730A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE94690C257DB3C500E9730A /* LaunchScreen.storyboard */; };
 		EE946918257DB45000E9730A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EE946917257DB45000E9730A /* GoogleService-Info.plist */; };
+		EE96E005258327F200F4D4A3 /* EventsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE96E004258327F200F4D4A3 /* EventsCollectionView.swift */; };
+		EE96E00825832AF800F4D4A3 /* ContactsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE96E00725832AF800F4D4A3 /* ContactsCollectionView.swift */; };
 		EE9B18A72581376A00076769 /* DataCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9B18A62581376A00076769 /* DataCollectionView.swift */; };
 		EE9B18AA258172AC00076769 /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9B18A9258172AC00076769 /* UIHelper.swift */; };
 		EE9B18AD2581794100076769 /* StudentsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9B18AC2581794100076769 /* StudentsCollectionView.swift */; };
@@ -50,12 +52,14 @@
 		EE9468FE257DB3C400E9730A /* SEESAdmin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SEESAdmin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE946901257DB3C400E9730A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EE946903257DB3C400E9730A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		EE946905257DB3C400E9730A /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
+		EE946905257DB3C400E9730A /* DataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewController.swift; sourceTree = "<group>"; };
 		EE946908257DB3C400E9730A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EE94690A257DB3C500E9730A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EE94690D257DB3C500E9730A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EE94690F257DB3C500E9730A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE946917257DB45000E9730A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		EE96E004258327F200F4D4A3 /* EventsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsCollectionView.swift; sourceTree = "<group>"; };
+		EE96E00725832AF800F4D4A3 /* ContactsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsCollectionView.swift; sourceTree = "<group>"; };
 		EE9B18A62581376A00076769 /* DataCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectionView.swift; sourceTree = "<group>"; };
 		EE9B18A9258172AC00076769 /* UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
 		EE9B18AC2581794100076769 /* StudentsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentsCollectionView.swift; sourceTree = "<group>"; };
@@ -156,7 +160,7 @@
 				EE71A51C257EF5D2002BA583 /* Managers */,
 				EE946901257DB3C400E9730A /* AppDelegate.swift */,
 				EE946903257DB3C400E9730A /* SceneDelegate.swift */,
-				EE946905257DB3C400E9730A /* ListViewController.swift */,
+				EE946905257DB3C400E9730A /* DataViewController.swift */,
 				EE946907257DB3C400E9730A /* Main.storyboard */,
 				EE94690A257DB3C500E9730A /* Assets.xcassets */,
 				EE94690C257DB3C500E9730A /* LaunchScreen.storyboard */,
@@ -175,6 +179,8 @@
 				EE9B18A62581376A00076769 /* DataCollectionView.swift */,
 				EE9B18AC2581794100076769 /* StudentsCollectionView.swift */,
 				EE9B18BD25818A9F00076769 /* MajorsCollectionView.swift */,
+				EE96E004258327F200F4D4A3 /* EventsCollectionView.swift */,
+				EE96E00725832AF800F4D4A3 /* ContactsCollectionView.swift */,
 			);
 			path = "Custom Views";
 			sourceTree = "<group>";
@@ -299,11 +305,13 @@
 				EE71A532257EF75B002BA583 /* StringExt.swift in Sources */,
 				EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */,
 				EE9B18BE25818A9F00076769 /* MajorsCollectionView.swift in Sources */,
-				EE946906257DB3C400E9730A /* ListViewController.swift in Sources */,
+				EE946906257DB3C400E9730A /* DataViewController.swift in Sources */,
 				EE71A528257EF666002BA583 /* Student.swift in Sources */,
 				EE946902257DB3C400E9730A /* AppDelegate.swift in Sources */,
 				EE9B18AD2581794100076769 /* StudentsCollectionView.swift in Sources */,
+				EE96E00825832AF800F4D4A3 /* ContactsCollectionView.swift in Sources */,
 				EE9B18AA258172AC00076769 /* UIHelper.swift in Sources */,
+				EE96E005258327F200F4D4A3 /* EventsCollectionView.swift in Sources */,
 				EE71A527257EF666002BA583 /* Event.swift in Sources */,
 				EE71A51E257EF5DB002BA583 /* NetworkManager.swift in Sources */,
 				EE05291F257DE6F900200184 /* DetailViewController.swift in Sources */,

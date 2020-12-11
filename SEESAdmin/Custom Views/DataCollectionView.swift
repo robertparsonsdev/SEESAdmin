@@ -8,7 +8,7 @@
 import UIKit
 
 protocol DataCollectionViewDelegate {
-    func applySnapshot()
+    func applyInitialSnapshot()
 }
 
 class DataCollectionView: UICollectionView {
