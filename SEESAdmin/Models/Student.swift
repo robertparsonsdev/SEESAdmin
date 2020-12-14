@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Student: DataProtocol {
+struct Student: DataProtocol, Hashable {
     let advisor: String
     let advisorOffice: String
     let broncoID: String

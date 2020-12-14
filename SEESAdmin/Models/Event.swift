@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Event: DataProtocol {
+struct Event: DataProtocol, Hashable {
     let startDate: Date
     let endDate: Date
     let eventName: String

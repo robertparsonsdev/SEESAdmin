@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Contact: DataProtocol {
+struct Contact: DataProtocol, Hashable {
     let name: String
     let title: String
     let office: String

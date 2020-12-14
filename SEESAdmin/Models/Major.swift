@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Option: DataProtocol {
+struct Option: DataProtocol, Hashable {
     let optionName: String
     let curriculumSheet: String
     let flowchart: String
@@ -20,7 +20,7 @@ struct Option: DataProtocol {
         self.roadMap = dictionary[FirebaseValue.roadMap] as? String ?? "roadMapError"    }
 }
 
-struct Major: DataProtocol {
+struct Major: DataProtocol, Hashable {
     let majorName: String
     var options: [Option] = []
 
