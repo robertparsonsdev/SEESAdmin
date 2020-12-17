@@ -176,7 +176,17 @@ class DataListViewController: UIViewController {
     
     // MARK: - Selectors
     @objc func addButtonTapped() {
+        let data: DataProtocol
+        switch self.activeData {
+        case .students: data = Student()
+        case .majors: data = Option()
+        case .events: data = Event()
+        case .contacts: data = Contact()
+        case .none: return
+        }
         
+        let navController = UINavigationController(rootViewController: DataEditingViewController(data: data, editing: false))
+        present(navController, animated: true, completion: nil)
     }
 }
 

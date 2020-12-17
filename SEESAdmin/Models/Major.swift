@@ -20,6 +20,13 @@ struct Option: DataProtocol, Hashable {
         self.roadMap = dictionary[FBMajor.roadMap] as? String ?? "roadMapError"
     }
     
+    init() {
+        self.optionName = ""
+        self.curriculumSheet = ""
+        self.flowchart = ""
+        self.roadMap = ""
+    }
+    
     var tableItems: [DataTableItem] {
         var items: [DataTableItem] = []
         items.append(DataTableItem(section: FBMajor.optionName, value: self.optionName))
@@ -42,6 +49,10 @@ struct Major: DataProtocol, Hashable {
                 options.append(Option(dictionary: optionsDictionary))
             }
         }
+    }
+    
+    init() {
+        self.majorName = ""
     }
     
     var tableItems: [DataTableItem] {

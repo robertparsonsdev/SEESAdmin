@@ -64,6 +64,7 @@ class DataDetailViewController: UITableViewController {
     
     // MARK: - Selectors
     @objc func editButtonTapped() {
-        
+        let navController = UINavigationController(rootViewController: DataEditingViewController(data: self.data!, editing: true))
+        present(navController, animated: true, completion: nil)
     }
 }

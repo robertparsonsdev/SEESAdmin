@@ -28,6 +28,7 @@
 		EE946918257DB45000E9730A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EE946917257DB45000E9730A /* GoogleService-Info.plist */; };
 		EE96E00C2583349200F4D4A3 /* UIViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE96E00B2583349200F4D4A3 /* UIViewControllerExt.swift */; };
 		EE96E00F258334AE00F4D4A3 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE96E00E258334AE00F4D4A3 /* UIViewExtension.swift */; };
+		EE9A5FA5258AF268002D49F8 /* DataEditingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A5FA4258AF268002D49F8 /* DataEditingViewController.swift */; };
 		EE9B18AA258172AC00076769 /* UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9B18A9258172AC00076769 /* UIHelper.swift */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,7 @@
 		EE946917257DB45000E9730A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EE96E00B2583349200F4D4A3 /* UIViewControllerExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerExt.swift; sourceTree = "<group>"; };
 		EE96E00E258334AE00F4D4A3 /* UIViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
+		EE9A5FA4258AF268002D49F8 /* DataEditingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataEditingViewController.swift; sourceTree = "<group>"; };
 		EE9B18A9258172AC00076769 /* UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -165,6 +167,7 @@
 				EE05291A257DC30F00200184 /* SidebarViewController.swift */,
 				EE05291E257DE6F900200184 /* DataDetailViewController.swift */,
 				EE052921257DE75800200184 /* SplitViewDelgate.swift */,
+				EE9A5FA4258AF268002D49F8 /* DataEditingViewController.swift */,
 			);
 			path = SEESAdmin;
 			sourceTree = "<group>";
@@ -306,6 +309,7 @@
 				EE71A533257EF75B002BA583 /* DateExt.swift in Sources */,
 				EE946904257DB3C400E9730A /* SceneDelegate.swift in Sources */,
 				EE05291B257DC30F00200184 /* SidebarViewController.swift in Sources */,
+				EE9A5FA5258AF268002D49F8 /* DataEditingViewController.swift in Sources */,
 				EE71A52C257EF6A1002BA583 /* Enums.swift in Sources */,
 				EE71A525257EF666002BA583 /* Major.swift in Sources */,
 			);

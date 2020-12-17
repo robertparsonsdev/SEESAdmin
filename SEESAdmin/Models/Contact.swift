@@ -8,13 +8,13 @@
 import Foundation
 
 struct Contact: DataProtocol, Hashable {
-    let name: String
-    let title: String
-    let office: String
-    let phone: String
-    let email: String
-    let order: Int
-    let image: ContactImage
+    var name: String = ""
+    var title: String = ""
+    var office: String = ""
+    var phone: String = ""
+    var email: String = ""
+    var order: Int = 0
+    var image: ContactImage
 //    let notes: String
     
     let monday: String
@@ -37,6 +37,21 @@ struct Contact: DataProtocol, Hashable {
         self.wednesday = dictionary[FBContact.wednesday] as? String ?? "wednesdayError"
         self.thursday = dictionary[FBContact.thursday] as? String ?? "thursdayError"
         self.friday = dictionary[FBContact.friday] as? String ?? "fridayError"
+    }
+    
+    init() {
+        self.name = ""
+        self.title = ""
+        self.office = ""
+        self.phone = ""
+        self.email = ""
+        self.order = 0
+        self.image = .logo
+        self.monday = ""
+        self.tuesday = ""
+        self.wednesday = ""
+        self.thursday = ""
+        self.friday = ""
     }
     
     var tableItems: [DataTableItem] {

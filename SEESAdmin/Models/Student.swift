@@ -24,6 +24,15 @@ struct Student: DataProtocol, Hashable {
         self.lastName = dictionary[FBUser.lastName] as? String ?? "lastNameError"
     }
     
+    init() {
+        self.advisor = ""
+        self.advisorOffice = ""
+        self.broncoID = ""
+        self.email = ""
+        self.firstName = ""
+        self.lastName = ""
+    }
+    
     var tableItems: [DataTableItem] {
         var items: [DataTableItem] = []
         items.append(DataTableItem(section: FBUser.advisor, value: self.advisor))
@@ -37,6 +46,7 @@ struct Student: DataProtocol, Hashable {
 }
 
 protocol DataProtocol {
+    init()
     init(dictionary: [String: Any])
     var tableItems: [DataTableItem] { get }
 }

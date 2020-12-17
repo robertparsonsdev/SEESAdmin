@@ -42,6 +42,19 @@ struct Event: DataProtocol, Hashable {
         self.notes = dictionary[FBEvent.notes] as? String ?? "notesError"
     }
     
+    init() {
+        self.startDate = Date()
+        self.endDate = Date()
+        self.eventName = ""
+        self.locationName = ""
+        self.locationAddress = ""
+        self.locationCity = ""
+        self.locationState = ""
+        self.locationZIP = 0
+        self.locationCountry = ""
+        self.notes = ""
+    }
+    
     var tableItems: [DataTableItem] {
         var items: [DataTableItem] = []
         items.append(DataTableItem(section: FBEvent.startDate, value: self.startDate.convertToString()))
