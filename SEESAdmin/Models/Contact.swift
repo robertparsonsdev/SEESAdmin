@@ -24,18 +24,29 @@ struct Contact: DataProtocol, Hashable {
     let friday: String
     
     init(dictionary: [String: Any]) {
-        self.name = dictionary[FirebaseValue.name] as? String ?? "nameError"
-        self.title = dictionary[FirebaseValue.title] as? String ?? "titleError"
-        self.office = dictionary[FirebaseValue.office] as? String ?? "officeError"
-        self.phone = dictionary[FirebaseValue.phone] as? String ?? "phoneError"
-        self.email = dictionary[FirebaseValue.email] as? String ?? "emailError"
-        self.order = dictionary[FirebaseValue.order] as? Int ?? -1
+        self.name = dictionary[FBContact.name] as? String ?? "nameError"
+        self.title = dictionary[FBContact.title] as? String ?? "titleError"
+        self.office = dictionary[FBContact.office] as? String ?? "officeError"
+        self.phone = dictionary[FBContact.phone] as? String ?? "phoneError"
+        self.email = dictionary[FBContact.email] as? String ?? "emailError"
+        self.order = dictionary[FBContact.order] as? Int ?? -1
         self.image = self.name.lowercased().contains("alas") ? .alas : .dora
         
-        self.monday = dictionary[FirebaseValue.monday] as? String ?? "mondayError"
-        self.tuesday = dictionary[FirebaseValue.tuesday] as? String ?? "tuesdayError"
-        self.wednesday = dictionary[FirebaseValue.wednesday] as? String ?? "wednesdayError"
-        self.thursday = dictionary[FirebaseValue.thursday] as? String ?? "thursdayError"
-        self.friday = dictionary[FirebaseValue.friday] as? String ?? "fridayError"
+        self.monday = dictionary[FBContact.monday] as? String ?? "mondayError"
+        self.tuesday = dictionary[FBContact.tuesday] as? String ?? "tuesdayError"
+        self.wednesday = dictionary[FBContact.wednesday] as? String ?? "wednesdayError"
+        self.thursday = dictionary[FBContact.thursday] as? String ?? "thursdayError"
+        self.friday = dictionary[FBContact.friday] as? String ?? "fridayError"
+    }
+    
+    var tableItems: [DataTableItem] {
+        var items: [DataTableItem] = []
+        items.append(DataTableItem(section: FBContact.name, value: self.name))
+        items.append(DataTableItem(section: FBContact.title, value: self.title))
+        items.append(DataTableItem(section: FBContact.office, value: self.office))
+        items.append(DataTableItem(section: FBContact.phone, value: self.phone))
+        items.append(DataTableItem(section: FBContact.email, value: self.email))
+        items.append(DataTableItem(section: FBContact.order, value: String(self.order)))
+        return items
     }
 }

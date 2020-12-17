@@ -7,11 +7,11 @@
 
 import UIKit
 
-class DataViewController: UIViewController {
+class DataListViewController: UIViewController {
     static let storyboardID = "ListViewControllerID"
-    static func instantiateFromStoryboard() -> DataViewController? {
+    static func instantiateFromStoryboard() -> DataListViewController? {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        return storyboard.instantiateViewController(identifier: storyboardID) as? DataViewController
+        return storyboard.instantiateViewController(identifier: storyboardID) as? DataListViewController
     }
     
     private let networkManager = NetworkManager.shared
@@ -22,6 +22,17 @@ class DataViewController: UIViewController {
     
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<ListItem, ListItem>!
+    private var activeData: SEESData! {
+        didSet {
+            switch activeData {
+            case .students: applyInitialSnapshot(with: self.studentSectionDictionary)
+            case .majors: applyInitialSnapshot(with: self.majorSectionDictionary)
+            case .events: applyInitialSnapshot(with: self.eventSectionDictionary)
+            case .contacts: applyInitialSnapshot(with: self.contactSectionDictionary)
+            case .none: break
+            }
+        }
+    }
     
     // MARK: - View Controller Lifecycle Functions
     override func viewDidLoad() {
@@ -38,12 +49,14 @@ class DataViewController: UIViewController {
     private func configureView() {
         self.view.backgroundColor = .systemBackground
         self.navigationController?.navigationBar.tintColor = .systemTeal
+        
+        let addButton = UIBarButtonItem(image: UIImage(systemName: "plus.circle"), style: .plain, target: self, action: #selector(addButtonTapped))
+        self.navigationItem.rightBarButtonItem = addButton
     }
     
     private func configureCollectionView() {
         collectionView = UICollectionView(frame: self.view.bounds, collectionViewLayout: UIHelper.createDataLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.backgroundColor = .systemBackground
         collectionView.tintColor = .systemTeal
         collectionView.delegate = self
         self.view.addSubview(collectionView)
@@ -57,7 +70,6 @@ class DataViewController: UIViewController {
                 contentConfiguration.textProperties.color = .secondaryLabel
                 
                 cell.contentConfiguration = contentConfiguration
-                cell.accessories = [.outlineDisclosure()]
         }
         let rowRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, ListItem> { (cell, indexPath, item) in
                 var contentConfiguration = UIListContentConfiguration.cell()
@@ -77,12 +89,7 @@ class DataViewController: UIViewController {
     
     // MARK: - Functions
     public func show(_ data: SEESData) {
-        switch data {
-        case .students: applyInitialSnapshot(with: self.studentSectionDictionary)
-        case .majors: applyInitialSnapshot(with: self.majorSectionDictionary)
-        case .events: applyInitialSnapshot(with: self.eventSectionDictionary)
-        case .contacts: applyInitialSnapshot(with: self.contactSectionDictionary)
-        }
+        self.activeData = data
     }
     
     private func fetchData() {
@@ -166,15 +173,28 @@ class DataViewController: UIViewController {
     private func configure(contactsData: [Contact]) {
         self.contactSectionDictionary["Contacts"] = contactsData.sorted { $0.order < $1.order }
     }
+    
+    // MARK: - Selectors
+    @objc func addButtonTapped() {
+        
+    }
 }
 
-extension DataViewController: UICollectionViewDelegate {
+extension DataListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let listItem = self.dataSource.itemIdentifier(for: indexPath) else { return }
-        print(listItem.rowTitle as Any)
-
-        let detailVC = DetailViewController()
-//        detailVC.data = Student(dictionary: ["e": "d"])
+        
+        switch listItem.type {
+        case .row: didSelectDataItem(listItem)
+        case .header: collectionView.deselectItem(at: indexPath, animated: true)
+        }
+    }
+    
+    private func didSelectDataItem(_ item: ListItem) {
+        guard let data = item.getData() else { return }
+        
+        let detailVC = DataDetailViewController(data: data)
+        detailVC.title = item.rowTitle
         let navController = UINavigationController(rootViewController: detailVC)
         showDetailViewController(navController, sender: self)
     }
@@ -205,11 +225,8 @@ struct ListItem: Hashable, Identifiable {
     }
     
     var student: Student?
-    
     var option: Option?
-    
     var event: Event?
-    
     var contact: Contact?
     
     static func header(title: String) -> Self {

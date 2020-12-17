@@ -117,9 +117,9 @@ class SidebarViewController: UIViewController {
     }
     
     // MARK: - Functions
-    private func listViewController() -> DataViewController? {
+    private func listViewController() -> DataListViewController? {
         guard let splitVC = self.splitViewController, let listVC = splitVC.viewController(for: .supplementary) else { return nil }
-        return listVC as? DataViewController
+        return listVC as? DataListViewController
     }
 }
 

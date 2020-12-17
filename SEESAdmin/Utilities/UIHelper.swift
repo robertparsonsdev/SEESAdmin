@@ -10,9 +10,19 @@ import UIKit
 struct UIHelper {
     static func createDataLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout() { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
-            var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
+            var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
             configuration.showsSeparators = true
             configuration.headerMode = .firstItemInSection
+            configuration.trailingSwipeActionsConfigurationProvider = { indexPath -> UISwipeActionsConfiguration? in
+                let delete = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completion) in
+                    print("delete")
+                    completion(true)
+                }
+                delete.backgroundColor = .systemRed
+                
+                return UISwipeActionsConfiguration(actions: [delete])
+            }
+            
             let section = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
             return section
         }
