@@ -25,7 +25,9 @@ class DatePickerCell: UITableViewCell {
         datePicker.anchor(top: contentView.topAnchor, leading: contentView.leadingAnchor, bottom: nil, trailing: nil, paddingTop: 0, paddingLeft: 17, paddingBottom: 0, paddingRight: 0, width: 0, height: frame.height)
     }
     
-    public func set(date: Date) {
+    public func set(date: Date, tag: Int, target: Any, action: Selector) {
         self.datePicker.date = date
+        self.datePicker.tag = tag
+        self.datePicker.addTarget(target, action: action, for: .allEvents)
     }
 }

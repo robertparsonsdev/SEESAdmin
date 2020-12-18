@@ -10,13 +10,20 @@ import UIKit
 class DataEditingViewController: UITableViewController {
     private let textFieldCellID = "TextFieldCellID"
     private let dataPickerCellID = "DatePickerCellID"
+    
     private let data: DataProtocol
+    private var editsDictionary: [String: Any] = [:]
     private let editMode: Bool
     
     // MARK: - Initializers
     init(data: DataProtocol, editing: Bool) {
         self.data = data
         self.editMode = editing
+        
+        for item in data.tableItems {
+            self.editsDictionary[item.headerTitle] = item.itemTitle
+        }
+        
         super.init(style: .insetGrouped)
     }
     
@@ -45,15 +52,16 @@ class DataEditingViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = self.data.tableItems[indexPath.section]
+        let itemText = self.editsDictionary[item.headerTitle] as? String ?? ""
         
         switch item.editableView {
         case .textField:
             let cell = tableView.dequeueReusableCell(withIdentifier: self.textFieldCellID, for: indexPath) as! TextFieldCell
-            cell.set(text: item.itemTitle)
+            cell.set(text: itemText, tag: indexPath.section, target: self, action: #selector(textFieldChanged))
             return cell
         case .datePicker:
             let cell = tableView.dequeueReusableCell(withIdentifier: self.dataPickerCellID, for: indexPath) as! DatePickerCell
-            cell.set(date: item.itemTitle.convertToDate())
+            cell.set(date: itemText.convertToDate(), tag: indexPath.section, target: self, action: #selector(datePickerChanged))
             return cell
         }
     }
@@ -87,6 +95,17 @@ class DataEditingViewController: UITableViewController {
     }
     
     @objc private func saveButtonTapped() {
-        showLoadingView()
+        print(self.editsDictionary)
+    }
+    
+    @objc private func textFieldChanged(textField: UITextField) {
+        let key = self.data.tableItems[textField.tag].headerTitle
+        self.editsDictionary[key] = textField.text
+    }
+    
+    @objc private func datePickerChanged(datePicker: UIDatePicker) {
+        let dateString = datePicker.date.convertToString()
+        let key = self.data.tableItems[datePicker.tag].headerTitle
+        self.editsDictionary[key] = dateString
     }
 }
