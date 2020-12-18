@@ -36,7 +36,7 @@ class DataDetailViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: self.cellID, for: indexPath)
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.lineBreakMode = .byWordWrapping
-        cell.textLabel?.text = self.data?.tableItems[indexPath.section].value
+        cell.textLabel?.text = self.data?.tableItems[indexPath.section].itemTitle
         cell.selectionStyle = .none
         return cell
     }
@@ -50,7 +50,7 @@ class DataDetailViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.data?.tableItems[section].section
+        return self.data?.tableItems[section].headerTitle
     }
     
     // MARK: - Configuration Functions

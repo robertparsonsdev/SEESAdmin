@@ -8,7 +8,8 @@
 import UIKit
 
 class DataEditingViewController: UITableViewController {
-    private let cellID = "DataEditingCellID"
+    private let textFieldCellID = "TextFieldCellID"
+    private let dataPickerCellID = "DatePickerCellID"
     private let data: DataProtocol
     private let editMode: Bool
     
@@ -39,23 +40,29 @@ class DataEditingViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.data.tableItems[section].section
+        return self.data.tableItems[section].headerTitle
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: self.cellID, for: indexPath)
-        let textField = UITextField()
-        textField.clearButtonMode = .whileEditing
-        textField.text = self.data.tableItems[indexPath.section].value
-        cell.contentView.addSubview(textField)
-        textField.anchor(top: cell.contentView.topAnchor, leading: cell.contentView.leadingAnchor, bottom: nil, trailing: cell.contentView.trailingAnchor, paddingTop: 0, paddingLeft: 17, paddingBottom: 0, paddingRight: 17, width: 0, height: cell.frame.height)
-        return cell
+        let item = self.data.tableItems[indexPath.section]
+        
+        switch item.editableView {
+        case .textField:
+            let cell = tableView.dequeueReusableCell(withIdentifier: self.textFieldCellID, for: indexPath) as! TextFieldCell
+            cell.set(text: item.itemTitle)
+            return cell
+        case .datePicker:
+            let cell = tableView.dequeueReusableCell(withIdentifier: self.dataPickerCellID, for: indexPath) as! DatePickerCell
+            cell.set(date: item.itemTitle.convertToDate())
+            return cell
+        }
     }
     
     // MARK: - Configuration Functions
     private func configureTableView() {
         self.tableView.backgroundColor = .systemBackground
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: self.cellID)
+        self.tableView.register(TextFieldCell.self, forCellReuseIdentifier: self.textFieldCellID)
+        self.tableView.register(DatePickerCell.self, forCellReuseIdentifier: self.dataPickerCellID)
         
         let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonTapped))
         cancelButton.tintColor = .systemRed

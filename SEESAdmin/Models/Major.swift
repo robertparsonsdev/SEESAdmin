@@ -29,10 +29,10 @@ struct Option: DataProtocol, Hashable {
     
     var tableItems: [DataTableItem] {
         var items: [DataTableItem] = []
-        items.append(DataTableItem(section: FBMajor.optionName, value: self.optionName))
-        items.append(DataTableItem(section: FBMajor.curriculumSheet, value: self.curriculumSheet))
-        items.append(DataTableItem(section: FBMajor.flowchart, value: self.flowchart))
-        items.append(DataTableItem(section: FBMajor.roadMap, value: self.roadMap))
+        items.append(DataTableItem(headerTitle: FBMajor.optionName, itemTitle: self.optionName))
+        items.append(DataTableItem(headerTitle: FBMajor.curriculumSheet, itemTitle: self.curriculumSheet))
+        items.append(DataTableItem(headerTitle: FBMajor.flowchart, itemTitle: self.flowchart))
+        items.append(DataTableItem(headerTitle: FBMajor.roadMap, itemTitle: self.roadMap))
         return items
     }
 }

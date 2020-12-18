@@ -5,7 +5,7 @@
 //  Created by Robert Parsons on 12/7/20.
 //
 
-import Foundation
+import UIKit
 
 struct Student: DataProtocol, Hashable {
     let advisor: String
@@ -35,12 +35,12 @@ struct Student: DataProtocol, Hashable {
     
     var tableItems: [DataTableItem] {
         var items: [DataTableItem] = []
-        items.append(DataTableItem(section: FBUser.advisor, value: self.advisor))
-        items.append(DataTableItem(section: FBUser.advisorOffice, value: self.advisorOffice))
-        items.append(DataTableItem(section: FBUser.broncoID, value: self.broncoID))
-        items.append(DataTableItem(section: FBUser.email, value: self.email))
-        items.append(DataTableItem(section: FBUser.firstName, value: self.firstName))
-        items.append(DataTableItem(section: FBUser.lastName, value: self.lastName))
+        items.append(DataTableItem(headerTitle: FBUser.advisor, itemTitle: self.advisor))
+        items.append(DataTableItem(headerTitle: FBUser.advisorOffice, itemTitle: self.advisorOffice))
+        items.append(DataTableItem(headerTitle: FBUser.broncoID, itemTitle: self.broncoID))
+        items.append(DataTableItem(headerTitle: FBUser.email, itemTitle: self.email))
+        items.append(DataTableItem(headerTitle: FBUser.firstName, itemTitle: self.firstName))
+        items.append(DataTableItem(headerTitle: FBUser.lastName, itemTitle: self.lastName))
         return items
     }
 }
@@ -52,6 +52,11 @@ protocol DataProtocol {
 }
 
 struct DataTableItem {
-    let section: String
-    let value: String
+    let headerTitle: String
+    let itemTitle: String
+    var editableView: EditableViewType = .textField
+}
+
+enum EditableViewType {
+    case textField, datePicker
 }

@@ -21,13 +21,13 @@ struct Event: DataProtocol, Hashable {
     
     init(dictionary: [String: Any]) {
         if let startDate = dictionary[FBEvent.startDate] as? String {
-            self.startDate = startDate.convertToDate() ?? Date()
+            self.startDate = startDate.convertToDate()
         } else {
             self.startDate = Date()
         }
         
         if let endDate = dictionary[FBEvent.endDate] as? String {
-            self.endDate = endDate.convertToDate() ?? Date()
+            self.endDate = endDate.convertToDate()
         } else {
             self.endDate = Date()
         }
@@ -57,16 +57,16 @@ struct Event: DataProtocol, Hashable {
     
     var tableItems: [DataTableItem] {
         var items: [DataTableItem] = []
-        items.append(DataTableItem(section: FBEvent.startDate, value: self.startDate.convertToString()))
-        items.append(DataTableItem(section: FBEvent.endDate, value: self.endDate.convertToString()))
-        items.append(DataTableItem(section: FBEvent.eventName, value: self.eventName))
-        items.append(DataTableItem(section: FBEvent.locationName, value: self.locationName))
-        items.append(DataTableItem(section: FBEvent.locationAddress, value: self.locationAddress))
-        items.append(DataTableItem(section: FBEvent.locationCity, value: self.locationCity))
-        items.append(DataTableItem(section: FBEvent.locationState, value: self.locationState))
-        items.append(DataTableItem(section: FBEvent.locationZIP, value: String(self.locationZIP)))
-        items.append(DataTableItem(section: FBEvent.locationCountry, value: self.locationCountry))
-        items.append(DataTableItem(section: FBEvent.notes, value: self.notes))
+        items.append(DataTableItem(headerTitle: FBEvent.startDate, itemTitle: self.startDate.convertToString(), editableView: .datePicker))
+        items.append(DataTableItem(headerTitle: FBEvent.endDate, itemTitle: self.endDate.convertToString(), editableView: .datePicker))
+        items.append(DataTableItem(headerTitle: FBEvent.eventName, itemTitle: self.eventName))
+        items.append(DataTableItem(headerTitle: FBEvent.locationName, itemTitle: self.locationName))
+        items.append(DataTableItem(headerTitle: FBEvent.locationAddress, itemTitle: self.locationAddress))
+        items.append(DataTableItem(headerTitle: FBEvent.locationCity, itemTitle: self.locationCity))
+        items.append(DataTableItem(headerTitle: FBEvent.locationState, itemTitle: self.locationState))
+        items.append(DataTableItem(headerTitle: FBEvent.locationZIP, itemTitle: String(self.locationZIP)))
+        items.append(DataTableItem(headerTitle: FBEvent.locationCountry, itemTitle: self.locationCountry))
+        items.append(DataTableItem(headerTitle: FBEvent.notes, itemTitle: self.notes))
         return items
     }
 }

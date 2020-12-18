@@ -56,12 +56,12 @@ struct Contact: DataProtocol, Hashable {
     
     var tableItems: [DataTableItem] {
         var items: [DataTableItem] = []
-        items.append(DataTableItem(section: FBContact.name, value: self.name))
-        items.append(DataTableItem(section: FBContact.title, value: self.title))
-        items.append(DataTableItem(section: FBContact.office, value: self.office))
-        items.append(DataTableItem(section: FBContact.phone, value: self.phone))
-        items.append(DataTableItem(section: FBContact.email, value: self.email))
-        items.append(DataTableItem(section: FBContact.order, value: String(self.order)))
+        items.append(DataTableItem(headerTitle: FBContact.name, itemTitle: self.name))
+        items.append(DataTableItem(headerTitle: FBContact.title, itemTitle: self.title))
+        items.append(DataTableItem(headerTitle: FBContact.office, itemTitle: self.office))
+        items.append(DataTableItem(headerTitle: FBContact.phone, itemTitle: self.phone))
+        items.append(DataTableItem(headerTitle: FBContact.email, itemTitle: self.email))
+        items.append(DataTableItem(headerTitle: FBContact.order, itemTitle: String(self.order)))
         return items
     }
 }
