@@ -28,23 +28,25 @@ extension UIViewController {
         }
     }
     
-    func showLoadingView() {
-        containerView = UIView()
-        containerView?.backgroundColor = .systemBackground
-        containerView?.alpha = 0
-        
-        view.addSubview(containerView!)
-        containerView?.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: nil, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: nil, x: view.centerXAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
-        UIView.animate(withDuration: 0.25) { containerView?.alpha = 0.8 }
-        
-        let activityIndicator = UIActivityIndicatorView(style: .large)
-        containerView?.addSubview(activityIndicator)
-        activityIndicator.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, x: containerView?.centerXAnchor, y: containerView?.centerYAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
-        
-        activityIndicator.startAnimating()
+    func showLoadingViewOnMainThread() {
+        DispatchQueue.main.async {
+            containerView = UIView()
+            containerView?.backgroundColor = .systemBackground
+            containerView?.alpha = 0
+            
+            self.view.addSubview(containerView!)
+            containerView?.anchor(top: self.view.safeAreaLayoutGuide.topAnchor, leading: nil, bottom: self.view.safeAreaLayoutGuide.bottomAnchor, trailing: nil, x: self.view.centerXAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
+            UIView.animate(withDuration: 0.25) { containerView?.alpha = 0.8 }
+            
+            let activityIndicator = UIActivityIndicatorView(style: .large)
+            containerView?.addSubview(activityIndicator)
+            activityIndicator.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, x: containerView?.centerXAnchor, y: containerView?.centerYAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
+            
+            activityIndicator.startAnimating()
+        }
     }
     
-    func dismissLoadingView() {
+    func dismissLoadingViewOnMainThread() {
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.25) {
                 containerView?.removeFromSuperview()

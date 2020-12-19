@@ -8,6 +8,8 @@
 import UIKit
 
 struct Student: DataProtocol, Hashable {
+    var dataCase: SEESData = .students
+    
     let advisor: String
     let advisorOffice: String
     let broncoID: String
@@ -49,6 +51,7 @@ protocol DataProtocol {
     init()
     init(dictionary: [String: Any])
     var tableItems: [DataTableItem] { get }
+    var dataCase: SEESData { get }
 }
 
 struct DataTableItem {

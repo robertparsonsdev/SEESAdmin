@@ -8,6 +8,8 @@
 import Foundation
 
 struct Option: DataProtocol, Hashable {
+    var dataCase: SEESData = .majors
+    
     let optionName: String
     let curriculumSheet: String
     let flowchart: String
@@ -38,6 +40,8 @@ struct Option: DataProtocol, Hashable {
 }
 
 struct Major: DataProtocol, Hashable {
+    var dataCase: SEESData = .majors
+    
     let majorName: String
     var options: [Option] = []
 

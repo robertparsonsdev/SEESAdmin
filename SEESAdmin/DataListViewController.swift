@@ -93,7 +93,7 @@ class DataListViewController: UIViewController {
     }
     
     private func fetchData() {
-        showLoadingView()
+        showLoadingViewOnMainThread()
         self.networkManager.fetchData { [weak self] (result) in
             guard let self = self else { return }
             
@@ -106,7 +106,7 @@ class DataListViewController: UIViewController {
             case .failure(let error):
                 self.presentErrorOnMainThread(withError: .unableToFetchData, optionalMessage: "\n\n\(error.localizedDescription)")
             }
-            self.dismissLoadingView()
+            self.dismissLoadingViewOnMainThread()
         }
     }
     

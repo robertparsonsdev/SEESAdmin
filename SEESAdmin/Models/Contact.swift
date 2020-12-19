@@ -8,6 +8,8 @@
 import Foundation
 
 struct Contact: DataProtocol, Hashable {
+    var dataCase: SEESData = .contacts
+    
     var name: String = ""
     var title: String = ""
     var office: String = ""

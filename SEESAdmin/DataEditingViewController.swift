@@ -80,12 +80,11 @@ class DataEditingViewController: UITableViewController {
         navigationItem.leftBarButtonItem = cancelButton
         navigationItem.rightBarButtonItem = saveButton
         
-        switch data {
-        case is Student: title = editMode ? "Edit Student" : "New Student"
-        case is Option: title = editMode ? "Edit Option" : "New Option"
-        case is Event: title = editMode ? "Edit Event" : "New Event"
-        case is Contact: title = editMode ? "Edit Contact" : "New Contact"
-        default: break
+        switch data.dataCase {
+        case .students: title = editMode ? "Edit Student" : "New Student"
+        case .majors: title = editMode ? "Edit Option" : "New Option"
+        case .events: title = editMode ? "Edit Event" : "New Event"
+        case .contacts: title = editMode ? "Edit Contact" : "New Contact"
         }
     }
     
@@ -95,7 +94,13 @@ class DataEditingViewController: UITableViewController {
     }
     
     @objc private func saveButtonTapped() {
-        print(self.editsDictionary)
+        ValidationManager.shared.validateText(of: self.editsDictionary, for: self.data.dataCase) { [weak self] (result) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data): print(data)
+            case .failure(let error): self.presentErrorOnMainThread(withError: error)
+            }
+        }
     }
     
     @objc private func textFieldChanged(textField: UITextField) {

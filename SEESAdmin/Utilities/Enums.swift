@@ -13,6 +13,7 @@ enum SEESData {
 
 enum SEESError: Error {
     case unableToFetchData, unableToFetchStudents, unableToFetchMajors, unableToFetchEvents, unableToFetchContacts
+    case unableToValidate(error: String)
     
     var info: (title: String, message: String) {
         switch self {
@@ -21,6 +22,7 @@ enum SEESError: Error {
         case .unableToFetchMajors: return ("Unable to Fetch Majors", "Please ensure that there is an internent connection or try restarting the app.")
         case .unableToFetchEvents: return ("Unable to Fetch Events", "Please ensure that there is an internent connection or try restarting the app.")
         case .unableToFetchContacts: return ("Unable to Fetch Contacts", "Please ensure that there is an internent connection or try restarting the app.")
+        case .unableToValidate(let error): return ("Unable to Validate Input", "One or more errors occurred: \(error)")
         }
     }
 }
@@ -85,4 +87,22 @@ enum ContactImage {
     case logo
     case alas
     case dora
+}
+
+enum Validations {
+    case studentEmail, broncoID
+    
+    var regex: String {
+        switch self {
+        case .studentEmail: return "^[a-zA-Z0-9]+@cpp.edu$"
+        case .broncoID: return "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$"
+        }
+    }
+    
+    var error: String {
+        switch self {
+        case .studentEmail: return "\n\nEnsure the email only contains letters and numbers and uses \"@cpp.edu\"."
+        case .broncoID: return "\n\nEnsure the Bronco ID is only digits and is 9 digits long."
+        }
+    }
 }
