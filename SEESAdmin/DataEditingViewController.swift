@@ -94,13 +94,12 @@ class DataEditingViewController: UITableViewController {
     }
     
     @objc private func saveButtonTapped() {
-        ValidationManager.shared.validateText(of: self.editsDictionary, for: self.data.dataCase) { [weak self] (result) in
-            guard let self = self else { return }
-            switch result {
-            case .success(let data): print(data)
-            case .failure(let error): self.presentErrorOnMainThread(withError: error)
-            }
+        if let error = ValidationChecker.validateText(of: self.editsDictionary, for: self.data.dataCase) {
+            presentErrorOnMainThread(withError: error)
+            return
         }
+        
+        
     }
     
     @objc private func textFieldChanged(textField: UITextField) {

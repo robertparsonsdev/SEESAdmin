@@ -13,7 +13,7 @@
 		EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE052921257DE75800200184 /* SplitViewDelgate.swift */; };
 		EE4742B0258D3FC2009BC70E /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742AF258D3FC2009BC70E /* TextFieldCell.swift */; };
 		EE4742B5258D4168009BC70E /* DatePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742B4258D4168009BC70E /* DatePickerCell.swift */; };
-		EE4742C6258D6F0B009BC70E /* ValidationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742C5258D6F0B009BC70E /* ValidationManager.swift */; };
+		EE4742C6258D6F0B009BC70E /* ValidationChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742C5258D6F0B009BC70E /* ValidationChecker.swift */; };
 		EE4742C9258D754C009BC70E /* NSRegularExpressionExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742C8258D754C009BC70E /* NSRegularExpressionExt.swift */; };
 		EE71A51E257EF5DB002BA583 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A51D257EF5DB002BA583 /* NetworkManager.swift */; };
 		EE71A525257EF666002BA583 /* Major.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A521257EF666002BA583 /* Major.swift */; };
@@ -45,7 +45,7 @@
 		EE052921257DE75800200184 /* SplitViewDelgate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewDelgate.swift; sourceTree = "<group>"; };
 		EE4742AF258D3FC2009BC70E /* TextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
 		EE4742B4258D4168009BC70E /* DatePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerCell.swift; sourceTree = "<group>"; };
-		EE4742C5258D6F0B009BC70E /* ValidationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationManager.swift; sourceTree = "<group>"; };
+		EE4742C5258D6F0B009BC70E /* ValidationChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationChecker.swift; sourceTree = "<group>"; };
 		EE4742C8258D754C009BC70E /* NSRegularExpressionExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSRegularExpressionExt.swift; sourceTree = "<group>"; };
 		EE71A51D257EF5DB002BA583 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		EE71A521257EF666002BA583 /* Major.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Major.swift; sourceTree = "<group>"; };
@@ -112,7 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				EE71A51D257EF5DB002BA583 /* NetworkManager.swift */,
-				EE4742C5258D6F0B009BC70E /* ValidationManager.swift */,
+				EE4742C5258D6F0B009BC70E /* ValidationChecker.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -120,10 +120,10 @@
 		EE71A520257EF653002BA583 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				EE71A522257EF666002BA583 /* Contact.swift */,
-				EE71A523257EF666002BA583 /* Event.swift */,
-				EE71A521257EF666002BA583 /* Major.swift */,
 				EE71A524257EF666002BA583 /* Student.swift */,
+				EE71A521257EF666002BA583 /* Major.swift */,
+				EE71A523257EF666002BA583 /* Event.swift */,
+				EE71A522257EF666002BA583 /* Contact.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -321,7 +321,7 @@
 				EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */,
 				EE96E00C2583349200F4D4A3 /* UIViewControllerExt.swift in Sources */,
 				EE946906257DB3C400E9730A /* DataListViewController.swift in Sources */,
-				EE4742C6258D6F0B009BC70E /* ValidationManager.swift in Sources */,
+				EE4742C6258D6F0B009BC70E /* ValidationChecker.swift in Sources */,
 				EE71A528257EF666002BA583 /* Student.swift in Sources */,
 				EE946902257DB3C400E9730A /* AppDelegate.swift in Sources */,
 				EE9B18AA258172AC00076769 /* UIHelper.swift in Sources */,

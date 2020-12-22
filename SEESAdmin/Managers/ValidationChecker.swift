@@ -7,23 +7,19 @@
 
 import Foundation
 
-class ValidationManager {
-    static let shared = ValidationManager()
-
-    private init() { }
-    
-    func validateText(of dictionary: [String: Any], for data: SEESData, completed: @escaping (Result<DataProtocol, SEESError>) -> Void) {
+struct ValidationChecker {
+    static func validateText(of dictionary: [String: Any], for data: SEESData) -> SEESError? {
         switch data {
         case .students:
-            if let error = validateStudentData(with: dictionary) { completed(.failure(.unableToValidate(error: error))) }
-            else { completed(.success(Student(dictionary: dictionary))) }
-        case .majors: print("majors")
-        case .events: print("events")
-        case .contacts: print("contacts")
+            if let error = validateStudentData(with: dictionary) { return .unableToValidate(error: error) }
+            else { return nil }
+        case .majors: return nil
+        case .events: return nil
+        case .contacts: return nil
         }
     }
     
-    private func validateStudentData(with dictionary: [String: Any]) -> String? {
+    private static func validateStudentData(with dictionary: [String: Any]) -> String? {
         var errorString: String = ""
         for (key, value) in dictionary {
             let string = value as! String

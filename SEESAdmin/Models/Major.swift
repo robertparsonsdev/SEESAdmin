@@ -8,7 +8,7 @@
 import Foundation
 
 struct Option: DataProtocol, Hashable {
-    var dataCase: SEESData = .majors
+    let dataCase: SEESData = .majors
     
     let optionName: String
     let curriculumSheet: String

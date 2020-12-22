@@ -8,7 +8,7 @@
 import Foundation
 
 struct Event: DataProtocol, Hashable {
-    var dataCase: SEESData = .events
+    let dataCase: SEESData = .events
     
     let startDate: Date
     let endDate: Date

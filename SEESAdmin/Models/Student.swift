@@ -8,7 +8,7 @@
 import UIKit
 
 struct Student: DataProtocol, Hashable {
-    var dataCase: SEESData = .students
+    let dataCase: SEESData = .students
     
     let advisor: String
     let advisorOffice: String
