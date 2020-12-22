@@ -99,7 +99,12 @@ class DataEditingViewController: UITableViewController {
             return
         }
         
-        
+        NetworkManager.shared.updateData(at: self.data.path, with: self.editsDictionary) { [weak self] (error) in
+            guard let self = self else { return }
+            guard error == nil else { self.presentErrorOnMainThread(withError: error!); return }
+                
+            print("updated")
+        }
     }
     
     @objc private func textFieldChanged(textField: UITextField) {

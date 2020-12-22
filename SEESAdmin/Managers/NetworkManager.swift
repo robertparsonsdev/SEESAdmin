@@ -10,11 +10,12 @@ import Firebase
 
 class NetworkManager {
     static let shared = NetworkManager()
+    private let reference = Database.database().reference()
     
     private init() { }
     
     func fetchData(completed: @escaping (Result<[SEESData: [DataProtocol]], SEESError>) -> Void) {
-        Database.database().reference().observeSingleEvent(of: .value) { [weak self] (snapshot) in
+        self.reference.observeSingleEvent(of: .value) { [weak self] (snapshot) in
             guard let self = self else { return }
             guard let data = snapshot.value as? [String: Any],
                   let studentsDictionary = data[FirebaseValue.users] as? [String: Any],
@@ -41,10 +42,20 @@ class NetworkManager {
     
     private func decode<T: DataProtocol>(dictionary: [String: Any]) -> [T] {
         var data: [T] = []
-        for (_, value) in dictionary {
-            data.append(T(dictionary: value as! [String: Any]))
+        for (key, value) in dictionary {
+            data.append(T(id: key, dictionary: value as! [String: Any]))
         }
         
         return data
+    }
+    
+    func updateData(at path: String, with values: [String: Any], completed: @escaping (SEESError?) -> Void) {
+        self.reference.child(path).updateChildValues(values) { (error, reference) in
+            if let error = error {
+                completed(.unableToUpdateData(error: error.localizedDescription))
+            } else {
+                completed(nil)
+            }
+        }
     }
 }

@@ -14,6 +14,7 @@ enum SEESData {
 enum SEESError: Error {
     case unableToFetchData, unableToFetchStudents, unableToFetchMajors, unableToFetchEvents, unableToFetchContacts
     case unableToValidate(error: String)
+    case unableToUpdateData(error: String)
     
     var info: (title: String, message: String) {
         switch self {
@@ -23,6 +24,7 @@ enum SEESError: Error {
         case .unableToFetchEvents: return ("Unable to Fetch Events", "Please ensure that there is an internent connection or try restarting the app.")
         case .unableToFetchContacts: return ("Unable to Fetch Contacts", "Please ensure that there is an internent connection or try restarting the app.")
         case .unableToValidate(let error): return ("Unable to Validate Input", "One or more errors occurred: \(error)")
+        case .unableToUpdateData(let error): return ("Unable to Update", "An error occurred while trying to update. Please make there is an internet connection. \n\n\(error)")
         }
     }
 }

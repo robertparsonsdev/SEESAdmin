@@ -8,7 +8,11 @@
 import Foundation
 
 struct Event: DataProtocol, Hashable {
+    let id: String
     let dataCase: SEESData = .events
+    var path: String {
+        return "/\(FirebaseValue.events)/\(self.eventName)"
+    }
     
     let startDate: Date
     let endDate: Date
@@ -21,7 +25,7 @@ struct Event: DataProtocol, Hashable {
     let locationCountry: String
     let notes: String
     
-    init(dictionary: [String: Any]) {
+    init(id: String, dictionary: [String: Any]) {
         if let startDate = dictionary[FBEvent.startDate] as? String {
             self.startDate = startDate.convertToDate()
         } else {
@@ -34,6 +38,7 @@ struct Event: DataProtocol, Hashable {
             self.endDate = Date()
         }
         
+        self.id = id
         self.eventName = dictionary[FBEvent.eventName] as? String ?? "eventNameError"
         self.locationName = dictionary[FBEvent.locationName] as? String ?? "locationNameError"
         self.locationAddress = dictionary[FBEvent.locationAddress] as? String ?? "locationAddressError"
@@ -45,6 +50,7 @@ struct Event: DataProtocol, Hashable {
     }
     
     init() {
+        self.id = UUID().uuidString
         self.startDate = Date()
         self.endDate = Date()
         self.eventName = ""

@@ -8,14 +8,25 @@
 import Foundation
 
 struct Option: DataProtocol, Hashable {
+    let id: String
     let dataCase: SEESData = .majors
+    var majorPath: String = ""
+    var path: String {
+        return "\(self.majorPath)/\(self.optionName)"
+    }
     
     let optionName: String
     let curriculumSheet: String
     let flowchart: String
     let roadMap: String
     
-    init(dictionary: [String: Any]) {
+    init(dictionary: [String: Any], majorPath: String) {
+        self.init(id: "", dictionary: dictionary)
+        self.majorPath = majorPath
+    }
+    
+    init(id: String, dictionary: [String: Any]) {
+        self.id = ""
         self.optionName = dictionary[FBMajor.optionName] as? String ?? "optionNameError"
         self.curriculumSheet = dictionary[FBMajor.curriculumSheet] as? String ?? "curriculumSheetError"
         self.flowchart = dictionary[FBMajor.flowchart] as? String ?? "flowchartError"
@@ -23,6 +34,7 @@ struct Option: DataProtocol, Hashable {
     }
     
     init() {
+        self.id = ""
         self.optionName = ""
         self.curriculumSheet = ""
         self.flowchart = ""
@@ -40,22 +52,28 @@ struct Option: DataProtocol, Hashable {
 }
 
 struct Major: DataProtocol, Hashable {
+    let id: String
     var dataCase: SEESData = .majors
+    var path: String {
+        return "/\(FirebaseValue.majors)/\(self.majorName)"
+    }
     
     let majorName: String
     var options: [Option] = []
 
-    init(dictionary: [String : Any]) {
+    init(id: String, dictionary: [String : Any]) {
+        self.id = ""
         self.majorName = dictionary[FBMajor.majorName] as? String ?? "majorNameError"
         
         for(_, value) in dictionary {
             if let optionsDictionary = value as? [String: Any] {
-                options.append(Option(dictionary: optionsDictionary))
+                options.append(Option(dictionary: optionsDictionary, majorPath: self.path))
             }
         }
     }
     
     init() {
+        self.id = UUID().uuidString
         self.majorName = ""
     }
     

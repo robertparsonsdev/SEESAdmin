@@ -8,7 +8,11 @@
 import Foundation
 
 struct Contact: DataProtocol, Hashable {
+    let id: String
     let dataCase: SEESData = .contacts
+    var path: String {
+        return "/\(FirebaseValue.contacts)/\(self.name)"
+    }
     
     var name: String = ""
     var title: String = ""
@@ -25,7 +29,8 @@ struct Contact: DataProtocol, Hashable {
     let thursday: String
     let friday: String
     
-    init(dictionary: [String: Any]) {
+    init(id: String, dictionary: [String: Any]) {
+        self.id = id
         self.name = dictionary[FBContact.name] as? String ?? "nameError"
         self.title = dictionary[FBContact.title] as? String ?? "titleError"
         self.office = dictionary[FBContact.office] as? String ?? "officeError"
@@ -42,6 +47,7 @@ struct Contact: DataProtocol, Hashable {
     }
     
     init() {
+        self.id = UUID().uuidString
         self.name = ""
         self.title = ""
         self.office = ""

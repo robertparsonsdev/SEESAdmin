@@ -8,7 +8,11 @@
 import UIKit
 
 struct Student: DataProtocol, Hashable {
+    let id: String
     let dataCase: SEESData = .students
+    var path: String {
+        return "/\(FirebaseValue.users)/\(self.id)"
+    }
     
     let advisor: String
     let advisorOffice: String
@@ -17,7 +21,8 @@ struct Student: DataProtocol, Hashable {
     let firstName: String
     let lastName: String
     
-    init(dictionary: [String: Any]) {
+    init(id: String, dictionary: [String: Any]) {
+        self.id = id
         self.advisor = dictionary[FBUser.advisor] as? String ?? "advisorError"
         self.advisorOffice = dictionary[FBUser.advisorOffice] as? String ?? "advisorOfficeError"
         self.broncoID = dictionary[FBUser.broncoID] as? String ?? "broncoIDError"
@@ -27,6 +32,7 @@ struct Student: DataProtocol, Hashable {
     }
     
     init() {
+        self.id = ""
         self.advisor = ""
         self.advisorOffice = ""
         self.broncoID = ""
@@ -49,9 +55,14 @@ struct Student: DataProtocol, Hashable {
 
 protocol DataProtocol {
     init()
-    init(dictionary: [String: Any])
-    var tableItems: [DataTableItem] { get }
+    init(id: String, dictionary: [String: Any])
+    
+    var id: String { get }
     var dataCase: SEESData { get }
+    var path: String { get }
+    var tableItems: [DataTableItem] { get }
+    
+//    var dataDictionary: [String: Any] { get }
 }
 
 struct DataTableItem {
