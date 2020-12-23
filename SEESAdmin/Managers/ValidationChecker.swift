@@ -13,7 +13,7 @@ struct ValidationChecker {
         case .students:
             if let error = validateStudentData(with: dictionary) { return .unableToValidate(error: error) }
             else { return nil }
-        case .majors: return nil
+        case .options: return nil
         case .events: return nil
         case .contacts: return nil
         }
@@ -24,11 +24,11 @@ struct ValidationChecker {
         for (key, value) in dictionary {
             let string = value as! String
             switch key {
-            case FBUser.email:
+            case FBStudent.email:
                 if !(string ~= Validations.studentEmail.regex) {
                     errorString.append(Validations.studentEmail.error)
                 }
-            case FBUser.broncoID:
+            case FBStudent.broncoID:
                 if !(string ~= Validations.broncoID.regex) {
                     errorString.append(Validations.broncoID.error)
                 }

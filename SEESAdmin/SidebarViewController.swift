@@ -34,7 +34,7 @@ class SidebarViewController: UIViewController {
     
     private struct RowIdentifier {
         static let students = UUID()
-        static let majors = UUID()
+        static let options = UUID()
         static let events = UUID()
         static let contacts = UUID()
     }
@@ -100,7 +100,7 @@ class SidebarViewController: UIViewController {
         let header = SidebarItem.header(title: "Data")
         let items: [SidebarItem] = [
             .row(title: "Students", subtitle: nil, image: UIImage(systemName: "person.2.fill"), id: RowIdentifier.students),
-            .row(title: "Majors", subtitle: nil, image: UIImage(systemName: "studentdesk"), id: RowIdentifier.majors),
+            .row(title: "Options", subtitle: nil, image: UIImage(systemName: "studentdesk"), id: RowIdentifier.options),
             .row(title: "Events", subtitle: nil, image: UIImage(systemName: "calendar"), id: RowIdentifier.events),
             .row(title: "Contacts", subtitle: nil, image: UIImage(systemName: "person.crop.circle.fill"), id: RowIdentifier.contacts)
         ]
@@ -138,7 +138,7 @@ extension SidebarViewController: UICollectionViewDelegate {
         
         switch sidebarItem.id {
         case RowIdentifier.students: listVC.show(.students)
-        case RowIdentifier.majors: listVC.show(.majors)
+        case RowIdentifier.options: listVC.show(.options)
         case RowIdentifier.events: listVC.show(.events)
         case RowIdentifier.contacts: listVC.show(.contacts)
         default: break

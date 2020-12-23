@@ -82,7 +82,7 @@ class DataEditingViewController: UITableViewController {
         
         switch data.dataCase {
         case .students: title = editMode ? "Edit Student" : "New Student"
-        case .majors: title = editMode ? "Edit Option" : "New Option"
+        case .options: title = editMode ? "Edit Option" : "New Option"
         case .events: title = editMode ? "Edit Event" : "New Event"
         case .contacts: title = editMode ? "Edit Contact" : "New Contact"
         }

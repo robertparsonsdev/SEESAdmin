@@ -8,11 +8,11 @@
 import UIKit
 
 enum SEESData {
-    case students, majors, events, contacts
+    case students, options, events, contacts
 }
 
 enum SEESError: Error {
-    case unableToFetchData, unableToFetchStudents, unableToFetchMajors, unableToFetchEvents, unableToFetchContacts
+    case unableToFetchData, unableToFetchStudents, unableToFetchOptions, unableToFetchEvents, unableToFetchContacts
     case unableToValidate(error: String)
     case unableToUpdateData(error: String)
     
@@ -20,7 +20,7 @@ enum SEESError: Error {
         switch self {
         case .unableToFetchData: return ("Unable to Fetch Data", "Please ensure that there is an internent connection or try restarting the app.")
         case .unableToFetchStudents: return ("Unable to Fetch Students", "Please ensure that there is an internent connection or try restarting the app.")
-        case .unableToFetchMajors: return ("Unable to Fetch Majors", "Please ensure that there is an internent connection or try restarting the app.")
+        case .unableToFetchOptions: return ("Unable to Fetch Options", "Please ensure that there is an internent connection or try restarting the app.")
         case .unableToFetchEvents: return ("Unable to Fetch Events", "Please ensure that there is an internent connection or try restarting the app.")
         case .unableToFetchContacts: return ("Unable to Fetch Contacts", "Please ensure that there is an internent connection or try restarting the app.")
         case .unableToValidate(let error): return ("Unable to Validate Input", "One or more errors occurred: \(error)")
@@ -29,7 +29,7 @@ enum SEESError: Error {
     }
 }
 
-enum FBUser {
+enum FBStudent {
     static let advisor = "advisor"
     static let advisorOffice = "advisorOffice"
     static let broncoID = "broncoID"
@@ -38,7 +38,20 @@ enum FBUser {
     static let lastName = "lastName"
 }
 
-enum FBMajor {
+enum FBMajor: String {
+    case biology = "Biology"
+    case biotech = "Biotechnology"
+    case chem = "Chemistry"
+    case compSci = "Computer Science"
+    case envBio = "Environmental Biology"
+    case geo = "Geology"
+    case kin = "Ginesiology"
+    case math = "Mathematics"
+    case phy = "Physics"
+    case none = "none"
+}
+
+enum FBOption {
     static let majorName = "majorName"
     static let optionName = "optionName"
     static let curriculumSheet = "curriculumSheet"
@@ -74,7 +87,7 @@ enum FBContact {
 }
 
 enum FirebaseValue: Hashable {
-    static let users = "users", majors = "majors", events = "events", contacts = "contacts"
+    static let students = "students", options = "options", events = "events", contacts = "contacts"
 }
 
 enum Symbol {

@@ -16,7 +16,7 @@ class DataListViewController: UIViewController {
     
     private let networkManager = NetworkManager.shared
     private var studentSectionDictionary = [String: [Student]]()
-    private var majorSectionDictionary = [String: [Option]]()
+    private var optionSectionDictionary = [String: [Option]]()
     private var eventSectionDictionary = [String: [Event]]()
     private var contactSectionDictionary = [String: [Contact]]()
     
@@ -26,7 +26,7 @@ class DataListViewController: UIViewController {
         didSet {
             switch activeData {
             case .students: applyInitialSnapshot(with: self.studentSectionDictionary)
-            case .majors: applyInitialSnapshot(with: self.majorSectionDictionary)
+            case .options: applyInitialSnapshot(with: self.optionSectionDictionary)
             case .events: applyInitialSnapshot(with: self.eventSectionDictionary)
             case .contacts: applyInitialSnapshot(with: self.contactSectionDictionary)
             case .none: break
@@ -100,7 +100,7 @@ class DataListViewController: UIViewController {
             switch result {
             case .success(let dataDictionary):
                 self.configure(studentData: dataDictionary[.students] as! [Student])
-                self.configure(majorData: dataDictionary[.majors] as! [Major])
+                self.configure(optionData: dataDictionary[.options] as! [Option])
                 self.configure(eventsData: dataDictionary[.events] as! [Event])
                 self.configure(contactsData: dataDictionary[.contacts] as! [Contact])
             case .failure(let error):
@@ -144,25 +144,23 @@ class DataListViewController: UIViewController {
         for student in studentData {
             let letter = String(student.lastName.first ?? Character("error")).uppercased()
             
-            if var array = self.studentSectionDictionary[letter] {
-                array.append(student)
-            } else {
+            if self.studentSectionDictionary[letter] == nil {
                 self.studentSectionDictionary[letter] = []
-                self.studentSectionDictionary[letter]?.append(student)
             }
+            
+            self.studentSectionDictionary[letter]?.append(student)
         }
     }
     
-    private func configure(majorData: [Major]) {
-        for major in majorData {
-            let majorName = major.majorName.lowercased()
+    private func configure(optionData: [Option]) {
+        for option in optionData {
+            let majorName = option.majorName
             
-            if var array = self.majorSectionDictionary[majorName] {
-                array.append(contentsOf: major.options)
-            } else {
-                self.majorSectionDictionary[majorName] = []
-                self.majorSectionDictionary[majorName]?.append(contentsOf: major.options)
+            if self.optionSectionDictionary[majorName] == nil {
+                self.optionSectionDictionary[majorName] = []
             }
+            
+            self.optionSectionDictionary[majorName]?.append(option)
         }
     }
     
@@ -179,7 +177,7 @@ class DataListViewController: UIViewController {
         let data: DataProtocol
         switch self.activeData {
         case .students: data = Student()
-        case .majors: data = Option()
+        case .options: data = Option()
         case .events: data = Event()
         case .contacts: data = Contact()
         case .none: return
@@ -228,7 +226,7 @@ struct ListItem: Hashable, Identifiable {
     }
     var data: SEESData? {
         if self.student != nil { return .students }
-        else if self.option != nil { return .majors }
+        else if self.option != nil { return .options }
         else if self.event != nil { return .events }
         else if self.contact != nil { return .contacts }
         else { return nil }

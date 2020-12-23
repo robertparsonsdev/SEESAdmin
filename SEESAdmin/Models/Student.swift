@@ -11,7 +11,7 @@ struct Student: DataProtocol, Hashable {
     let id: String
     let dataCase: SEESData = .students
     var path: String {
-        return "/\(FirebaseValue.users)/\(self.id)"
+        return "/\(FirebaseValue.students)/\(self.id)"
     }
     
     let advisor: String
@@ -23,12 +23,12 @@ struct Student: DataProtocol, Hashable {
     
     init(id: String, dictionary: [String: Any]) {
         self.id = id
-        self.advisor = dictionary[FBUser.advisor] as? String ?? "advisorError"
-        self.advisorOffice = dictionary[FBUser.advisorOffice] as? String ?? "advisorOfficeError"
-        self.broncoID = dictionary[FBUser.broncoID] as? String ?? "broncoIDError"
-        self.email = dictionary[FBUser.email] as? String ?? "emailError"
-        self.firstName = dictionary[FBUser.firstName] as? String ?? "firstNameError"
-        self.lastName = dictionary[FBUser.lastName] as? String ?? "lastNameError"
+        self.advisor = dictionary[FBStudent.advisor] as? String ?? "advisorError"
+        self.advisorOffice = dictionary[FBStudent.advisorOffice] as? String ?? "advisorOfficeError"
+        self.broncoID = dictionary[FBStudent.broncoID] as? String ?? "broncoIDError"
+        self.email = dictionary[FBStudent.email] as? String ?? "emailError"
+        self.firstName = dictionary[FBStudent.firstName] as? String ?? "firstNameError"
+        self.lastName = dictionary[FBStudent.lastName] as? String ?? "lastNameError"
     }
     
     init() {
@@ -43,12 +43,12 @@ struct Student: DataProtocol, Hashable {
     
     var tableItems: [DataTableItem] {
         var items: [DataTableItem] = []
-        items.append(DataTableItem(headerTitle: FBUser.advisor, itemTitle: self.advisor))
-        items.append(DataTableItem(headerTitle: FBUser.advisorOffice, itemTitle: self.advisorOffice))
-        items.append(DataTableItem(headerTitle: FBUser.broncoID, itemTitle: self.broncoID))
-        items.append(DataTableItem(headerTitle: FBUser.email, itemTitle: self.email))
-        items.append(DataTableItem(headerTitle: FBUser.firstName, itemTitle: self.firstName))
-        items.append(DataTableItem(headerTitle: FBUser.lastName, itemTitle: self.lastName))
+        items.append(DataTableItem(headerTitle: FBStudent.advisor, itemTitle: self.advisor))
+        items.append(DataTableItem(headerTitle: FBStudent.advisorOffice, itemTitle: self.advisorOffice))
+        items.append(DataTableItem(headerTitle: FBStudent.broncoID, itemTitle: self.broncoID))
+        items.append(DataTableItem(headerTitle: FBStudent.email, itemTitle: self.email))
+        items.append(DataTableItem(headerTitle: FBStudent.firstName, itemTitle: self.firstName))
+        items.append(DataTableItem(headerTitle: FBStudent.lastName, itemTitle: self.lastName))
         return items
     }
 }
