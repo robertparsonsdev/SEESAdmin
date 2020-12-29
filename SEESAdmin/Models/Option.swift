@@ -13,6 +13,12 @@ struct Option: DataProtocol, Hashable {
     var path: String {
         return "/\(FirebaseValue.options)/\(self.id)"
     }
+    var listHeader: String {
+        return self.majorName
+    }
+    var listTitle: String {
+        return self.optionName
+    }
     
     let optionName: String
     let majorName: String

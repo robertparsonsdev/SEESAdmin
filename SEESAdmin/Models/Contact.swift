@@ -13,6 +13,12 @@ struct Contact: DataProtocol, Hashable {
     var path: String {
         return "/\(FirebaseValue.contacts)/\(self.name)"
     }
+    var listHeader: String {
+        return "contacts"
+    }
+    var listTitle: String {
+        return self.name
+    }
     
     var name: String = ""
     var title: String = ""

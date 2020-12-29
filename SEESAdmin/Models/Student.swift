@@ -13,6 +13,16 @@ struct Student: DataProtocol, Hashable {
     var path: String {
         return "/\(FirebaseValue.students)/\(self.id)"
     }
+    var listHeader: String {
+        if let letter = self.lastName.first {
+            return String(letter)
+        } else {
+            return "error"
+        }
+    }
+    var listTitle: String {
+        return "\(self.lastName), \(self.firstName)"
+    }
     
     let advisor: String
     let advisorOffice: String
@@ -60,6 +70,10 @@ protocol DataProtocol {
     var id: String { get }
     var dataCase: SEESData { get }
     var path: String { get }
+    
+    var listHeader: String { get }
+    var listTitle: String { get }
+//    var listSort: Comparable { get }
     var tableItems: [DataTableItem] { get }
     
 //    var dataDictionary: [String: Any] { get }

@@ -13,6 +13,12 @@ struct Event: DataProtocol, Hashable {
     var path: String {
         return "/\(FirebaseValue.events)/\(self.eventName)"
     }
+    var listHeader: String {
+        return "events"
+    }
+    var listTitle: String {
+        return self.eventName
+    }
     
     let startDate: Date
     let endDate: Date

@@ -8,6 +8,7 @@
 import UIKit
 
 class DataListViewController: UIViewController {
+    private let cellID = "ListTableCellID"
     static let storyboardID = "ListViewControllerID"
     static func instantiateFromStoryboard() -> DataListViewController? {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
@@ -15,20 +16,21 @@ class DataListViewController: UIViewController {
     }
     
     private let networkManager = NetworkManager.shared
-    private var studentSectionDictionary = [String: [Student]]()
-    private var optionSectionDictionary = [String: [Option]]()
-    private var eventSectionDictionary = [String: [Event]]()
-    private var contactSectionDictionary = [String: [Contact]]()
+    private var studentSectionDictionary = [String: [ListItem]]()
+    private var optionSectionDictionary = [String: [ListItem]]()
+    private var eventSectionDictionary = [String: [ListItem]]()
+    private var contactSectionDictionary = [String: [ListItem]]()
     
-    private var collectionView: UICollectionView!
-    private var dataSource: UICollectionViewDiffableDataSource<ListItem, ListItem>!
+    private var tableView: UITableView!
+    private var dataSource: ListDataSource!
+    
     private var activeData: SEESData! {
         didSet {
             switch activeData {
-            case .students: applyInitialSnapshot(with: self.studentSectionDictionary)
-            case .options: applyInitialSnapshot(with: self.optionSectionDictionary)
-            case .events: applyInitialSnapshot(with: self.eventSectionDictionary)
-            case .contacts: applyInitialSnapshot(with: self.contactSectionDictionary)
+            case .students: applyListSnapshot(with: self.studentSectionDictionary)
+            case .options: applyListSnapshot(with: self.optionSectionDictionary)
+            case .events: applyListSnapshot(with: self.eventSectionDictionary)
+            case .contacts: applyListSnapshot(with: self.contactSectionDictionary)
             case .none: break
             }
         }
@@ -39,7 +41,7 @@ class DataListViewController: UIViewController {
         super.viewDidLoad()
         
         configureView()
-        configureCollectionView()
+        configureTableView()
         configureDataSource()
         
         fetchData()
@@ -54,36 +56,21 @@ class DataListViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = addButton
     }
     
-    private func configureCollectionView() {
-        collectionView = UICollectionView(frame: self.view.bounds, collectionViewLayout: UIHelper.createDataLayout())
-        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.tintColor = .systemTeal
-        collectionView.delegate = self
-        self.view.addSubview(collectionView)
+    private func configureTableView() {
+        tableView = UITableView(frame: self.view.bounds, style: .insetGrouped)
+        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        tableView.tintColor = .systemTeal
+        tableView.delegate = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: self.cellID)
+        self.view.addSubview(tableView)
     }
     
     private func configureDataSource() {
-        let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, ListItem> { (cell, indexPath, item) in
-                var contentConfiguration = UIListContentConfiguration.groupedHeader()
-                contentConfiguration.text = item.headerTitle
-                contentConfiguration.textProperties.font = .preferredFont(forTextStyle: .subheadline)
-                contentConfiguration.textProperties.color = .secondaryLabel
-                
-                cell.contentConfiguration = contentConfiguration
-        }
-        let rowRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, ListItem> { (cell, indexPath, item) in
-                var contentConfiguration = UIListContentConfiguration.cell()
-                contentConfiguration.text = item.rowTitle
-                
-                cell.contentConfiguration = contentConfiguration
-                cell.accessories = [.disclosureIndicator()]
-        }
-        
-        dataSource = UICollectionViewDiffableDataSource<ListItem, ListItem>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, item) -> UICollectionViewCell? in
-            switch item.type {
-            case .header: return collectionView.dequeueConfiguredReusableCell(using: headerRegistration, for: indexPath, item: item)
-            case .row: return collectionView.dequeueConfiguredReusableCell(using: rowRegistration, for: indexPath, item: item)
-            }
+        dataSource = ListDataSource(tableView: self.tableView, cellProvider: { (tableView, indexPath, item) -> UITableViewCell? in
+            let cell = tableView.dequeueReusableCell(withIdentifier: self.cellID, for: indexPath)
+            cell.textLabel?.text = item.rowTitle
+            cell.accessoryType = .disclosureIndicator
+            return cell
         })
     }
     
@@ -99,77 +86,39 @@ class DataListViewController: UIViewController {
             
             switch result {
             case .success(let dataDictionary):
-                self.configure(studentData: dataDictionary[.students] as! [Student])
-                self.configure(optionData: dataDictionary[.options] as! [Option])
-                self.configure(eventsData: dataDictionary[.events] as! [Event])
-                self.configure(contactsData: dataDictionary[.contacts] as! [Contact])
+                self.configureSections(with: dataDictionary[.students] as! [Student], and: &self.studentSectionDictionary)
+                self.configureSections(with: dataDictionary[.options] as! [Option], and: &self.optionSectionDictionary)
+                self.configureSections(with: dataDictionary[.events] as! [Event], and: &self.eventSectionDictionary)
+                self.configureSections(with: dataDictionary[.contacts] as! [Contact], and: &self.contactSectionDictionary)
             case .failure(let error):
                 self.presentErrorOnMainThread(withError: .unableToFetchData, optionalMessage: "\n\n\(error.localizedDescription)")
             }
             self.dismissLoadingViewOnMainThread()
         }
     }
-    
-    private func applyInitialSnapshot<T: DataProtocol>(with dictionary: [String: [T]]) {
-        var snapshot = NSDiffableDataSourceSnapshot<ListItem, ListItem>()
-
-        let sections: [String] = Array(dictionary.keys).sorted(by: { $0 < $1 })
-        var headers: [ListItem] = []
-        for section in sections {
-            headers.append(.header(title: section))
-        }
-        snapshot.appendSections(headers)
+    private func applyListSnapshot(with dictionary: [String: [ListItem]]) {
+        var snapshot = NSDiffableDataSourceSnapshot<String, ListItem>()
+        let sections = Array(dictionary.keys).sorted(by: { $0 < $1 })
+        snapshot.appendSections(sections)
         
-        var rows: [ListItem]
-        for header in headers {
-            rows = []
-            rows.append(header)
-            
-            if let dataArray = dictionary[header.headerTitle!] {
-                for data in dataArray {
-                    if let student = data as? Student { rows.append(.row(student: student)) }
-                    else if let option = data as? Option { rows.append(.row(option: option)) }
-                    else if let event = data as? Event { rows.append(.row(event: event)) }
-                    else if let contact = data as? Contact { rows.append(.row(contact: contact)) }
-                }
-                
-                snapshot.appendItems(rows, toSection: header)
+        for section in sections {
+            if let dataArray = dictionary[section] {
+                snapshot.appendItems(dataArray, toSection: section)
             }
         }
         
         self.dataSource.apply(snapshot, animatingDifferences: false, completion: nil)
     }
     
-    private func configure(studentData: [Student]) {
-        for student in studentData {
-            let letter = String(student.lastName.first ?? Character("error")).uppercased()
-            
-            if self.studentSectionDictionary[letter] == nil {
-                self.studentSectionDictionary[letter] = []
+    private func configureSections(with dataArray: [DataProtocol], and dictionary: inout [String: [ListItem]]) {
+        for data in dataArray.sorted(by: { $0.listTitle < $1.listTitle }) {
+            let key = data.listHeader
+            if dictionary[key] == nil {
+                dictionary[key] = []
             }
             
-            self.studentSectionDictionary[letter]?.append(student)
+            dictionary[key]?.append(.row(data: data))
         }
-    }
-    
-    private func configure(optionData: [Option]) {
-        for option in optionData {
-            let majorName = option.majorName
-            
-            if self.optionSectionDictionary[majorName] == nil {
-                self.optionSectionDictionary[majorName] = []
-            }
-            
-            self.optionSectionDictionary[majorName]?.append(option)
-        }
-    }
-    
-    private func configure(eventsData: [Event]) {
-        self.eventSectionDictionary["Events"] = eventsData.sorted { $0.startDate < $1.startDate }
-    }
-    
-    private func configure(contactsData: [Contact]) {
-        self.contactSectionDictionary["Contacts"] = contactsData.sorted { $0.order < $1.order }
     }
     
     // MARK: - Selectors
@@ -188,14 +137,10 @@ class DataListViewController: UIViewController {
     }
 }
 
-extension DataListViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+extension DataListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let listItem = self.dataSource.itemIdentifier(for: indexPath) else { return }
-        
-        switch listItem.type {
-        case .row: didSelectDataItem(listItem)
-        case .header: collectionView.deselectItem(at: indexPath, animated: true)
-        }
+        didSelectDataItem(listItem)
     }
     
     private func didSelectDataItem(_ item: ListItem) {
@@ -208,53 +153,32 @@ extension DataListViewController: UICollectionViewDelegate {
     }
 }
 
-enum ListItemType: Int {
-    case header, row
+class ListDataSource: UITableViewDiffableDataSource<String, ListItem> {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if let item = itemIdentifier(for: IndexPath(row: 0, section: section)) {
+            return item.headerTitle
+        }
+        return "error"
+    }
 }
 
 struct ListItem: Hashable, Identifiable {
     let id: UUID
-    let type: ListItemType
-    var headerTitle: String?
+    var headerTitle: String
+    var rowTitle: String
     
-    var rowTitle: String? {
-        if let student = self.student { return "\(student.lastName), \(student.firstName)" }
-        else if let option = self.option { return option.optionName }
-        else if let event = self.event { return event.eventName }
-        else if let contact = self.contact { return contact.name }
-        else { return "error" }
-    }
-    var data: SEESData? {
-        if self.student != nil { return .students }
-        else if self.option != nil { return .options }
-        else if self.event != nil { return .events }
-        else if self.contact != nil { return .contacts }
-        else { return nil }
-    }
+    private var student: Student?
+    private var option: Option?
+    private var event: Event?
+    private var contact: Contact?
     
-    var student: Student?
-    var option: Option?
-    var event: Event?
-    var contact: Contact?
-    
-    static func header(title: String) -> Self {
-        return ListItem(id: UUID(), type: .header, headerTitle: title)
-    }
-    
-    static func row(student: Student) -> Self {
-        return ListItem(id: UUID(), type: .row, student: student)
-    }
-    
-    static func row(option: Option) -> Self {
-        return ListItem(id: UUID(), type: .row, option: option)
-    }
-    
-    static func row(event: Event) -> Self {
-        return ListItem(id: UUID(), type: .row, event: event)
-    }
-    
-    static func row(contact: Contact) -> Self {
-        return ListItem(id: UUID(), type: .row, contact: contact)
+    static func row(data: DataProtocol) -> Self {
+        switch data.dataCase {
+        case .students: return ListItem(id: UUID(), headerTitle: data.listHeader, rowTitle: data.listTitle, student: data as? Student)
+        case .options: return ListItem(id: UUID(), headerTitle: data.listHeader, rowTitle: data.listTitle, option: data as? Option)
+        case .events: return ListItem(id: UUID(), headerTitle: data.listHeader, rowTitle: data.listTitle, event: data as? Event)
+        case .contacts: return ListItem(id: UUID(), headerTitle: data.listHeader, rowTitle: data.listTitle, contact: data as? Contact)
+        }
     }
     
     func getData() -> DataProtocol? {
