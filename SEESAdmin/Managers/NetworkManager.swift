@@ -14,6 +14,12 @@ class NetworkManager {
     
     private init() { }
     
+    func signIn() {
+        Auth.auth().signIn(withEmail: "sees@cpp.edu", password: "463849276") { (result, error) in
+            print("signed in")
+        }
+    }
+    
     func fetchData(completed: @escaping (Result<[SEESData: [DataProtocol]], SEESError>) -> Void) {
         self.reference.observeSingleEvent(of: .value) { [weak self] (snapshot) in
             guard let self = self else { return }

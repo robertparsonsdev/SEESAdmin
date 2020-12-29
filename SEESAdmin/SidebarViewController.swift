@@ -28,7 +28,7 @@ class SidebarViewController: UIViewController {
         }
         
         static func row(title: String, subtitle: String?, image: UIImage?, id: UUID = UUID()) -> Self {
-            return SidebarItem(id: id, type: .row, title: title, subtitle: subtitle, image: image)
+            return SidebarItem(id: id, type: .row, title: title, subtitle: subtitle, image: image) 
         }
     }
     
