@@ -9,20 +9,19 @@ import UIKit
 
 class DataDetailViewController: UITableViewController {
     private let cellID = "DataDetailCellID"
-    private var data: DataProtocol?
+    private let data: DataProtocol
+    private let tableItems: [DataTableItem]
     
     // MARK: - Initializers
-    init() {
-        super.init(style: .insetGrouped)
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    convenience init(data: DataProtocol) {
-        self.init()
+    init(data: DataProtocol) {
         self.data = data
+        self.tableItems = data.tableItems
+        
+        super.init(style: .insetGrouped)
     }
     
     // MARK: - Table View Lifecycle Functions
@@ -36,13 +35,13 @@ class DataDetailViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: self.cellID, for: indexPath)
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.lineBreakMode = .byWordWrapping
-        cell.textLabel?.text = self.data?.tableItems[indexPath.section].itemTitle
+        cell.textLabel?.text = self.tableItems[indexPath.section].itemTitle
         cell.selectionStyle = .none
         return cell
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return self.data?.tableItems.count ?? 0
+        return self.tableItems.count
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -50,7 +49,7 @@ class DataDetailViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.data?.tableItems[section].headerTitle
+        return self.tableItems[section].headerTitle
     }
     
     // MARK: - Configuration Functions
@@ -64,7 +63,7 @@ class DataDetailViewController: UITableViewController {
     
     // MARK: - Selectors
     @objc func editButtonTapped() {
-        let navController = UINavigationController(rootViewController: DataEditingViewController(data: self.data!, editing: true))
+        let navController = UINavigationController(rootViewController: DataEditingViewController(data: self.data, editing: true))
         present(navController, animated: true, completion: nil)
     }
 }

@@ -28,7 +28,7 @@ extension SceneDelegate {
     private func createThreeColumnSplitViewController() -> UISplitViewController? {
         guard let listVC = DataListViewController.instantiateFromStoryboard() else { return nil }
         let sidebarVC = SidebarViewController()
-        let detailVC = DataDetailViewController()
+        let emptyStateVC = UINavigationController(rootViewController: EmptyStateVC())
         
         let splitVC = UISplitViewController(style: .tripleColumn)
         splitVC.primaryBackgroundStyle = .sidebar
@@ -36,7 +36,7 @@ extension SceneDelegate {
         
         splitVC.setViewController(sidebarVC, for: .primary)
         splitVC.setViewController(listVC, for: .supplementary)
-        splitVC.setViewController(detailVC, for: .secondary)
+        splitVC.setViewController(emptyStateVC, for: .secondary)
         
         return splitVC
     }

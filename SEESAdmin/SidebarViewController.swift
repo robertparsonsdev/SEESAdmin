@@ -114,6 +114,7 @@ class SidebarViewController: UIViewController {
     
     private func applyInitialSnapshot() {
         self.dataSource.apply(dataSnapshot(), to: .data, animatingDifferences: false)
+        self.collectionView.selectItem(at: IndexPath(row: 1, section: 0), animated: false, scrollPosition: .top)
     }
     
     // MARK: - Functions

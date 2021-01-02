@@ -11,6 +11,7 @@
 		EE05291B257DC30F00200184 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE05291A257DC30F00200184 /* SidebarViewController.swift */; };
 		EE05291F257DE6F900200184 /* DataDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE05291E257DE6F900200184 /* DataDetailViewController.swift */; };
 		EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE052921257DE75800200184 /* SplitViewDelgate.swift */; };
+		EE382A1D25A1167900A6809F /* EmptyStateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE382A1C25A1167900A6809F /* EmptyStateVC.swift */; };
 		EE4742B0258D3FC2009BC70E /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742AF258D3FC2009BC70E /* TextFieldCell.swift */; };
 		EE4742B5258D4168009BC70E /* DatePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742B4258D4168009BC70E /* DatePickerCell.swift */; };
 		EE4742C6258D6F0B009BC70E /* ValidationChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742C5258D6F0B009BC70E /* ValidationChecker.swift */; };
@@ -43,6 +44,7 @@
 		EE05291A257DC30F00200184 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
 		EE05291E257DE6F900200184 /* DataDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailViewController.swift; sourceTree = "<group>"; };
 		EE052921257DE75800200184 /* SplitViewDelgate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewDelgate.swift; sourceTree = "<group>"; };
+		EE382A1C25A1167900A6809F /* EmptyStateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateVC.swift; sourceTree = "<group>"; };
 		EE4742AF258D3FC2009BC70E /* TextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
 		EE4742B4258D4168009BC70E /* DatePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerCell.swift; sourceTree = "<group>"; };
 		EE4742C5258D6F0B009BC70E /* ValidationChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationChecker.swift; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 				EE05291E257DE6F900200184 /* DataDetailViewController.swift */,
 				EE052921257DE75800200184 /* SplitViewDelgate.swift */,
 				EE9A5FA4258AF268002D49F8 /* DataEditingViewController.swift */,
+				EE382A1C25A1167900A6809F /* EmptyStateVC.swift */,
 			);
 			path = SEESAdmin;
 			sourceTree = "<group>";
@@ -317,6 +320,7 @@
 				EE71A526257EF666002BA583 /* Contact.swift in Sources */,
 				EE4742C9258D754C009BC70E /* NSRegularExpressionExt.swift in Sources */,
 				EE96E00F258334AE00F4D4A3 /* UIViewExtension.swift in Sources */,
+				EE382A1D25A1167900A6809F /* EmptyStateVC.swift in Sources */,
 				EE71A532257EF75B002BA583 /* StringExt.swift in Sources */,
 				EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */,
 				EE96E00C2583349200F4D4A3 /* UIViewControllerExt.swift in Sources */,

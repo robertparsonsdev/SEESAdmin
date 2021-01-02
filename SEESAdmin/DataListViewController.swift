@@ -26,6 +26,8 @@ class DataListViewController: UIViewController {
     
     private var activeData: SEESData! {
         didSet {
+            guard activeData != oldValue else { return }
+            
             switch activeData {
             case .students: applyListSnapshot(with: self.studentSectionDictionary)
             case .options: applyListSnapshot(with: self.optionSectionDictionary)
@@ -90,12 +92,16 @@ class DataListViewController: UIViewController {
                 self.configureSections(with: dataDictionary[.options] as! [Option], and: &self.optionSectionDictionary)
                 self.configureSections(with: dataDictionary[.events] as! [Event], and: &self.eventSectionDictionary)
                 self.configureSections(with: dataDictionary[.contacts] as! [Contact], and: &self.contactSectionDictionary)
+                DispatchQueue.main.async { self.activeData = .students }
+                
             case .failure(let error):
                 self.presentErrorOnMainThread(withError: .unableToFetchData, optionalMessage: "\n\n\(error.localizedDescription)")
             }
+            
             self.dismissLoadingViewOnMainThread()
         }
     }
+    
     private func applyListSnapshot(with dictionary: [String: [ListItem]]) {
         var snapshot = NSDiffableDataSourceSnapshot<String, ListItem>()
         let sections = Array(dictionary.keys).sorted(by: { $0 < $1 })
