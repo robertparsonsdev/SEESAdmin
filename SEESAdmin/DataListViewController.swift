@@ -127,6 +127,10 @@ class DataListViewController: UIViewController {
         }
     }
     
+    private func moveToSection() {
+        
+    }
+    
     // MARK: - Selectors
     @objc func addButtonTapped() {
         let data: DataProtocol
@@ -145,11 +149,18 @@ class DataListViewController: UIViewController {
 // MARK: - Delegates
 extension DataListViewController: DataEditingDelegate {
     func reload(with data: DataProtocol) {
-//        var snapshot = self.dataSource.snapshot()
-//        let item = ListItem.row(data: data)
-//
-//        snapshot.reloadItems([item])
-//        self.dataSource.apply(snapshot, animatingDifferences: true)
+        var snapshot = self.dataSource.snapshot()
+        guard let item = snapshot.itemIdentifiers.first(where: { $0.id == data.id }) else { return }
+        guard data.listHeader == item.headerTitle else {
+//            item.headerTitle = data.listHeader
+//            snapshot.reloadSections([data.listHeader])
+//            snapshot.reloadSections([item.headerTitle])
+            return
+        }
+        
+        item.rowTitle = data.listTitle
+        snapshot.reloadItems([item])
+        self.dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
 
@@ -178,7 +189,15 @@ class ListDataSource: UITableViewDiffableDataSource<String, ListItem> {
     }
 }
 
-struct ListItem: Hashable, Identifiable {
+class ListItem: Hashable, Identifiable {
+    static func == (lhs: ListItem, rhs: ListItem) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.id)
+    }
+    
     let id: String
     var headerTitle: String
     var rowTitle: String
@@ -188,7 +207,18 @@ struct ListItem: Hashable, Identifiable {
     private var event: Event?
     private var contact: Contact?
     
-    static func row(data: DataProtocol) -> Self {
+    private init(id: String, headerTitle: String, rowTitle: String, student: Student? = nil, option: Option? = nil, event: Event? = nil, contact: Contact? = nil) {
+        self.id = id
+        self.headerTitle = headerTitle
+        self.rowTitle = rowTitle
+        
+        self.student = student
+        self.option = option
+        self.event = event
+        self.contact = contact
+    }
+    
+    static func row(data: DataProtocol) -> ListItem {
         switch data.dataCase {
         case .students: return ListItem(id: data.id, headerTitle: data.listHeader, rowTitle: data.listTitle, student: data as? Student)
         case .options: return ListItem(id: data.id, headerTitle: data.listHeader, rowTitle: data.listTitle, option: data as? Option)

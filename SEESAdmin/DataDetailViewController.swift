@@ -72,12 +72,12 @@ class DataDetailViewController: UITableViewController {
 // MARK: - Delegates
 extension DataDetailViewController: DataEditingDelegate {
     func reload(with data: DataProtocol) {
-        self.data = data
-        self.tableItems = data.detailItems
-        
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
+        if self.data.listTitle != data.listTitle {
             self.delegate.reload(with: data)
         }
+        
+        self.data = data
+        self.tableItems = data.detailItems
+        self.tableView.reloadData()
     }
 }
