@@ -54,4 +54,9 @@ extension UIViewController {
             containerView = nil
         }
     }
+    
+    func presentDataEditingVC(with data: DataProtocol, editing: Bool, delegate: DataEditingDelegate) {
+        let navController = UINavigationController(rootViewController: DataEditingViewController(data: data, editing: editing, delegate: delegate))
+        present(navController, animated: true, completion: nil)
+    }
 }

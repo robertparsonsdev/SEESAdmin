@@ -57,11 +57,9 @@ class NetworkManager {
     
     func updateData(at path: String, with values: [String: Any], completed: @escaping (SEESError?) -> Void) {
         self.reference.child(path).updateChildValues(values) { (error, reference) in
-            if let error = error {
-                completed(.unableToUpdateData(error: error.localizedDescription))
-            } else {
-                completed(nil)
-            }
+            guard error == nil else { completed(.unableToUpdateData(error: error!.localizedDescription)); return }
+            
+            completed(nil)
         }
     }
 }

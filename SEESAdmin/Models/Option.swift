@@ -20,38 +20,37 @@ struct Option: DataProtocol, Hashable {
         return self.optionName
     }
     
-    let optionName: String
-    let majorName: String
-    let curriculumSheet: String
-    let flowchart: String
-    let roadMap: String
+    var optionName: String = ""
+    var majorName: String = ""
+    var curriculumSheet: String = ""
+    var flowchart: String = ""
+    var roadMap: String = ""
     
     init(id: String, dictionary: [String : Any]) {
         self.id = id
+        setFBAttributes(with: dictionary)
+    }
+    
+    init() {
+        self.id = UUID().uuidString
+    }
+    
+    var detailItems: [DetailTableItem] {
+        var items: [DetailTableItem] = []
+        items.append(DetailTableItem(headerTitle: FBOption.optionName, itemTitle: self.optionName))
+        items.append(DetailTableItem(headerTitle: FBOption.majorName, itemTitle: self.majorName))
+        items.append(DetailTableItem(headerTitle: FBOption.curriculumSheet, itemTitle: self.curriculumSheet))
+        items.append(DetailTableItem(headerTitle: FBOption.flowchart, itemTitle: self.flowchart))
+        items.append(DetailTableItem(headerTitle: FBOption.roadMap, itemTitle: self.roadMap))
+        return items
+    }
+    
+    mutating func setFBAttributes(with dictionary: [String : Any]) {
         self.optionName = dictionary[FBOption.optionName] as? String ?? "optionNameError"
         self.majorName = dictionary[FBOption.majorName] as? String ?? "majorNameError"
         self.curriculumSheet = dictionary[FBOption.curriculumSheet] as? String ?? "curriculumSheetError"
         self.flowchart = dictionary[FBOption.flowchart] as? String ?? "flowchartError"
         self.roadMap = dictionary[FBOption.roadMap] as? String ?? "roadMapError"
-    }
-    
-    init() {
-        self.id = UUID().uuidString
-        self.optionName = ""
-        self.majorName = ""
-        self.curriculumSheet = ""
-        self.flowchart = ""
-        self.roadMap = ""
-    }
-    
-    var tableItems: [DataTableItem] {
-        var items: [DataTableItem] = []
-        items.append(DataTableItem(headerTitle: FBOption.optionName, itemTitle: self.optionName))
-        items.append(DataTableItem(headerTitle: FBOption.majorName, itemTitle: self.majorName))
-        items.append(DataTableItem(headerTitle: FBOption.curriculumSheet, itemTitle: self.curriculumSheet))
-        items.append(DataTableItem(headerTitle: FBOption.flowchart, itemTitle: self.flowchart))
-        items.append(DataTableItem(headerTitle: FBOption.roadMap, itemTitle: self.roadMap))
-        return items
     }
 }
 

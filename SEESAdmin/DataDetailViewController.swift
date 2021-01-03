@@ -9,17 +9,19 @@ import UIKit
 
 class DataDetailViewController: UITableViewController {
     private let cellID = "DataDetailCellID"
-    private let data: DataProtocol
-    private let tableItems: [DataTableItem]
+    private var data: DataProtocol
+    private var tableItems: [DetailTableItem]
+    private let delegate: DataEditingDelegate
     
     // MARK: - Initializers
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(data: DataProtocol) {
+    init(data: DataProtocol, delegate: DataEditingDelegate) {
         self.data = data
-        self.tableItems = data.tableItems
+        self.tableItems = data.detailItems
+        self.delegate = delegate
         
         super.init(style: .insetGrouped)
     }
@@ -63,7 +65,19 @@ class DataDetailViewController: UITableViewController {
     
     // MARK: - Selectors
     @objc func editButtonTapped() {
-        let navController = UINavigationController(rootViewController: DataEditingViewController(data: self.data, editing: true))
-        present(navController, animated: true, completion: nil)
+        presentDataEditingVC(with: self.data, editing: true, delegate: self)
+    }
+}
+
+// MARK: - Delegates
+extension DataDetailViewController: DataEditingDelegate {
+    func reload(with data: DataProtocol) {
+        self.data = data
+        self.tableItems = data.detailItems
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+            self.delegate.reload(with: data)
+        }
     }
 }

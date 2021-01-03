@@ -138,8 +138,18 @@ class DataListViewController: UIViewController {
         case .none: return
         }
         
-        let navController = UINavigationController(rootViewController: DataEditingViewController(data: data, editing: false))
-        present(navController, animated: true, completion: nil)
+        presentDataEditingVC(with: data, editing: false, delegate: self)
+    }
+}
+
+// MARK: - Delegates
+extension DataListViewController: DataEditingDelegate {
+    func reload(with data: DataProtocol) {
+//        var snapshot = self.dataSource.snapshot()
+//        let item = ListItem.row(data: data)
+//
+//        snapshot.reloadItems([item])
+//        self.dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
 
@@ -152,7 +162,7 @@ extension DataListViewController: UITableViewDelegate {
     private func didSelectDataItem(_ item: ListItem) {
         guard let data = item.getData() else { return }
         
-        let detailVC = DataDetailViewController(data: data)
+        let detailVC = DataDetailViewController(data: data, delegate: self)
         detailVC.title = item.rowTitle
         let navController = UINavigationController(rootViewController: detailVC)
         showDetailViewController(navController, sender: self)
@@ -169,7 +179,7 @@ class ListDataSource: UITableViewDiffableDataSource<String, ListItem> {
 }
 
 struct ListItem: Hashable, Identifiable {
-    let id: UUID
+    let id: String
     var headerTitle: String
     var rowTitle: String
     
@@ -180,10 +190,10 @@ struct ListItem: Hashable, Identifiable {
     
     static func row(data: DataProtocol) -> Self {
         switch data.dataCase {
-        case .students: return ListItem(id: UUID(), headerTitle: data.listHeader, rowTitle: data.listTitle, student: data as? Student)
-        case .options: return ListItem(id: UUID(), headerTitle: data.listHeader, rowTitle: data.listTitle, option: data as? Option)
-        case .events: return ListItem(id: UUID(), headerTitle: data.listHeader, rowTitle: data.listTitle, event: data as? Event)
-        case .contacts: return ListItem(id: UUID(), headerTitle: data.listHeader, rowTitle: data.listTitle, contact: data as? Contact)
+        case .students: return ListItem(id: data.id, headerTitle: data.listHeader, rowTitle: data.listTitle, student: data as? Student)
+        case .options: return ListItem(id: data.id, headerTitle: data.listHeader, rowTitle: data.listTitle, option: data as? Option)
+        case .events: return ListItem(id: data.id, headerTitle: data.listHeader, rowTitle: data.listTitle, event: data as? Event)
+        case .contacts: return ListItem(id: data.id, headerTitle: data.listHeader, rowTitle: data.listTitle, contact: data as? Contact)
         }
     }
     

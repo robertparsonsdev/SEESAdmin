@@ -24,42 +24,40 @@ struct Student: DataProtocol, Hashable {
         return "\(self.lastName), \(self.firstName)"
     }
     
-    let advisor: String
-    let advisorOffice: String
-    let broncoID: String
-    let email: String
-    let firstName: String
-    let lastName: String
+    var advisor: String = ""
+    var advisorOffice: String = ""
+    var broncoID: String = ""
+    var email: String = ""
+    var firstName: String = ""
+    var lastName: String = ""
     
     init(id: String, dictionary: [String: Any]) {
         self.id = id
+        setFBAttributes(with: dictionary)
+    }
+    
+    init() {
+        self.id = UUID().uuidString
+    }
+    
+    var detailItems: [DetailTableItem] {
+        var items: [DetailTableItem] = []
+        items.append(DetailTableItem(headerTitle: FBStudent.advisor, itemTitle: self.advisor))
+        items.append(DetailTableItem(headerTitle: FBStudent.advisorOffice, itemTitle: self.advisorOffice))
+        items.append(DetailTableItem(headerTitle: FBStudent.broncoID, itemTitle: self.broncoID))
+        items.append(DetailTableItem(headerTitle: FBStudent.email, itemTitle: self.email))
+        items.append(DetailTableItem(headerTitle: FBStudent.firstName, itemTitle: self.firstName))
+        items.append(DetailTableItem(headerTitle: FBStudent.lastName, itemTitle: self.lastName))
+        return items
+    }
+    
+    mutating func setFBAttributes(with dictionary: [String : Any]) {
         self.advisor = dictionary[FBStudent.advisor] as? String ?? "advisorError"
         self.advisorOffice = dictionary[FBStudent.advisorOffice] as? String ?? "advisorOfficeError"
         self.broncoID = dictionary[FBStudent.broncoID] as? String ?? "broncoIDError"
         self.email = dictionary[FBStudent.email] as? String ?? "emailError"
         self.firstName = dictionary[FBStudent.firstName] as? String ?? "firstNameError"
         self.lastName = dictionary[FBStudent.lastName] as? String ?? "lastNameError"
-    }
-    
-    init() {
-        self.id = ""
-        self.advisor = ""
-        self.advisorOffice = ""
-        self.broncoID = ""
-        self.email = ""
-        self.firstName = ""
-        self.lastName = ""
-    }
-    
-    var tableItems: [DataTableItem] {
-        var items: [DataTableItem] = []
-        items.append(DataTableItem(headerTitle: FBStudent.advisor, itemTitle: self.advisor))
-        items.append(DataTableItem(headerTitle: FBStudent.advisorOffice, itemTitle: self.advisorOffice))
-        items.append(DataTableItem(headerTitle: FBStudent.broncoID, itemTitle: self.broncoID))
-        items.append(DataTableItem(headerTitle: FBStudent.email, itemTitle: self.email))
-        items.append(DataTableItem(headerTitle: FBStudent.firstName, itemTitle: self.firstName))
-        items.append(DataTableItem(headerTitle: FBStudent.lastName, itemTitle: self.lastName))
-        return items
     }
 }
 
@@ -74,12 +72,13 @@ protocol DataProtocol {
     var listHeader: String { get }
     var listTitle: String { get }
 //    var listSort: Comparable { get }
-    var tableItems: [DataTableItem] { get }
+    var detailItems: [DetailTableItem] { get }
     
 //    var dataDictionary: [String: Any] { get }
+    mutating func setFBAttributes(with dictionary: [String: Any])
 }
 
-struct DataTableItem {
+struct DetailTableItem {
     let headerTitle: String
     let itemTitle: String
     var editableView: EditableViewType = .textField
