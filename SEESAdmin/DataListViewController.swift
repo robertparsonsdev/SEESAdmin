@@ -70,7 +70,7 @@ class DataListViewController: UIViewController {
     private func configureDataSource() {
         dataSource = ListDataSource(tableView: self.tableView, cellProvider: { (tableView, indexPath, item) -> UITableViewCell? in
             let cell = tableView.dequeueReusableCell(withIdentifier: self.cellID, for: indexPath)
-            cell.textLabel?.text = item.rowTitle
+            cell.textLabel?.text = item.row
             cell.accessoryType = .disclosureIndicator
             return cell
         })
@@ -117,18 +117,14 @@ class DataListViewController: UIViewController {
     }
     
     private func configureSections(with dataArray: [DataProtocol], and dictionary: inout [String: [ListItem]]) {
-        for data in dataArray.sorted(by: { $0.listTitle < $1.listTitle }) {
-            let key = data.listHeader
+        for data in dataArray.sorted(by: { $0.row < $1.row }) {
+            let key = data.header
             if dictionary[key] == nil {
                 dictionary[key] = []
             }
             
             dictionary[key]?.append(.row(data: data))
         }
-    }
-    
-    private func moveToSection() {
-        
     }
     
     // MARK: - Selectors
@@ -151,16 +147,61 @@ extension DataListViewController: DataEditingDelegate {
     func reload(with data: DataProtocol) {
         var snapshot = self.dataSource.snapshot()
         guard let item = snapshot.itemIdentifiers.first(where: { $0.id == data.id }) else { return }
-        guard data.listHeader == item.headerTitle else {
+        let oldSection = item.header, newSection = data.header
+        
+        item.row = data.row
+        item.header = data.header
+        item.set(data: data)
+        snapshot.reloadItems([item])
+        
+        // move item within section
+
+//        if data.listHeader != item.headerTitle {
+//            let oldHeader = item.headerTitle, newHeader = data.listHeader
 //            item.headerTitle = data.listHeader
-//            snapshot.reloadSections([data.listHeader])
-//            snapshot.reloadSections([item.headerTitle])
-            return
+//
+//            if snapshot.sectionIdentifiers.contains(newHeader) {
+//                snapshot.deleteItems([item])
+//                snapshot.appendItems([item], toSection: newHeader)
+//                if snapshot.numberOfItems(inSection: oldHeader) == 0 {
+//                    snapshot.deleteSections([oldHeader])
+//                }
+//            } else {
+//
+//            }
+//        }
+        
+//        let oldHeader = item.headerTitle, newHeader = data.listHeader
+//        if let
+//
+//        self.dataSource.apply(snapshot, animatingDifferences: true)
+        if oldSection != newSection {
+            if var items = self.studentSectionDictionary[newSection] {
+                let index = items.getInsertionIndex(of: item)
+                items.insert(item, at: index)
+                self.studentSectionDictionary[newSection] = items
+                snapshot.appendItems(items, toSection: newSection)
+
+                if let oldItems = self.studentSectionDictionary[oldSection] {
+                    self.studentSectionDictionary[oldSection] = oldItems.filter { $0 != item }
+                    snapshot.appendItems(self.studentSectionDictionary[oldSection]!, toSection: oldSection)
+                    if self.studentSectionDictionary[oldSection]!.isEmpty {
+                        print("empty")
+                        snapshot.deleteSections([oldSection])
+                    }
+                }
+                
+            } else {
+                self.studentSectionDictionary[newSection] = []
+            }
+            
+            didSelectDataItem(item)
         }
         
-        item.rowTitle = data.listTitle
-        snapshot.reloadItems([item])
-        self.dataSource.apply(snapshot, animatingDifferences: true)
+        self.dataSource.apply(snapshot, animatingDifferences: true, completion: nil)
+        
+        let indexPath = self.dataSource.indexPath(for: item)
+        self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
     }
 }
 
@@ -174,7 +215,7 @@ extension DataListViewController: UITableViewDelegate {
         guard let data = item.getData() else { return }
         
         let detailVC = DataDetailViewController(data: data, delegate: self)
-        detailVC.title = item.rowTitle
+        detailVC.title = item.row
         let navController = UINavigationController(rootViewController: detailVC)
         showDetailViewController(navController, sender: self)
     }
@@ -183,13 +224,17 @@ extension DataListViewController: UITableViewDelegate {
 class ListDataSource: UITableViewDiffableDataSource<String, ListItem> {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if let item = itemIdentifier(for: IndexPath(row: 0, section: section)) {
-            return item.headerTitle
+            return item.header
         }
         return "error"
     }
 }
 
-class ListItem: Hashable, Identifiable {
+class ListItem: Hashable, Identifiable, Comparable {
+    static func < (lhs: ListItem, rhs: ListItem) -> Bool {
+        return lhs.row < rhs.row
+    }
+    
     static func == (lhs: ListItem, rhs: ListItem) -> Bool {
         return lhs.id == rhs.id
     }
@@ -199,8 +244,8 @@ class ListItem: Hashable, Identifiable {
     }
     
     let id: String
-    var headerTitle: String
-    var rowTitle: String
+    var header: String
+    var row: String
     
     private var student: Student?
     private var option: Option?
@@ -209,8 +254,8 @@ class ListItem: Hashable, Identifiable {
     
     private init(id: String, headerTitle: String, rowTitle: String, student: Student? = nil, option: Option? = nil, event: Event? = nil, contact: Contact? = nil) {
         self.id = id
-        self.headerTitle = headerTitle
-        self.rowTitle = rowTitle
+        self.header = headerTitle
+        self.row = rowTitle
         
         self.student = student
         self.option = option
@@ -220,10 +265,10 @@ class ListItem: Hashable, Identifiable {
     
     static func row(data: DataProtocol) -> ListItem {
         switch data.dataCase {
-        case .students: return ListItem(id: data.id, headerTitle: data.listHeader, rowTitle: data.listTitle, student: data as? Student)
-        case .options: return ListItem(id: data.id, headerTitle: data.listHeader, rowTitle: data.listTitle, option: data as? Option)
-        case .events: return ListItem(id: data.id, headerTitle: data.listHeader, rowTitle: data.listTitle, event: data as? Event)
-        case .contacts: return ListItem(id: data.id, headerTitle: data.listHeader, rowTitle: data.listTitle, contact: data as? Contact)
+        case .students: return ListItem(id: data.id, headerTitle: data.header, rowTitle: data.row, student: data as? Student)
+        case .options: return ListItem(id: data.id, headerTitle: data.header, rowTitle: data.row, option: data as? Option)
+        case .events: return ListItem(id: data.id, headerTitle: data.header, rowTitle: data.row, event: data as? Event)
+        case .contacts: return ListItem(id: data.id, headerTitle: data.header, rowTitle: data.row, contact: data as? Contact)
         }
     }
     
@@ -233,5 +278,14 @@ class ListItem: Hashable, Identifiable {
         else if let event = self.event { return event }
         else if let contact = self.contact { return contact }
         else { return nil }
+    }
+    
+    func set(data: DataProtocol) {
+        switch data.dataCase {
+        case .students: self.student = data as? Student
+        case .options: self.option = data as? Option
+        case .events: self.event = data as? Event
+        case .contacts: self.contact = data as? Contact
+        }
     }
 }

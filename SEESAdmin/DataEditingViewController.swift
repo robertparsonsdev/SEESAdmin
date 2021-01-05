@@ -23,7 +23,7 @@ class DataEditingViewController: UITableViewController {
         self.delegate = delegate
         
         for item in data.detailItems {
-            self.editsDictionary[item.headerTitle] = item.itemTitle
+            self.editsDictionary[item.header] = item.row
         }
         
         super.init(style: .insetGrouped)
@@ -49,12 +49,12 @@ class DataEditingViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.data.detailItems[section].headerTitle
+        return self.data.detailItems[section].header
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = self.data.detailItems[indexPath.section]
-        let itemText = self.editsDictionary[item.headerTitle] as? String ?? ""
+        let itemText = self.editsDictionary[item.header] as? String ?? ""
         
         switch item.editableView {
         case .textField:
@@ -119,13 +119,13 @@ class DataEditingViewController: UITableViewController {
     }
     
     @objc private func textFieldChanged(textField: UITextField) {
-        let key = self.data.detailItems[textField.tag].headerTitle
+        let key = self.data.detailItems[textField.tag].header
         self.editsDictionary[key] = textField.text
     }
     
     @objc private func datePickerChanged(datePicker: UIDatePicker) {
         let dateString = datePicker.date.convertToString()
-        let key = self.data.detailItems[datePicker.tag].headerTitle
+        let key = self.data.detailItems[datePicker.tag].header
         self.editsDictionary[key] = dateString
     }
 }

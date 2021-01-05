@@ -37,7 +37,7 @@ class DataDetailViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: self.cellID, for: indexPath)
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.lineBreakMode = .byWordWrapping
-        cell.textLabel?.text = self.tableItems[indexPath.section].itemTitle
+        cell.textLabel?.text = self.tableItems[indexPath.section].row
         cell.selectionStyle = .none
         return cell
     }
@@ -51,7 +51,7 @@ class DataDetailViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.tableItems[section].headerTitle
+        return self.tableItems[section].header
     }
     
     // MARK: - Configuration Functions
@@ -72,12 +72,13 @@ class DataDetailViewController: UITableViewController {
 // MARK: - Delegates
 extension DataDetailViewController: DataEditingDelegate {
     func reload(with data: DataProtocol) {
-        if self.data.listTitle != data.listTitle {
+        if self.data.row != data.row {
             self.delegate.reload(with: data)
         }
         
         self.data = data
         self.tableItems = data.detailItems
+        self.title = data.row
         self.tableView.reloadData()
     }
 }

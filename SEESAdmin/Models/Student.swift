@@ -13,14 +13,14 @@ struct Student: DataProtocol, Hashable {
     var path: String {
         return "/\(FirebaseValue.students)/\(self.id)"
     }
-    var listHeader: String {
+    var header: String {
         if let letter = self.lastName.first {
             return String(letter)
         } else {
             return "error"
         }
     }
-    var listTitle: String {
+    var row: String {
         return "\(self.lastName), \(self.firstName)"
     }
     
@@ -42,12 +42,12 @@ struct Student: DataProtocol, Hashable {
     
     var detailItems: [DetailTableItem] {
         var items: [DetailTableItem] = []
-        items.append(DetailTableItem(headerTitle: FBStudent.advisor, itemTitle: self.advisor))
-        items.append(DetailTableItem(headerTitle: FBStudent.advisorOffice, itemTitle: self.advisorOffice))
-        items.append(DetailTableItem(headerTitle: FBStudent.broncoID, itemTitle: self.broncoID))
-        items.append(DetailTableItem(headerTitle: FBStudent.email, itemTitle: self.email))
-        items.append(DetailTableItem(headerTitle: FBStudent.firstName, itemTitle: self.firstName))
-        items.append(DetailTableItem(headerTitle: FBStudent.lastName, itemTitle: self.lastName))
+        items.append(DetailTableItem(header: FBStudent.advisor, row: self.advisor))
+        items.append(DetailTableItem(header: FBStudent.advisorOffice, row: self.advisorOffice))
+        items.append(DetailTableItem(header: FBStudent.broncoID, row: self.broncoID))
+        items.append(DetailTableItem(header: FBStudent.email, row: self.email))
+        items.append(DetailTableItem(header: FBStudent.firstName, row: self.firstName))
+        items.append(DetailTableItem(header: FBStudent.lastName, row: self.lastName))
         return items
     }
     
@@ -61,6 +61,12 @@ struct Student: DataProtocol, Hashable {
     }
 }
 
+extension Student: Comparable {
+    static func < (lhs: Student, rhs: Student) -> Bool {
+        return "\(lhs.lastName)\(lhs.firstName)" < "\(rhs.lastName)\(rhs.firstName)"
+    }
+}
+
 protocol DataProtocol {
     init()
     init(id: String, dictionary: [String: Any])
@@ -69,8 +75,8 @@ protocol DataProtocol {
     var dataCase: SEESData { get }
     var path: String { get }
     
-    var listHeader: String { get }
-    var listTitle: String { get }
+    var header: String { get }
+    var row: String { get }
 //    var listSort: Comparable { get }
     var detailItems: [DetailTableItem] { get }
     
@@ -79,8 +85,8 @@ protocol DataProtocol {
 }
 
 struct DetailTableItem {
-    let headerTitle: String
-    let itemTitle: String
+    let header: String
+    let row: String
     var editableView: EditableViewType = .textField
 }
 

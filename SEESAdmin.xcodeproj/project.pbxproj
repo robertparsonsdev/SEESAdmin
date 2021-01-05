@@ -16,6 +16,7 @@
 		EE4742B5258D4168009BC70E /* DatePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742B4258D4168009BC70E /* DatePickerCell.swift */; };
 		EE4742C6258D6F0B009BC70E /* ValidationChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742C5258D6F0B009BC70E /* ValidationChecker.swift */; };
 		EE4742C9258D754C009BC70E /* NSRegularExpressionExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742C8258D754C009BC70E /* NSRegularExpressionExt.swift */; };
+		EE55A51325A4EFE3001FFDB6 /* RACExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55A51225A4EFE3001FFDB6 /* RACExt.swift */; };
 		EE71A51E257EF5DB002BA583 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A51D257EF5DB002BA583 /* NetworkManager.swift */; };
 		EE71A525257EF666002BA583 /* Option.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A521257EF666002BA583 /* Option.swift */; };
 		EE71A526257EF666002BA583 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A522257EF666002BA583 /* Contact.swift */; };
@@ -49,6 +50,7 @@
 		EE4742B4258D4168009BC70E /* DatePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerCell.swift; sourceTree = "<group>"; };
 		EE4742C5258D6F0B009BC70E /* ValidationChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationChecker.swift; sourceTree = "<group>"; };
 		EE4742C8258D754C009BC70E /* NSRegularExpressionExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSRegularExpressionExt.swift; sourceTree = "<group>"; };
+		EE55A51225A4EFE3001FFDB6 /* RACExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RACExt.swift; sourceTree = "<group>"; };
 		EE71A51D257EF5DB002BA583 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		EE71A521257EF666002BA583 /* Option.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Option.swift; sourceTree = "<group>"; };
 		EE71A522257EF666002BA583 /* Contact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 				EE71A530257EF75B002BA583 /* StringExt.swift */,
 				EE96E00B2583349200F4D4A3 /* UIViewControllerExt.swift */,
 				EE4742C8258D754C009BC70E /* NSRegularExpressionExt.swift */,
+				EE55A51225A4EFE3001FFDB6 /* RACExt.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 				EE382A1D25A1167900A6809F /* EmptyStateVC.swift in Sources */,
 				EE71A532257EF75B002BA583 /* StringExt.swift in Sources */,
 				EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */,
+				EE55A51325A4EFE3001FFDB6 /* RACExt.swift in Sources */,
 				EE96E00C2583349200F4D4A3 /* UIViewControllerExt.swift in Sources */,
 				EE946906257DB3C400E9730A /* DataListViewController.swift in Sources */,
 				EE4742C6258D6F0B009BC70E /* ValidationChecker.swift in Sources */,

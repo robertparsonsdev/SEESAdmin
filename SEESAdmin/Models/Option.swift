@@ -13,10 +13,10 @@ struct Option: DataProtocol, Hashable {
     var path: String {
         return "/\(FirebaseValue.options)/\(self.id)"
     }
-    var listHeader: String {
+    var header: String {
         return self.majorName
     }
-    var listTitle: String {
+    var row: String {
         return self.optionName
     }
     
@@ -37,11 +37,11 @@ struct Option: DataProtocol, Hashable {
     
     var detailItems: [DetailTableItem] {
         var items: [DetailTableItem] = []
-        items.append(DetailTableItem(headerTitle: FBOption.optionName, itemTitle: self.optionName))
-        items.append(DetailTableItem(headerTitle: FBOption.majorName, itemTitle: self.majorName))
-        items.append(DetailTableItem(headerTitle: FBOption.curriculumSheet, itemTitle: self.curriculumSheet))
-        items.append(DetailTableItem(headerTitle: FBOption.flowchart, itemTitle: self.flowchart))
-        items.append(DetailTableItem(headerTitle: FBOption.roadMap, itemTitle: self.roadMap))
+        items.append(DetailTableItem(header: FBOption.optionName, row: self.optionName))
+        items.append(DetailTableItem(header: FBOption.majorName, row: self.majorName))
+        items.append(DetailTableItem(header: FBOption.curriculumSheet, row: self.curriculumSheet))
+        items.append(DetailTableItem(header: FBOption.flowchart, row: self.flowchart))
+        items.append(DetailTableItem(header: FBOption.roadMap, row: self.roadMap))
         return items
     }
     
@@ -51,6 +51,12 @@ struct Option: DataProtocol, Hashable {
         self.curriculumSheet = dictionary[FBOption.curriculumSheet] as? String ?? "curriculumSheetError"
         self.flowchart = dictionary[FBOption.flowchart] as? String ?? "flowchartError"
         self.roadMap = dictionary[FBOption.roadMap] as? String ?? "roadMapError"
+    }
+}
+
+extension Option: Comparable {
+    static func < (lhs: Option, rhs: Option) -> Bool {
+        return lhs.optionName < rhs.optionName
     }
 }
 
