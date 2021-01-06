@@ -11,21 +11,21 @@ class DataEditingViewController: UITableViewController {
     private let textFieldCellID = "TextFieldCellID"
     private let dataPickerCellID = "DatePickerCellID"
     
-    private var data: DataProtocol
+    private var model: DataModel
     private var editsDictionary: [String: Any] = [:]
     private let editMode: Bool
     private let delegate: DataEditingDelegate
     
     // MARK: - Initializers
-    init(data: DataProtocol, editing: Bool, delegate: DataEditingDelegate) {
-        self.data = data
+    init(model: DataModel, editing: Bool, delegate: DataEditingDelegate) {
+        self.model = model
         self.editMode = editing
         self.delegate = delegate
-        
-        for item in data.detailItems {
+
+        for item in model.detailItems {
             self.editsDictionary[item.header] = item.row
         }
-        
+
         super.init(style: .insetGrouped)
     }
     
@@ -33,6 +33,7 @@ class DataEditingViewController: UITableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Table View Lifecycle Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -41,21 +42,21 @@ class DataEditingViewController: UITableViewController {
 
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return self.data.detailItems.count
+        return self.model.detailItems.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
-    
+
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.data.detailItems[section].header
+        return self.model.detailItems[section].header
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = self.data.detailItems[indexPath.section]
+        let item = self.model.detailItems[indexPath.section]
         let itemText = self.editsDictionary[item.header] as? String ?? ""
-        
+
         switch item.editableView {
         case .textField:
             let cell = tableView.dequeueReusableCell(withIdentifier: self.textFieldCellID, for: indexPath) as! TextFieldCell
@@ -73,16 +74,16 @@ class DataEditingViewController: UITableViewController {
         self.tableView.backgroundColor = .systemBackground
         self.tableView.register(TextFieldCell.self, forCellReuseIdentifier: self.textFieldCellID)
         self.tableView.register(DatePickerCell.self, forCellReuseIdentifier: self.dataPickerCellID)
-        
+
         let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonTapped))
         cancelButton.tintColor = .systemRed
         let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
         saveButton.tintColor = .systemTeal
-        
+
         navigationItem.leftBarButtonItem = cancelButton
         navigationItem.rightBarButtonItem = saveButton
         
-        switch data.dataCase {
+        switch self.model.type {
         case .students: title = editMode ? "Edit Student" : "New Student"
         case .options: title = editMode ? "Edit Option" : "New Option"
         case .events: title = editMode ? "Edit Event" : "New Event"
@@ -96,41 +97,41 @@ class DataEditingViewController: UITableViewController {
     }
     
     @objc private func saveButtonTapped() {
-        if let error = ValidationChecker.validateText(of: self.editsDictionary, for: self.data.dataCase) {
+        if let error = ValidationChecker.validateText(of: self.editsDictionary, for: self.model.type) {
             presentErrorOnMainThread(withError: error)
             return
         }
-        
+
         showLoadingViewOnMainThread()
-        NetworkManager.shared.updateData(at: self.data.path, with: self.editsDictionary) { [weak self] (error) in
+        NetworkManager.shared.updateData(at: self.model.path, with: self.editsDictionary) { [weak self] (error) in
             guard let self = self else { return }
-            
+
             self.dismissLoadingViewOnMainThread()
             guard error == nil else { self.presentErrorOnMainThread(withError: error!); return }
-            
-            self.data.setFBAttributes(with: self.editsDictionary)
-            
+
+            self.model.data = self.editsDictionary
+
             DispatchQueue.main.async {
                 self.dismiss(animated: true) {
-                    self.delegate.reload(with: self.data)
+                    self.delegate.reload(with: self.model)
                 }
             }
         }
     }
     
     @objc private func textFieldChanged(textField: UITextField) {
-        let key = self.data.detailItems[textField.tag].header
+        let key = self.model.detailItems[textField.tag].header
         self.editsDictionary[key] = textField.text
     }
     
     @objc private func datePickerChanged(datePicker: UIDatePicker) {
         let dateString = datePicker.date.convertToString()
-        let key = self.data.detailItems[datePicker.tag].header
+        let key = self.model.detailItems[datePicker.tag].header
         self.editsDictionary[key] = dateString
     }
 }
 
 // MARK: - Protocols
 protocol DataEditingDelegate {
-    func reload(with data: DataProtocol)
+    func reload(with model: DataModel)
 }

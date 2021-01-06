@@ -17,11 +17,8 @@
 		EE4742C6258D6F0B009BC70E /* ValidationChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742C5258D6F0B009BC70E /* ValidationChecker.swift */; };
 		EE4742C9258D754C009BC70E /* NSRegularExpressionExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742C8258D754C009BC70E /* NSRegularExpressionExt.swift */; };
 		EE55A51325A4EFE3001FFDB6 /* RACExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55A51225A4EFE3001FFDB6 /* RACExt.swift */; };
+		EE55A51625A5126A001FFDB6 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55A51525A5126A001FFDB6 /* DataModel.swift */; };
 		EE71A51E257EF5DB002BA583 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A51D257EF5DB002BA583 /* NetworkManager.swift */; };
-		EE71A525257EF666002BA583 /* Option.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A521257EF666002BA583 /* Option.swift */; };
-		EE71A526257EF666002BA583 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A522257EF666002BA583 /* Contact.swift */; };
-		EE71A527257EF666002BA583 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A523257EF666002BA583 /* Event.swift */; };
-		EE71A528257EF666002BA583 /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A524257EF666002BA583 /* Student.swift */; };
 		EE71A52C257EF6A1002BA583 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A52B257EF6A1002BA583 /* Enums.swift */; };
 		EE71A532257EF75B002BA583 /* StringExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A530257EF75B002BA583 /* StringExt.swift */; };
 		EE71A533257EF75B002BA583 /* DateExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71A531257EF75B002BA583 /* DateExt.swift */; };
@@ -51,11 +48,8 @@
 		EE4742C5258D6F0B009BC70E /* ValidationChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationChecker.swift; sourceTree = "<group>"; };
 		EE4742C8258D754C009BC70E /* NSRegularExpressionExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSRegularExpressionExt.swift; sourceTree = "<group>"; };
 		EE55A51225A4EFE3001FFDB6 /* RACExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RACExt.swift; sourceTree = "<group>"; };
+		EE55A51525A5126A001FFDB6 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		EE71A51D257EF5DB002BA583 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		EE71A521257EF666002BA583 /* Option.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Option.swift; sourceTree = "<group>"; };
-		EE71A522257EF666002BA583 /* Contact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
-		EE71A523257EF666002BA583 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
-		EE71A524257EF666002BA583 /* Student.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
 		EE71A52B257EF6A1002BA583 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		EE71A530257EF75B002BA583 /* StringExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExt.swift; sourceTree = "<group>"; };
 		EE71A531257EF75B002BA583 /* DateExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateExt.swift; sourceTree = "<group>"; };
@@ -124,10 +118,7 @@
 		EE71A520257EF653002BA583 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				EE71A524257EF666002BA583 /* Student.swift */,
-				EE71A521257EF666002BA583 /* Option.swift */,
-				EE71A523257EF666002BA583 /* Event.swift */,
-				EE71A522257EF666002BA583 /* Contact.swift */,
+				EE55A51525A5126A001FFDB6 /* DataModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -320,20 +311,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE71A526257EF666002BA583 /* Contact.swift in Sources */,
 				EE4742C9258D754C009BC70E /* NSRegularExpressionExt.swift in Sources */,
 				EE96E00F258334AE00F4D4A3 /* UIViewExtension.swift in Sources */,
 				EE382A1D25A1167900A6809F /* EmptyStateVC.swift in Sources */,
 				EE71A532257EF75B002BA583 /* StringExt.swift in Sources */,
+				EE55A51625A5126A001FFDB6 /* DataModel.swift in Sources */,
 				EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */,
 				EE55A51325A4EFE3001FFDB6 /* RACExt.swift in Sources */,
 				EE96E00C2583349200F4D4A3 /* UIViewControllerExt.swift in Sources */,
 				EE946906257DB3C400E9730A /* DataListViewController.swift in Sources */,
 				EE4742C6258D6F0B009BC70E /* ValidationChecker.swift in Sources */,
-				EE71A528257EF666002BA583 /* Student.swift in Sources */,
 				EE946902257DB3C400E9730A /* AppDelegate.swift in Sources */,
 				EE9B18AA258172AC00076769 /* UIHelper.swift in Sources */,
-				EE71A527257EF666002BA583 /* Event.swift in Sources */,
 				EE71A51E257EF5DB002BA583 /* NetworkManager.swift in Sources */,
 				EE05291F257DE6F900200184 /* DataDetailViewController.swift in Sources */,
 				EE71A533257EF75B002BA583 /* DateExt.swift in Sources */,
@@ -341,7 +330,6 @@
 				EE05291B257DC30F00200184 /* SidebarViewController.swift in Sources */,
 				EE9A5FA5258AF268002D49F8 /* DataEditingViewController.swift in Sources */,
 				EE71A52C257EF6A1002BA583 /* Enums.swift in Sources */,
-				EE71A525257EF666002BA583 /* Option.swift in Sources */,
 				EE4742B0258D3FC2009BC70E /* TextFieldCell.swift in Sources */,
 				EE4742B5258D4168009BC70E /* DatePickerCell.swift in Sources */,
 			);

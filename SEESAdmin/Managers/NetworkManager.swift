@@ -20,36 +20,31 @@ class NetworkManager {
         }
     }
     
-    func fetchData(completed: @escaping (Result<[SEESData: [DataProtocol]], SEESError>) -> Void) {
+    func fetchData(completed: @escaping (Result<[FBDataType: [DataModel]], SEESError>) -> Void) {
         self.reference.observeSingleEvent(of: .value) { [weak self] (snapshot) in
             guard let self = self else { return }
             guard let data = snapshot.value as? [String: Any],
-                  let studentsDictionary = data[FirebaseValue.students] as? [String: Any],
-                  let optionsDictionary = data[FirebaseValue.options] as? [String: Any],
-                  let eventsDictionary = data[FirebaseValue.events] as? [String: Any],
-                  let contactsDictionary = data[FirebaseValue.contacts] as? [String: Any]
+                  let studentsDictionary = data[FBDataType.students.rawValue] as? [String: Any],
+                  let optionsDictionary = data[FBDataType.options.rawValue] as? [String: Any],
+                  let eventsDictionary = data[FBDataType.events.rawValue] as? [String: Any],
+                  let contactsDictionary = data[FBDataType.contacts.rawValue] as? [String: Any]
             else { completed(.failure(.unableToFetchData)); return }
             
-            let studentData: [Student] = self.decode(studentsDictionary),
-                optionData: [Option] = self.decode(optionsDictionary),
-                eventData: [Event] = self.decode(eventsDictionary),
-                contactData: [Contact] = self.decode(contactsDictionary)
-            
-            let dataDictionary: [SEESData: [DataProtocol]] = [
-                .students: studentData,
-                .options: optionData,
-                .events: eventData,
-                .contacts: contactData
+            let dataDictionary: [FBDataType: [DataModel]] = [
+                .students: self.decode(studentsDictionary, for: .students),
+                .options: self.decode(optionsDictionary, for: .options),
+                .events: self.decode(eventsDictionary, for: .events),
+                .contacts: self.decode(contactsDictionary, for: .contacts)
             ]
             
             completed(.success(dataDictionary))
         }
     }
     
-    private func decode<T: DataProtocol>(_ dictionary: [String: Any]) -> [T] {
-        var data: [T] = []
+    private func decode(_ dictionary: [String: Any], for type: FBDataType) -> [DataModel] {
+        var data: [DataModel] = []
         for (key, value) in dictionary {
-            data.append(T(id: key, dictionary: value as! [String: Any]))
+            data.append(DataModel(id: key, data: value as! [String: Any], type: type))
         }
         
         return data

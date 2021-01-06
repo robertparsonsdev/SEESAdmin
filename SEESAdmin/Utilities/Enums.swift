@@ -7,10 +7,6 @@
 
 import UIKit
 
-enum SEESData {
-    case students, options, events, contacts
-}
-
 enum SEESError: Error {
     case unableToFetchData, unableToFetchStudents, unableToFetchOptions, unableToFetchEvents, unableToFetchContacts
     case unableToValidate(error: String)
@@ -27,6 +23,13 @@ enum SEESError: Error {
         case .unableToUpdateData(let error): return ("Unable to Update", "An error occurred while trying to update. Please make there is an internet connection. \n\n\(error)")
         }
     }
+}
+
+enum FBDataType: String {
+    case students = "students"
+    case options = "options"
+    case events = "events"
+    case contacts = "contacts"
 }
 
 enum FBStudent {
@@ -84,10 +87,6 @@ enum FBContact {
     static let wednesday = "wednesday"
     static let thursday = "thursday"
     static let friday = "friday"
-}
-
-enum FirebaseValue: Hashable {
-    static let students = "students", options = "options", events = "events", contacts = "contacts"
 }
 
 enum Symbol {

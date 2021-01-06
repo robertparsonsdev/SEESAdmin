@@ -8,7 +8,7 @@
 import Foundation
 
 struct ValidationChecker {
-    static func validateText(of dictionary: [String: Any], for data: SEESData) -> SEESError? {
+    static func validateText(of dictionary: [String: Any], for data: FBDataType) -> SEESError? {
         switch data {
         case .students:
             if let error = validateStudentData(with: dictionary) { return .unableToValidate(error: error) }

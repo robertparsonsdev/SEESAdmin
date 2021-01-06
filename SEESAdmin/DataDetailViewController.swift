@@ -9,8 +9,8 @@ import UIKit
 
 class DataDetailViewController: UITableViewController {
     private let cellID = "DataDetailCellID"
-    private var data: DataProtocol
-    private var tableItems: [DetailTableItem]
+    private var model: DataModel
+    private var detailItems: [DetailTableItem]
     private let delegate: DataEditingDelegate
     
     // MARK: - Initializers
@@ -18,11 +18,11 @@ class DataDetailViewController: UITableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(data: DataProtocol, delegate: DataEditingDelegate) {
-        self.data = data
-        self.tableItems = data.detailItems
+    init(model: DataModel, delegate: DataEditingDelegate) {
+        self.model = model
+        self.detailItems = model.detailItems
         self.delegate = delegate
-        
+
         super.init(style: .insetGrouped)
     }
     
@@ -37,25 +37,27 @@ class DataDetailViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: self.cellID, for: indexPath)
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.lineBreakMode = .byWordWrapping
-        cell.textLabel?.text = self.tableItems[indexPath.section].row
         cell.selectionStyle = .none
+
+        cell.textLabel?.text = self.detailItems[indexPath.section].row
         return cell
     }
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return self.tableItems.count
+        return self.detailItems.count
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
-    
+
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.tableItems[section].header
+        return self.detailItems[section].header
     }
     
     // MARK: - Configuration Functions
     private func configureTableView() {
+        self.title = self.model.row
         let editButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editButtonTapped))
         editButton.tintColor = .systemTeal
         self.navigationItem.rightBarButtonItem = editButton
@@ -65,20 +67,22 @@ class DataDetailViewController: UITableViewController {
     
     // MARK: - Selectors
     @objc func editButtonTapped() {
-        presentDataEditingVC(with: self.data, editing: true, delegate: self)
+        presentDataEditingVC(with: self.model, editing: true, delegate: self)
     }
 }
 
 // MARK: - Delegates
 extension DataDetailViewController: DataEditingDelegate {
-    func reload(with data: DataProtocol) {
-        if self.data.row != data.row {
-            self.delegate.reload(with: data)
+    func reload(with model: DataModel) {
+        print("old:", self.model.row)
+        print("new:", model.row)
+        if self.model.row != model.row {
+            self.delegate.reload(with: model)
         }
-        
-        self.data = data
-        self.tableItems = data.detailItems
-        self.title = data.row
+
+        self.model = model
+        self.detailItems = model.detailItems
+        self.title = model.row
         self.tableView.reloadData()
     }
 }

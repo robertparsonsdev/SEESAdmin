@@ -16,23 +16,23 @@ class DataListViewController: UIViewController {
     }
     
     private let networkManager = NetworkManager.shared
-    private var studentSectionDictionary = [String: [ListItem]]()
-    private var optionSectionDictionary = [String: [ListItem]]()
-    private var eventSectionDictionary = [String: [ListItem]]()
-    private var contactSectionDictionary = [String: [ListItem]]()
+    private var studentSectionDictionary = [String: [DataModel]]()
+    private var optionSectionDictionary = [String: [DataModel]]()
+    private var eventSectionDictionary = [String: [DataModel]]()
+    private var contactSectionDictionary = [String: [DataModel]]()
     
     private var tableView: UITableView!
     private var dataSource: ListDataSource!
     
-    private var activeData: SEESData! {
+    private var activeData: FBDataType! {
         didSet {
             guard activeData != oldValue else { return }
             
             switch activeData {
-            case .students: applyListSnapshot(with: self.studentSectionDictionary)
-            case .options: applyListSnapshot(with: self.optionSectionDictionary)
-            case .events: applyListSnapshot(with: self.eventSectionDictionary)
-            case .contacts: applyListSnapshot(with: self.contactSectionDictionary)
+            case .students: applyListSnapshot(with: self.studentSectionDictionary, animate: false)
+            case .options: applyListSnapshot(with: self.optionSectionDictionary, animate: false)
+            case .events: applyListSnapshot(with: self.eventSectionDictionary, animate: false)
+            case .contacts: applyListSnapshot(with: self.contactSectionDictionary, animate: false)
             case .none: break
             }
         }
@@ -70,6 +70,7 @@ class DataListViewController: UIViewController {
     private func configureDataSource() {
         dataSource = ListDataSource(tableView: self.tableView, cellProvider: { (tableView, indexPath, item) -> UITableViewCell? in
             let cell = tableView.dequeueReusableCell(withIdentifier: self.cellID, for: indexPath)
+            print(item.row)
             cell.textLabel?.text = item.row
             cell.accessoryType = .disclosureIndicator
             return cell
@@ -77,7 +78,7 @@ class DataListViewController: UIViewController {
     }
     
     // MARK: - Functions
-    public func show(_ data: SEESData) {
+    public func show(_ data: FBDataType) {
         self.activeData = data
     }
     
@@ -88,10 +89,10 @@ class DataListViewController: UIViewController {
             
             switch result {
             case .success(let dataDictionary):
-                self.configureSections(with: dataDictionary[.students] as! [Student], and: &self.studentSectionDictionary)
-                self.configureSections(with: dataDictionary[.options] as! [Option], and: &self.optionSectionDictionary)
-                self.configureSections(with: dataDictionary[.events] as! [Event], and: &self.eventSectionDictionary)
-                self.configureSections(with: dataDictionary[.contacts] as! [Contact], and: &self.contactSectionDictionary)
+                self.configureSections(with: dataDictionary[.students] ?? [], and: &self.studentSectionDictionary)
+                self.configureSections(with: dataDictionary[.options] ?? [], and: &self.optionSectionDictionary)
+                self.configureSections(with: dataDictionary[.events] ?? [], and: &self.eventSectionDictionary)
+                self.configureSections(with: dataDictionary[.contacts] ?? [], and: &self.contactSectionDictionary)
                 DispatchQueue.main.async { self.activeData = .students }
                 
             case .failure(let error):
@@ -102,57 +103,87 @@ class DataListViewController: UIViewController {
         }
     }
     
-    private func applyListSnapshot(with dictionary: [String: [ListItem]]) {
-        var snapshot = NSDiffableDataSourceSnapshot<String, ListItem>()
+    private func applyListSnapshot(with dictionary: [String: [DataModel]], animate: Bool) {
+        var snapshot = NSDiffableDataSourceSnapshot<String, DataModel>()
         let sections = Array(dictionary.keys).sorted(by: { $0 < $1 })
         snapshot.appendSections(sections)
-        
+
         for section in sections {
             if let dataArray = dictionary[section] {
                 snapshot.appendItems(dataArray, toSection: section)
             }
         }
-        
-        self.dataSource.apply(snapshot, animatingDifferences: false, completion: nil)
+
+        self.dataSource.apply(snapshot, animatingDifferences: animate, completion: nil)
     }
     
-    private func configureSections(with dataArray: [DataProtocol], and dictionary: inout [String: [ListItem]]) {
-        for data in dataArray.sorted(by: { $0.row < $1.row }) {
+    private func configureSections(with dataArray: [DataModel], and dictionary: inout [String: [DataModel]]) {
+        for data in dataArray.sorted(by: { $0 < $1 }) {
             let key = data.header
             if dictionary[key] == nil {
                 dictionary[key] = []
             }
-            
-            dictionary[key]?.append(.row(data: data))
+
+            dictionary[key]?.append(data)
         }
     }
     
     // MARK: - Selectors
     @objc func addButtonTapped() {
-        let data: DataProtocol
-        switch self.activeData {
-        case .students: data = Student()
-        case .options: data = Option()
-        case .events: data = Event()
-        case .contacts: data = Contact()
-        case .none: return
-        }
-        
-        presentDataEditingVC(with: data, editing: false, delegate: self)
+//        let data: DataProtocol
+//        switch self.activeData {
+//        case .students: data = Student()
+//        case .options: data = Option()
+//        case .events: data = Event()
+//        case .contacts: data = Contact()
+//        case .none: return
+//        }
+//
+//        presentDataEditingVC(with: data, editing: false, delegate: self)
     }
 }
 
 // MARK: - Delegates
 extension DataListViewController: DataEditingDelegate {
-    func reload(with data: DataProtocol) {
-        var snapshot = self.dataSource.snapshot()
-        guard let item = snapshot.itemIdentifiers.first(where: { $0.id == data.id }) else { return }
-        let oldSection = item.header, newSection = data.header
+    func reload(with model: DataModel) {
+        let snapshot = self.dataSource.snapshot()
         
-        item.row = data.row
-        item.header = data.header
-        item.set(data: data)
-        snapshot.reloadItems([item])
+        // item exists in another section, delete it from dictionary
+        if let item = snapshot.itemIdentifiers.first(where: { $0.id == model.id }) {
+            if let items = self.studentSectionDictionary[item.header] {
+                self.studentSectionDictionary[item.header] = items.filter( { $0 != item })
+
+                if self.studentSectionDictionary[item.header]!.isEmpty {
+                    self.studentSectionDictionary.removeValue(forKey: item.header)
+                }
+            }
+        }
+        
+        // add item to correct section in dictionary
+        if var items = self.studentSectionDictionary[model.header] {
+            let index = items.getInsertionIndex(of: model)
+            items.insert(model, at: index)
+            self.studentSectionDictionary[model.header] = items
+        } else {
+            self.studentSectionDictionary[model.header] = [model]
+        }
+
+        // delete and append both sections
+        applyListSnapshot(with: self.studentSectionDictionary, animate: true)
+        
+        
+//        snapshot.appendItems(self.studentSectionDictionary[model.header]!, toSection: model.header)
+//
+//        self.dataSource.apply(snapshot, animatingDifferences: true, completion: nil)
+        
+//        var snapshot = self.dataSource.snapshot()
+//        guard let item = snapshot.itemIdentifiers.first(where: { $0.id == data.id }) else { return }
+//        let oldSection = item.header, newSection = data.header
+//
+//        item.row = data.row
+//        item.header = data.header
+//        item.set(data: data)
+//        snapshot.reloadItems([item])
         
         // move item within section
 
@@ -175,32 +206,32 @@ extension DataListViewController: DataEditingDelegate {
 //        if let
 //
 //        self.dataSource.apply(snapshot, animatingDifferences: true)
-        if oldSection != newSection {
-            if var items = self.studentSectionDictionary[newSection] {
-                let index = items.getInsertionIndex(of: item)
-                items.insert(item, at: index)
-                self.studentSectionDictionary[newSection] = items
-                snapshot.appendItems(items, toSection: newSection)
-
-                if let oldItems = self.studentSectionDictionary[oldSection] {
-                    self.studentSectionDictionary[oldSection] = oldItems.filter { $0 != item }
-                    snapshot.appendItems(self.studentSectionDictionary[oldSection]!, toSection: oldSection)
-                    if self.studentSectionDictionary[oldSection]!.isEmpty {
-                        print("empty")
-                        snapshot.deleteSections([oldSection])
-                    }
-                }
-                
-            } else {
-                self.studentSectionDictionary[newSection] = []
-            }
-            
-            didSelectDataItem(item)
-        }
-        
-        self.dataSource.apply(snapshot, animatingDifferences: true, completion: nil)
-        
-        let indexPath = self.dataSource.indexPath(for: item)
+//        if oldSection != newSection {
+//            if var items = self.studentSectionDictionary[newSection] {
+//                let index = items.getInsertionIndex(of: item)
+//                items.insert(item, at: index)
+//                self.studentSectionDictionary[newSection] = items
+//                snapshot.appendItems(items, toSection: newSection)
+//
+//                if let oldItems = self.studentSectionDictionary[oldSection] {
+//                    self.studentSectionDictionary[oldSection] = oldItems.filter { $0 != item }
+//                    snapshot.appendItems(self.studentSectionDictionary[oldSection]!, toSection: oldSection)
+//                    if self.studentSectionDictionary[oldSection]!.isEmpty {
+//                        print("empty")
+//                        snapshot.deleteSections([oldSection])
+//                    }
+//                }
+//                
+//            } else {
+//                self.studentSectionDictionary[newSection] = []
+//            }
+//            
+//            didSelectDataItem(item)
+//        }
+//        
+//        self.dataSource.apply(snapshot, animatingDifferences: true, completion: nil)
+//        
+        let indexPath = self.dataSource.indexPath(for: model)
         self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
     }
 }
@@ -208,84 +239,18 @@ extension DataListViewController: DataEditingDelegate {
 extension DataListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let listItem = self.dataSource.itemIdentifier(for: indexPath) else { return }
-        didSelectDataItem(listItem)
-    }
-    
-    private func didSelectDataItem(_ item: ListItem) {
-        guard let data = item.getData() else { return }
         
-        let detailVC = DataDetailViewController(data: data, delegate: self)
-        detailVC.title = item.row
+        let detailVC = DataDetailViewController(model: listItem, delegate: self)
         let navController = UINavigationController(rootViewController: detailVC)
         showDetailViewController(navController, sender: self)
     }
 }
 
-class ListDataSource: UITableViewDiffableDataSource<String, ListItem> {
+class ListDataSource: UITableViewDiffableDataSource<String, DataModel> {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if let item = itemIdentifier(for: IndexPath(row: 0, section: section)) {
-            return item.header
+        guard let item = itemIdentifier(for: IndexPath(row: 0, section: section)) else { return nil
         }
-        return "error"
-    }
-}
-
-class ListItem: Hashable, Identifiable, Comparable {
-    static func < (lhs: ListItem, rhs: ListItem) -> Bool {
-        return lhs.row < rhs.row
-    }
-    
-    static func == (lhs: ListItem, rhs: ListItem) -> Bool {
-        return lhs.id == rhs.id
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(self.id)
-    }
-    
-    let id: String
-    var header: String
-    var row: String
-    
-    private var student: Student?
-    private var option: Option?
-    private var event: Event?
-    private var contact: Contact?
-    
-    private init(id: String, headerTitle: String, rowTitle: String, student: Student? = nil, option: Option? = nil, event: Event? = nil, contact: Contact? = nil) {
-        self.id = id
-        self.header = headerTitle
-        self.row = rowTitle
-        
-        self.student = student
-        self.option = option
-        self.event = event
-        self.contact = contact
-    }
-    
-    static func row(data: DataProtocol) -> ListItem {
-        switch data.dataCase {
-        case .students: return ListItem(id: data.id, headerTitle: data.header, rowTitle: data.row, student: data as? Student)
-        case .options: return ListItem(id: data.id, headerTitle: data.header, rowTitle: data.row, option: data as? Option)
-        case .events: return ListItem(id: data.id, headerTitle: data.header, rowTitle: data.row, event: data as? Event)
-        case .contacts: return ListItem(id: data.id, headerTitle: data.header, rowTitle: data.row, contact: data as? Contact)
-        }
-    }
-    
-    func getData() -> DataProtocol? {
-        if let student = self.student { return student }
-        else if let option = self.option { return option }
-        else if let event = self.event { return event }
-        else if let contact = self.contact { return contact }
-        else { return nil }
-    }
-    
-    func set(data: DataProtocol) {
-        switch data.dataCase {
-        case .students: self.student = data as? Student
-        case .options: self.option = data as? Option
-        case .events: self.event = data as? Event
-        case .contacts: self.contact = data as? Contact
-        }
+        return item.header
+//        return "data-source-error"
     }
 }
