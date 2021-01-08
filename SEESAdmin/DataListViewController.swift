@@ -146,188 +146,13 @@ class DataListViewController: UIViewController {
 
 // MARK: - Delegates
 extension DataListViewController: DataEditingDelegate {
-    func reload(with newModel: DataModel) { // (with newModel: DataModel, id: String, oldSection: String?, newSection: String)
+    func reload(model: DataModel) { // (with newModel: DataModel, id: String, oldSection: String?, newSection: String)
         var snapshot = self.dataSource.snapshot()
-//        var newNewModel: DataModel
+        snapshot.insertAndReload(model: model)
         
-        // model already exsists in data source
-        if let model = snapshot.itemIdentifiers.first(where: { $0.id == newModel.id }) {
-            if let oldSection = snapshot.sectionIdentifier(containingItem: model) {
-                var sectionItems = snapshot.itemIdentifiers(inSection: oldSection)
-                if let index = sectionItems.firstIndex(of: model) {
-                    sectionItems.remove(at: index)
-                }
-                
-                if sectionItems.isEmpty {
-                    snapshot.deleteSections([oldSection])
-                } else {
-                    snapshot.deleteSections([oldSection])
-                    snapshot.appendSections([oldSection])
-                    snapshot.appendItems(sectionItems, toSection: oldSection)
-                }
-            }
-        }
-        
-        // add to existing section
-        if let newSection = snapshot.sectionIdentifiers.first(where: { $0 == newModel.header }) {
-            var sectionItems = snapshot.itemIdentifiers(inSection: newSection)
-            let index = sectionItems.getInsertionIndex(of: newModel)
-            sectionItems.insert(newModel, at: index)
-            
-            snapshot.deleteSections([newSection])
-            snapshot.appendSections([newSection])
-            snapshot.appendItems(sectionItems, toSection: newSection)
-        } else {
-            let sections = snapshot.sectionIdentifiers
-            let newSection = [newModel.header]
-            let index = sections.getInsertionIndex(of: newModel.header)
-            
-            if index == 0, let firstSection = sections.first {
-                snapshot.insertSections(newSection, beforeSection: firstSection)
-            } else if index == sections.count, let lastSection = sections.last {
-                snapshot.insertSections(newSection, afterSection: lastSection)
-            } else {
-                snapshot.insertSections(newSection, afterSection: sections[index])
-            }
-            
-            snapshot.appendItems([newModel], toSection: newModel.header)
-        }
-        
-        snapshot.reloadItems([newModel])
         self.dataSource.apply(snapshot, animatingDifferences: true, completion: nil)
         
-        
-        
-//        var snapshot = self.dataSource.snapshot()
-//
-//        if let item = snapshot.itemIdentifiers.first(where: { $0.id == newModel.id }) {
-//            snapshot.reloadItems([item])
-//            let header = item.header
-//            // item already exists in the snapshot
-//            if let newSection = snapshot.sectionIdentifiers.first(where: { $0 == item.header }) {
-//                // insert into new section
-//                print(newSection)
-//            } else {
-//                // create new section and append item
-//                var sections = snapshot.sectionIdentifiers
-//                let index = sections.getInsertionIndex(of: header)
-//                if let pivotSection = sections.getItemAt(index + 1) {
-//                    snapshot.insertSections([header], afterSection: pivotSection)
-//                } else if let pivotSection = sections.getItemAt(index - 1) {
-//                    snapshot.insertSections([header], beforeSection: pivotSection)
-//                } else {
-//                    snapshot.appendSections([header])
-//                }
-//
-//                snapshot.appendItems([item], toSection: header)
-//            }
-//        } else {
-//            // for new items
-//        }
-//
-//
-//        self.dataSource.apply(snapshot)
-        
-        
-        
-        
-//        var snapshot = self.dataSource.snapshot()
-//
-//        // item only changes row title when moving between sections
-//        // item exists in another section, delete it from dictionary
-//        if let item = snapshot.itemIdentifiers.first(where: { $0.id == newModel.id }) {
-//            if var items = self.studentSectionDictionary[item.header] {
-//                if let itemIndex = items.firstIndex(of: item) {
-//                    items.remove(at: itemIndex)
-//                    self.studentSectionDictionary[item.header] = items
-//                }
-//
-//                if items.isEmpty {
-//                    self.studentSectionDictionary.removeValue(forKey: item.header)
-//                }
-//            }
-//        }
-//
-//        // add item to correct section in dictionary
-//        if var items = self.studentSectionDictionary[newModel.header] {
-//            let index = items.getInsertionIndex(of: newModel)
-//            items.insert(newModel, at: index)
-//            self.studentSectionDictionary[newModel.header] = items
-//        } else {
-//            self.studentSectionDictionary[newModel.header] = [newModel]
-//        }
-//
-//        // delete and append both sections
-//        snapshot.deleteAllItems()
-//        snapshot.insert
-//        self.dataSource.apply(snapshot)
-//        applyListSnapshot(with: self.studentSectionDictionary, animate: true)
-        
-        
-        
-        
-        
-        
-//        snapshot.appendItems(self.studentSectionDictionary[model.header]!, toSection: model.header)
-//
-//        self.dataSource.apply(snapshot, animatingDifferences: true, completion: nil)
-        
-//        var snapshot = self.dataSource.snapshot()
-//        guard let item = snapshot.itemIdentifiers.first(where: { $0.id == data.id }) else { return }
-//        let oldSection = item.header, newSection = data.header
-//
-//        item.row = data.row
-//        item.header = data.header
-//        item.set(data: data)
-//        snapshot.reloadItems([item])
-        
-        // move item within section
-
-//        if data.listHeader != item.headerTitle {
-//            let oldHeader = item.headerTitle, newHeader = data.listHeader
-//            item.headerTitle = data.listHeader
-//
-//            if snapshot.sectionIdentifiers.contains(newHeader) {
-//                snapshot.deleteItems([item])
-//                snapshot.appendItems([item], toSection: newHeader)
-//                if snapshot.numberOfItems(inSection: oldHeader) == 0 {
-//                    snapshot.deleteSections([oldHeader])
-//                }
-//            } else {
-//
-//            }
-//        }
-        
-//        let oldHeader = item.headerTitle, newHeader = data.listHeader
-//        if let
-//
-//        self.dataSource.apply(snapshot, animatingDifferences: true)
-//        if oldSection != newSection {
-//            if var items = self.studentSectionDictionary[newSection] {
-//                let index = items.getInsertionIndex(of: item)
-//                items.insert(item, at: index)
-//                self.studentSectionDictionary[newSection] = items
-//                snapshot.appendItems(items, toSection: newSection)
-//
-//                if let oldItems = self.studentSectionDictionary[oldSection] {
-//                    self.studentSectionDictionary[oldSection] = oldItems.filter { $0 != item }
-//                    snapshot.appendItems(self.studentSectionDictionary[oldSection]!, toSection: oldSection)
-//                    if self.studentSectionDictionary[oldSection]!.isEmpty {
-//                        print("empty")
-//                        snapshot.deleteSections([oldSection])
-//                    }
-//                }
-//                
-//            } else {
-//                self.studentSectionDictionary[newSection] = []
-//            }
-//            
-//            didSelectDataItem(item)
-//        }
-//        
-//        self.dataSource.apply(snapshot, animatingDifferences: true, completion: nil)
-//        
-        if let indexPath = self.dataSource.indexPath(for: newModel) {
+        if let indexPath = self.dataSource.indexPath(for: model) {
             self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
         }
     }
@@ -345,9 +170,7 @@ extension DataListViewController: UITableViewDelegate {
 
 class ListDataSource: UITableViewDiffableDataSource<String, DataModel> {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let item = itemIdentifier(for: IndexPath(row: 0, section: section)) else { return nil
-        }
+        guard let item = itemIdentifier(for: IndexPath(row: 0, section: section)) else { return nil }
         return item.header
-//        return "data-source-error"
     }
 }

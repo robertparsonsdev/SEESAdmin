@@ -109,11 +109,12 @@ class DataEditingViewController: UITableViewController {
             self.dismissLoadingViewOnMainThread()
             guard error == nil else { self.presentErrorOnMainThread(withError: error!); return }
 
+            if self.editsDictionary[
             self.model.data = self.editsDictionary
 
             DispatchQueue.main.async {
                 self.dismiss(animated: true) {
-                    self.delegate.reload(with: self.model)
+                    self.delegate.reload(model: self.model)
                 }
             }
         }
@@ -133,5 +134,5 @@ class DataEditingViewController: UITableViewController {
 
 // MARK: - Protocols
 protocol DataEditingDelegate {
-    func reload(with newModel: DataModel)
+    func reload(model: DataModel)
 }

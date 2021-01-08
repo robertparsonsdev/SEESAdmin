@@ -11,6 +11,7 @@
 		EE05291B257DC30F00200184 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE05291A257DC30F00200184 /* SidebarViewController.swift */; };
 		EE05291F257DE6F900200184 /* DataDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE05291E257DE6F900200184 /* DataDetailViewController.swift */; };
 		EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE052921257DE75800200184 /* SplitViewDelgate.swift */; };
+		EE3578BB25A8078E00B3AF24 /* SnapshotEXT.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3578BA25A8078E00B3AF24 /* SnapshotEXT.swift */; };
 		EE382A1D25A1167900A6809F /* EmptyStateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE382A1C25A1167900A6809F /* EmptyStateVC.swift */; };
 		EE4742B0258D3FC2009BC70E /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742AF258D3FC2009BC70E /* TextFieldCell.swift */; };
 		EE4742B5258D4168009BC70E /* DatePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742B4258D4168009BC70E /* DatePickerCell.swift */; };
@@ -42,6 +43,7 @@
 		EE05291A257DC30F00200184 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
 		EE05291E257DE6F900200184 /* DataDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailViewController.swift; sourceTree = "<group>"; };
 		EE052921257DE75800200184 /* SplitViewDelgate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewDelgate.swift; sourceTree = "<group>"; };
+		EE3578BA25A8078E00B3AF24 /* SnapshotEXT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotEXT.swift; sourceTree = "<group>"; };
 		EE382A1C25A1167900A6809F /* EmptyStateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateVC.swift; sourceTree = "<group>"; };
 		EE4742AF258D3FC2009BC70E /* TextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
 		EE4742B4258D4168009BC70E /* DatePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerCell.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				EE96E00B2583349200F4D4A3 /* UIViewControllerExt.swift */,
 				EE4742C8258D754C009BC70E /* NSRegularExpressionExt.swift */,
 				EE55A51225A4EFE3001FFDB6 /* RACExt.swift */,
+				EE3578BA25A8078E00B3AF24 /* SnapshotEXT.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -328,6 +331,7 @@
 				EE71A533257EF75B002BA583 /* DateExt.swift in Sources */,
 				EE946904257DB3C400E9730A /* SceneDelegate.swift in Sources */,
 				EE05291B257DC30F00200184 /* SidebarViewController.swift in Sources */,
+				EE3578BB25A8078E00B3AF24 /* SnapshotEXT.swift in Sources */,
 				EE9A5FA5258AF268002D49F8 /* DataEditingViewController.swift in Sources */,
 				EE71A52C257EF6A1002BA583 /* Enums.swift in Sources */,
 				EE4742B0258D3FC2009BC70E /* TextFieldCell.swift in Sources */,

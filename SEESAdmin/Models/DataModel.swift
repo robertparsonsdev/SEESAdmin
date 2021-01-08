@@ -56,9 +56,16 @@ class DataModel {
     var detailItems: [DetailTableItem] {
         var items: [DetailTableItem] = []
         for (key, value) in self.data {
+            let row: String
+            switch value {
+            case is String: row = value as! String
+            case is Int: row = String(value as! Int)
+            default: row = "row-error"
+            }
+            
             switch key {
-            case FBEvent.startDate, FBEvent.endDate: items.append(DetailTableItem(header: key, row: value as! String, editableView: .datePicker))
-            default: items.append(DetailTableItem(header: key, row: value as! String))
+            case FBEvent.startDate, FBEvent.endDate: items.append(DetailTableItem(header: key, row: row, editableView: .datePicker))
+            default: items.append(DetailTableItem(header: key, row: row))
             }
         }
         
