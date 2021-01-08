@@ -21,10 +21,14 @@ class TextFieldCell: UITableViewCell {
     }
     
     private func configure() {
+        selectionStyle = .none
+
         textField.clearButtonMode = .whileEditing
+        self.textLabel?.removeFromSuperview()
+        self.detailTextLabel?.removeFromSuperview()
         
         contentView.addSubview(textField)
-        textField.anchor(top: contentView.topAnchor, leading: contentView.leadingAnchor, bottom: nil, trailing: contentView.trailingAnchor, paddingTop: 0, paddingLeft: 17, paddingBottom: 0, paddingRight: 17, width: 0, height: frame.height)
+        textField.anchor(top: nil, leading: contentView.layoutMarginsGuide.leadingAnchor, bottom: nil, trailing: contentView.layoutMarginsGuide.trailingAnchor, y: contentView.centerYAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
     
     public func set(text: String, tag: Int, target: Any, action: Selector) {

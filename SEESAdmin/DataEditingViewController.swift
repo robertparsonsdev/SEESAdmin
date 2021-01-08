@@ -69,6 +69,14 @@ class DataEditingViewController: UITableViewController {
         }
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 44
+    }
+    
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 44
+    }
+    
     // MARK: - Configuration Functions
     private func configureTableView() {
         self.tableView.backgroundColor = .systemBackground
@@ -109,7 +117,6 @@ class DataEditingViewController: UITableViewController {
             self.dismissLoadingViewOnMainThread()
             guard error == nil else { self.presentErrorOnMainThread(withError: error!); return }
 
-            if self.editsDictionary[
             self.model.data = self.editsDictionary
 
             DispatchQueue.main.async {
