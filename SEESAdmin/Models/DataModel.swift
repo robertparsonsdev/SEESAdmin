@@ -7,10 +7,16 @@
 
 import Foundation
 
-struct DataModel {
+class DataModel {
     let id: String
     var data: [String: Any]
     let type: FBDataType
+    
+    init(id: String, data: [String: Any], type: FBDataType) {
+        self.id = id
+        self.data = data
+        self.type = type
+    }
     
     var path: String {
         var pathName = "/"

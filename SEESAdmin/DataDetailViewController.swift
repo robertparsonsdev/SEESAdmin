@@ -73,16 +73,16 @@ class DataDetailViewController: UITableViewController {
 
 // MARK: - Delegates
 extension DataDetailViewController: DataEditingDelegate {
-    func reload(with model: DataModel) {
-        print("old:", self.model.row)
-        print("new:", model.row)
-        if self.model.row != model.row {
-            self.delegate.reload(with: model)
-        }
+    func reload(with newModel: DataModel) {
+//        print("old:", self.model.row)
+//        print("new:", newModel.row)
+//        if self.model.row != newModel.row {
+            self.delegate.reload(with: newModel)
+//        }
 
-        self.model = model
-        self.detailItems = model.detailItems
-        self.title = model.row
+//        self.model = newModel
+        self.detailItems = self.model.detailItems
+        self.title = self.model.row
         self.tableView.reloadData()
     }
 }

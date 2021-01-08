@@ -23,3 +23,13 @@ extension RandomAccessCollection where Element: Comparable {
         return slice.startIndex
     }
 }
+
+extension Array {
+    public func getItemAt(_ index: Int) -> Element? {
+        guard index >= 0, index < endIndex else {
+            return nil
+        }
+        
+        return self[index]
+    }
+}

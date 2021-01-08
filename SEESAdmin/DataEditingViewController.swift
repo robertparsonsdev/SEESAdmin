@@ -133,5 +133,5 @@ class DataEditingViewController: UITableViewController {
 
 // MARK: - Protocols
 protocol DataEditingDelegate {
-    func reload(with model: DataModel)
+    func reload(with newModel: DataModel)
 }
