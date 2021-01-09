@@ -55,8 +55,13 @@ extension UIViewController {
         }
     }
     
-    func presentDataEditingVC(with model: DataModel, editing: Bool, delegate: DataEditingDelegate) {
-        let navController = UINavigationController(rootViewController: DataEditingViewController(model: model, editing: editing, delegate: delegate))
-        present(navController, animated: true, completion: nil)
+    func presentDataEditingVC(with model: DataModel, delegate: DataEditingDelegate) {
+        let navController = UINavigationController(rootViewController: DataEditingViewController(model: model, delegate: delegate))
+        present(navController, animated: true)
+    }
+    
+    func presentEmptyDataEditingVC(ofType type: FBDataType, delegate: DataEditingDelegate) {
+        let navController = UINavigationController(rootViewController: DataEditingViewController(type: type, delegate: delegate))
+        present(navController, animated: true)
     }
 }

@@ -11,6 +11,7 @@ enum SEESError: Error {
     case unableToFetchData, unableToFetchStudents, unableToFetchOptions, unableToFetchEvents, unableToFetchContacts
     case unableToValidate(error: String)
     case unableToUpdateData(error: String)
+    case unableToAddStudent(error: String), unableToAddData(error: String)
     
     var info: (title: String, message: String) {
         switch self {
@@ -21,6 +22,8 @@ enum SEESError: Error {
         case .unableToFetchContacts: return ("Unable to Fetch Contacts", "Please ensure that there is an internent connection or try restarting the app.")
         case .unableToValidate(let error): return ("Unable to Validate Input", "One or more errors occurred: \(error)")
         case .unableToUpdateData(let error): return ("Unable to Update", "An error occurred while trying to update. Please make there is an internet connection. \n\n\(error)")
+        case .unableToAddStudent(let error): return ("Unable to Add Student", "An error ocurred while trying to add a student. Please restart the app. \n\n\(error)")
+        case .unableToAddData(let error): return ("Unable to Add Data", "An error ocurred while trying to add this data. Please restart the app. \n\n\(error)")
         }
     }
 }
@@ -32,13 +35,32 @@ enum FBDataType: String {
     case contacts = "contacts"
 }
 
-enum FBStudent {
-    static let advisor = "advisor"
-    static let advisorOffice = "advisorOffice"
-    static let broncoID = "broncoID"
-    static let email = "email"
-    static let firstName = "firstName"
-    static let lastName = "lastName"
+enum FBStudent: String, CaseIterable {
+    case advisor = "advisor"
+    case advisorOffice = "advisorOffice"
+    case broncoID = "broncoID"
+    case email = "email"
+    case firstName = "firstName"
+    case lastName = "lastName"
+    
+    var node: String {
+        switch self {
+        case .advisor: return FBStudent.advisor.rawValue
+        case .advisorOffice: return FBStudent.advisorOffice.rawValue
+        case .broncoID: return FBStudent.broncoID.rawValue
+        case .email: return FBStudent.email.rawValue
+        case .firstName: return FBStudent.firstName.rawValue
+        case .lastName: return FBStudent.lastName.rawValue
+        }
+    }
+    
+    static var emptyNodes: [String: Any] {
+        var dictionary: [String: Any] = [:]
+        for value in FBStudent.allCases {
+            dictionary[value.node] = ""
+        }
+        return dictionary
+    }
 }
 
 enum FBMajor: String {

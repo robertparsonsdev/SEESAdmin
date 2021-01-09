@@ -19,6 +19,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if self.window?.traitCollection.userInterfaceIdiom == .pad {
             if let splitVC = createThreeColumnSplitViewController() {
                 window?.rootViewController = splitVC
+                
+                NetworkManager.shared.signIn()
             }
         }
     }

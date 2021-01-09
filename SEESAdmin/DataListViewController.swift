@@ -131,25 +131,16 @@ class DataListViewController: UIViewController {
     
     // MARK: - Selectors
     @objc func addButtonTapped() {
-//        let data: DataProtocol
-//        switch self.activeData {
-//        case .students: data = Student()
-//        case .options: data = Option()
-//        case .events: data = Event()
-//        case .contacts: data = Contact()
-//        case .none: return
-//        }
-//
-//        presentDataEditingVC(with: data, editing: false, delegate: self)
+        presentEmptyDataEditingVC(ofType: self.activeData, delegate: self)
     }
 }
 
 // MARK: - Delegates
 extension DataListViewController: DataEditingDelegate {
-    func reload(model: DataModel) { // (with newModel: DataModel, id: String, oldSection: String?, newSection: String)
+    func reload(model: DataModel) {
         var snapshot = self.dataSource.snapshot()
         snapshot.insertAndReload(model: model)
-        
+        #warning("update dictionaries")
         self.dataSource.apply(snapshot, animatingDifferences: true, completion: nil)
         
         if let indexPath = self.dataSource.indexPath(for: model) {

@@ -48,7 +48,7 @@ extension NSDiffableDataSourceSnapshot where ItemIdentifierType == DataModel, Se
             } else if index == sections.count, let lastSection = sections.last {
                 insertSections(newSection, afterSection: lastSection)
             } else if !sections.isEmpty {
-                insertSections(newSection, afterSection: sections[index])
+                insertSections(newSection, beforeSection: sections[index])
             } else {
                 appendSections(newSection)
             }

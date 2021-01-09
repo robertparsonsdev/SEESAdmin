@@ -11,21 +11,41 @@ class DataEditingViewController: UITableViewController {
     private let textFieldCellID = "TextFieldCellID"
     private let dataPickerCellID = "DatePickerCellID"
     
-    private var model: DataModel
+    private var model: DataModel?
+    private let modelType: FBDataType
     private var editsDictionary: [String: Any] = [:]
+
+    private let tableItems: [TableItem]
     private let editMode: Bool
     private let delegate: DataEditingDelegate
     
     // MARK: - Initializers
-    init(model: DataModel, editing: Bool, delegate: DataEditingDelegate) {
+    init(model: DataModel, delegate: DataEditingDelegate) {
         self.model = model
-        self.editMode = editing
+        self.modelType = model.type
+        self.editsDictionary = model.data
+
+        self.tableItems = model.tableItems
+        self.editMode = true
         self.delegate = delegate
 
-        for item in model.detailItems {
-            self.editsDictionary[item.header] = item.row
+        super.init(style: .insetGrouped)
+    }
+    
+    init(type: FBDataType, delegate: DataEditingDelegate) {
+        self.modelType = type
+        
+        switch type {
+        case .students: self.editsDictionary = FBStudent.emptyNodes
+        case .options: break
+        case .events: break
+        case .contacts: break
         }
-
+        
+        self.tableItems = TableItem.getItems(from: self.editsDictionary)
+        self.editMode = false
+        self.delegate = delegate
+        
         super.init(style: .insetGrouped)
     }
     
@@ -42,7 +62,7 @@ class DataEditingViewController: UITableViewController {
 
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return self.model.detailItems.count
+        return self.tableItems.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -50,11 +70,11 @@ class DataEditingViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.model.detailItems[section].header
+        return self.tableItems[section].header
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = self.model.detailItems[indexPath.section]
+        let item = self.tableItems[indexPath.section]
         let itemText = self.editsDictionary[item.header] as? String ?? ""
 
         switch item.editableView {
@@ -91,11 +111,63 @@ class DataEditingViewController: UITableViewController {
         navigationItem.leftBarButtonItem = cancelButton
         navigationItem.rightBarButtonItem = saveButton
         
-        switch self.model.type {
+        switch self.modelType {
         case .students: title = editMode ? "Edit Student" : "New Student"
         case .options: title = editMode ? "Edit Option" : "New Option"
         case .events: title = editMode ? "Edit Event" : "New Event"
         case .contacts: title = editMode ? "Edit Contact" : "New Contact"
+        }
+    }
+    
+    // MARK: - Functions
+    private func update(model: DataModel) {
+        showLoadingViewOnMainThread()
+        NetworkManager.shared.updateData(at: model.path, with: self.editsDictionary) { [weak self] (error) in
+            guard let self = self else { return }
+            self.dismissLoadingViewOnMainThread()
+            guard error == nil else { self.presentErrorOnMainThread(withError: error!); print("error"); return }
+
+            self.performReloadOnMainThread(with: model)
+            self.dismissOnMainThread()
+        }
+    }
+    
+    private func createStudent() {
+        showLoadingViewOnMainThread()
+        if let email = self.editsDictionary[FBStudent.email.node] as? String, let password = self.editsDictionary[FBStudent.broncoID.node] as? String {
+            NetworkManager.shared.createUser(withEmail: email, andPassword: password) { [weak self] (result) in
+                guard let self = self else { return }
+                switch result {
+                case .success(let id):
+                    self.model = DataModel(id: id, data: self.editsDictionary, type: self.modelType)
+                    NetworkManager.shared.updateData(at: self.model!.path, with: self.model!.data) { [weak self] (error) in
+                        guard let self = self else { return }
+                        self.dismissLoadingViewOnMainThread()
+                        if let error = error {
+                            self.presentErrorOnMainThread(withError: error)
+                        } else {
+                            self.performReloadOnMainThread(with: self.model!)
+                            self.dismissOnMainThread()
+                        }
+                    }
+                case .failure(let error):
+                    self.presentErrorOnMainThread(withError: error)
+                }
+            }
+        }
+    }
+    
+    private func performReloadOnMainThread(with model: DataModel) {
+        DispatchQueue.main.async {
+            self.dismiss(animated: true) {
+                self.delegate.reload(model: model)
+            }
+        }
+    }
+    
+    private func dismissOnMainThread() {
+        DispatchQueue.main.async {
+            self.dismiss(animated: true, completion: nil)
         }
     }
     
@@ -105,36 +177,32 @@ class DataEditingViewController: UITableViewController {
     }
     
     @objc private func saveButtonTapped() {
-        if let error = ValidationChecker.validateText(of: self.editsDictionary, for: self.model.type) {
+        if let error = ValidationChecker.validateText(of: self.editsDictionary, for: self.modelType) {
             presentErrorOnMainThread(withError: error)
             return
         }
-
-        showLoadingViewOnMainThread()
-        NetworkManager.shared.updateData(at: self.model.path, with: self.editsDictionary) { [weak self] (error) in
-            guard let self = self else { return }
-
-            self.dismissLoadingViewOnMainThread()
-            guard error == nil else { self.presentErrorOnMainThread(withError: error!); return }
-
-            self.model.data = self.editsDictionary
-
-            DispatchQueue.main.async {
-                self.dismiss(animated: true) {
-                    self.delegate.reload(model: self.model)
-                }
+        
+        if self.editMode {
+            self.model?.data = self.editsDictionary
+            update(model: self.model!)
+        } else {
+            switch self.modelType {
+//            case .students: createStudent()
+            default:
+                self.model = DataModel(id: UUID().uuidString, data: self.editsDictionary, type: self.modelType)
+                update(model: self.model!)
             }
         }
     }
     
     @objc private func textFieldChanged(textField: UITextField) {
-        let key = self.model.detailItems[textField.tag].header
+        let key = self.tableItems[textField.tag].header
         self.editsDictionary[key] = textField.text
     }
     
     @objc private func datePickerChanged(datePicker: UIDatePicker) {
         let dateString = datePicker.date.convertToString()
-        let key = self.model.detailItems[datePicker.tag].header
+        let key = self.tableItems[datePicker.tag].header
         self.editsDictionary[key] = dateString
     }
 }

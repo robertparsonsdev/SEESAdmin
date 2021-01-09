@@ -10,7 +10,7 @@ import UIKit
 class DataDetailViewController: UITableViewController {
     private let cellID = "DataDetailCellID"
     private var model: DataModel
-    private var detailItems: [DetailTableItem]
+    private var tableItems: [TableItem]
     private let delegate: DataEditingDelegate
     
     // MARK: - Initializers
@@ -20,7 +20,7 @@ class DataDetailViewController: UITableViewController {
     
     init(model: DataModel, delegate: DataEditingDelegate) {
         self.model = model
-        self.detailItems = model.detailItems
+        self.tableItems = model.tableItems
         self.delegate = delegate
 
         super.init(style: .insetGrouped)
@@ -39,12 +39,12 @@ class DataDetailViewController: UITableViewController {
         cell.textLabel?.lineBreakMode = .byWordWrapping
         cell.selectionStyle = .none
 
-        cell.textLabel?.text = self.detailItems[indexPath.section].row
+        cell.textLabel?.text = self.tableItems[indexPath.section].row
         return cell
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return self.detailItems.count
+        return self.tableItems.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -52,7 +52,7 @@ class DataDetailViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.detailItems[section].header
+        return self.tableItems[section].header
     }
     
     // MARK: - Configuration Functions
@@ -67,7 +67,7 @@ class DataDetailViewController: UITableViewController {
     
     // MARK: - Selectors
     @objc func editButtonTapped() {
-        presentDataEditingVC(with: self.model, editing: true, delegate: self)
+        presentDataEditingVC(with: self.model, delegate: self)
     }
 }
 
@@ -76,7 +76,7 @@ extension DataDetailViewController: DataEditingDelegate {
     func reload(model: DataModel) {
         self.delegate.reload(model: model)
 
-        self.detailItems = self.model.detailItems
+        self.tableItems = self.model.tableItems
         self.title = self.model.row
         self.tableView.reloadData()
     }
