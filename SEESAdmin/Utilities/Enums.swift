@@ -12,6 +12,7 @@ enum SEESError: Error {
     case unableToValidate(error: String)
     case unableToUpdateData(error: String)
     case unableToAddStudent(error: String), unableToAddData(error: String)
+    case unableToReloadList
     
     var info: (title: String, message: String) {
         switch self {
@@ -24,6 +25,7 @@ enum SEESError: Error {
         case .unableToUpdateData(let error): return ("Unable to Update", "An error occurred while trying to update. Please make there is an internet connection. \n\n\(error)")
         case .unableToAddStudent(let error): return ("Unable to Add Student", "An error ocurred while trying to add a student. Please restart the app. \n\n\(error)")
         case .unableToAddData(let error): return ("Unable to Add Data", "An error ocurred while trying to add this data. Please restart the app. \n\n\(error)")
+        case .unableToReloadList: return ("Unable to Reload List", "The updated data was saved in the database, but there was an error showing the new data. Please restart the app.")
         }
     }
 }

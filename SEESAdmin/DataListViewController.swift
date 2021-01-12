@@ -120,7 +120,7 @@ class DataListViewController: UIViewController {
     
     private func configureSections(with dataArray: [DataModel], and dictionary: inout [String: [DataModel]]) {
         for data in dataArray.sorted(by: { $0 < $1 }) {
-            let key = data.header
+            let key = data.section
             if dictionary[key] == nil {
                 dictionary[key] = []
             }
@@ -129,62 +129,39 @@ class DataListViewController: UIViewController {
         }
     }
     
-    func deleteFromOldSection(model: DataModel, dictionary: inout [String: [DataModel]], snapshot: inout ListSnapshot) {
-        guard let oldModel = snapshot.itemIdentifiers.first(where: { $0.id == model.id }), var oldSectionItems = dictionary[oldModel.header] else { return }
+    func delete(modelID id: String, fromSection oldSection: String, withDictionary dictionary: inout [String: [DataModel]], andSnapshot snapshot: inout ListSnapshot) -> Bool {
+        guard var oldSectionItems = dictionary[oldSection],
+              let deletionIndex = oldSectionItems.firstIndex(where: { $0.id == id }),
+              let oldModel = oldSectionItems.getItemAt(deletionIndex)
+        else { presentErrorOnMainThread(withError: .unableToReloadList); return false }
         
-        if let deletionIndex = oldSectionItems.firstIndex(where: { oldModel.id == $0.id }) {
-            oldSectionItems.remove(at: deletionIndex)
-            snapshot.deleteItems([oldModel])
-        }
-
+        oldSectionItems.remove(at: deletionIndex)
+        snapshot.deleteItems([oldModel])
+        
         if oldSectionItems.isEmpty {
-            dictionary.removeValue(forKey: oldModel.header)
-            snapshot.deleteSections([oldModel.header])
+            dictionary.removeValue(forKey: oldSection)
+            snapshot.deleteSections([oldSection])
         } else {
-            dictionary[oldModel.header] = oldSectionItems
+            dictionary[oldSection] = oldSectionItems
         }
+        
+        return true
     }
     
-    func insertIntoNewSection(model: DataModel, dictionary: inout [String: [DataModel]], snapshot: inout ListSnapshot) {
-        if var existingSectionItems = dictionary[model.header] {
+    func insert(model: DataModel, intoSection newSection: String, withDictionary dictionary: inout [String: [DataModel]], andSnapshot snapshot: inout ListSnapshot) {
+        if var existingSectionItems = dictionary[newSection] {
             let insertionIndex = existingSectionItems.getInsertionIndex(of: model)
             existingSectionItems.insert(model, at: insertionIndex)
-            dictionary[model.header] = existingSectionItems
+            dictionary[newSection] = existingSectionItems
             
-            snapshot.reinsert(section: model.header, with: existingSectionItems)
+            snapshot.reinsert(section: newSection, with: existingSectionItems)
         } else {
-            dictionary[model.header] = [model]
-            snapshot.insertSectionInOrder(model.header, with: [model])
+            dictionary[newSection] = [model]
+            snapshot.insertSectionInOrder(newSection, with: [model])
         }
     }
     
-    // MARK: - Selectors
-    @objc func addButtonTapped() {
-        presentEmptyDataEditingVC(ofType: self.activeData, delegate: self)
-    }
-}
-
-// MARK: - Delegates
-extension DataListViewController: DataEditingDelegate {
-    func reload(model: DataModel) {
-        var snapshot = self.dataSource.snapshot()
-        
-        switch self.activeData {
-        case .students:
-            deleteFromOldSection(model: model, dictionary: &self.studentSectionDictionary, snapshot: &snapshot)
-            insertIntoNewSection(model: model, dictionary: &self.studentSectionDictionary, snapshot: &snapshot)
-        case .options:
-            deleteFromOldSection(model: model, dictionary: &self.optionSectionDictionary, snapshot: &snapshot)
-            insertIntoNewSection(model: model, dictionary: &self.optionSectionDictionary, snapshot: &snapshot)
-        case .events:
-            deleteFromOldSection(model: model, dictionary: &self.eventSectionDictionary, snapshot: &snapshot)
-            insertIntoNewSection(model: model, dictionary: &self.eventSectionDictionary, snapshot: &snapshot)
-        case .contacts:
-            deleteFromOldSection(model: model, dictionary: &self.contactSectionDictionary, snapshot: &snapshot)
-            insertIntoNewSection(model: model, dictionary: &self.contactSectionDictionary, snapshot: &snapshot)
-        case .none: return
-        }
-        
+    func applyReload(with snapshot: ListSnapshot, and model: DataModel) {
         self.dataSource.apply(snapshot, animatingDifferences: true, completion: {
             DispatchQueue.main.async {
                 self.dataSource.apply(snapshot, animatingDifferences: false)
@@ -194,13 +171,47 @@ extension DataListViewController: DataEditingDelegate {
             }
         })
     }
+    
+    // MARK: - Selectors
+    @objc func addButtonTapped() {
+        presentEmptyDataEditingVC(ofType: self.activeData, delegate: self)
+    }
+}
+
+// MARK: - Delegates
+extension DataListViewController: DataListDelegate {
+    func reloadList(with model: DataModel, forOldSection oldSection: String) {
+        var snapshot = self.dataSource.snapshot()
+        var tempDictionary: [String: [DataModel]]
+        
+        switch self.activeData {
+        case .students: tempDictionary = self.studentSectionDictionary
+        case .options: tempDictionary = self.optionSectionDictionary
+        case .events: tempDictionary = self.eventSectionDictionary
+        case .contacts: tempDictionary = self.contactSectionDictionary
+        case .none: presentErrorOnMainThread(withError: .unableToReloadList); return
+        }
+        
+        if delete(modelID: model.id, fromSection: oldSection, withDictionary: &tempDictionary, andSnapshot: &snapshot) {
+            insert(model: model, intoSection: model.section, withDictionary: &tempDictionary, andSnapshot: &snapshot)
+            applyReload(with: snapshot, and: model)
+        }
+        
+        switch self.activeData {
+        case .students: self.studentSectionDictionary = tempDictionary
+        case .options: self.optionSectionDictionary = tempDictionary
+        case .events: self.eventSectionDictionary = tempDictionary
+        case .contacts: self.contactSectionDictionary = tempDictionary
+        case .none: presentErrorOnMainThread(withError: .unableToReloadList); return
+        }
+    }
 }
 
 extension DataListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let listItem = self.dataSource.itemIdentifier(for: indexPath) else { return }
         
-        let detailVC = DataDetailViewController(model: listItem, delegate: self)
+        let detailVC = DataDetailViewController(model: listItem, listDelegate: self)
         let navController = UINavigationController(rootViewController: detailVC)
         showDetailViewController(navController, sender: self)
     }
@@ -209,6 +220,11 @@ extension DataListViewController: UITableViewDelegate {
 class ListDataSource: UITableViewDiffableDataSource<String, DataModel> {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let item = itemIdentifier(for: IndexPath(row: 0, section: section)) else { return nil }
-        return item.header
+        return item.section
     }
+}
+
+// MARK: - Protocols
+protocol DataListDelegate {
+    func reloadList(with model: DataModel, forOldSection oldSection: String)
 }

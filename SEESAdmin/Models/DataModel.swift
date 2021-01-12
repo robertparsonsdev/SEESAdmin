@@ -41,7 +41,7 @@ struct DataModel: Identifiable {
         }
     }
     
-    var header: String {
+    var section: String {
         switch self.type {
         case .students:
             let lastName = self.data[FBStudent.lastName.node] as! String

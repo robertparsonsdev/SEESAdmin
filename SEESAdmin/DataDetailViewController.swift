@@ -11,17 +11,17 @@ class DataDetailViewController: UITableViewController {
     private let cellID = "DataDetailCellID"
     private var model: DataModel
     private var tableItems: [TableItem]
-    private let delegate: DataEditingDelegate
+    private let listDelegate: DataListDelegate
     
     // MARK: - Initializers
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(model: DataModel, delegate: DataEditingDelegate) {
+    init(model: DataModel, listDelegate: DataListDelegate) {
         self.model = model
         self.tableItems = model.tableItems
-        self.delegate = delegate
+        self.listDelegate = listDelegate
 
         super.init(style: .insetGrouped)
     }
@@ -67,18 +67,21 @@ class DataDetailViewController: UITableViewController {
     
     // MARK: - Selectors
     @objc func editButtonTapped() {
-        presentDataEditingVC(with: self.model, delegate: self)
+        presentDataEditingVC(with: self.model, detailDelegate: self, listDelegate: self.listDelegate)
     }
 }
 
 // MARK: - Delegates
-extension DataDetailViewController: DataEditingDelegate {
-    func reload(model: DataModel) {
-        self.delegate.reload(model: model)
-
+extension DataDetailViewController: DataDetailDelegate {
+    func reloadDetail(with model: DataModel) {
         self.model = model
         self.tableItems = model.tableItems
         self.title = model.row
         self.tableView.reloadData()
     }
+}
+
+// MARK: - Protocols
+protocol DataDetailDelegate {
+    func reloadDetail(with model: DataModel)
 }

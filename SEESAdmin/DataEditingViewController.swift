@@ -14,26 +14,37 @@ class DataEditingViewController: UITableViewController {
     private var model: DataModel?
     private let modelType: FBDataType
     private var editsDictionary: [String: Any] = [:]
+    private let oldRow: String
+    private let oldSection: String
 
     private let tableItems: [TableItem]
     private let editMode: Bool
-    private let delegate: DataEditingDelegate
+    private var detailDelegate: DataDetailDelegate?
+    private let listDelegate: DataListDelegate
     
     // MARK: - Initializers
-    init(model: DataModel, delegate: DataEditingDelegate) {
+    // for reloading
+    init(model: DataModel, detailDelegate: DataDetailDelegate, listDelegate: DataListDelegate) {
         self.model = model
         self.modelType = model.type
         self.editsDictionary = model.data
+        self.oldRow = model.row
+        self.oldSection = model.section
 
         self.tableItems = model.tableItems
         self.editMode = true
-        self.delegate = delegate
+        
+        self.detailDelegate = detailDelegate
+        self.listDelegate = listDelegate
 
         super.init(style: .insetGrouped)
     }
     
-    init(type: FBDataType, delegate: DataEditingDelegate) {
+    // for adding
+    init(type: FBDataType, listDelegate: DataListDelegate) {
         self.modelType = type
+        self.oldRow = ""
+        self.oldSection = ""
         
         switch type {
         case .students: self.editsDictionary = FBStudent.emptyNodes
@@ -44,7 +55,7 @@ class DataEditingViewController: UITableViewController {
         
         self.tableItems = TableItem.getItems(from: self.editsDictionary)
         self.editMode = false
-        self.delegate = delegate
+        self.listDelegate = listDelegate
         
         super.init(style: .insetGrouped)
     }
@@ -160,7 +171,11 @@ class DataEditingViewController: UITableViewController {
     private func performReloadOnMainThread(with model: DataModel) {
         DispatchQueue.main.async {
             self.dismiss(animated: true) {
-                self.delegate.reload(model: model)
+                self.detailDelegate?.reloadDetail(with: model)
+                
+                if model.row != self.oldRow || model.section != self.oldSection {
+                    self.listDelegate.reloadList(with: model, forOldSection: self.oldSection)
+                }
             }
         }
     }
@@ -205,9 +220,4 @@ class DataEditingViewController: UITableViewController {
         let key = self.tableItems[datePicker.tag].header
         self.editsDictionary[key] = dateString
     }
-}
-
-// MARK: - Protocols
-protocol DataEditingDelegate {
-    func reload(model: DataModel)
 }
