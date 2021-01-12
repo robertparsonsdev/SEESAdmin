@@ -122,7 +122,7 @@ class DataEditingViewController: UITableViewController {
     // MARK: - Functions
     private func update(model: DataModel) {
         showLoadingViewOnMainThread()
-        NetworkManager.shared.updateData(at: model.path, with: self.editsDictionary) { [weak self] (error) in
+        NetworkManager.shared.updateData(at: model.path, with: model.data) { [weak self, model] (error) in
             guard let self = self else { return }
             self.dismissLoadingViewOnMainThread()
             guard error == nil else { self.presentErrorOnMainThread(withError: error!); print("error"); return }

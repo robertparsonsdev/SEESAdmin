@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DataModel {
+struct DataModel: Identifiable {
     let id: String
     var data: [String: Any]
     let type: FBDataType

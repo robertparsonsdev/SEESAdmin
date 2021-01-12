@@ -76,8 +76,9 @@ extension DataDetailViewController: DataEditingDelegate {
     func reload(model: DataModel) {
         self.delegate.reload(model: model)
 
-        self.tableItems = self.model.tableItems
-        self.title = self.model.row
+        self.model = model
+        self.tableItems = model.tableItems
+        self.title = model.row
         self.tableView.reloadData()
     }
 }

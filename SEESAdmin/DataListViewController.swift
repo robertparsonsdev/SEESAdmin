@@ -129,6 +129,35 @@ class DataListViewController: UIViewController {
         }
     }
     
+    func deleteFromOldSection(model: DataModel, dictionary: inout [String: [DataModel]], snapshot: inout ListSnapshot) {
+        guard let oldModel = snapshot.itemIdentifiers.first(where: { $0.id == model.id }), var oldSectionItems = dictionary[oldModel.header] else { return }
+        
+        if let deletionIndex = oldSectionItems.firstIndex(where: { oldModel.id == $0.id }) {
+            oldSectionItems.remove(at: deletionIndex)
+            snapshot.deleteItems([oldModel])
+        }
+
+        if oldSectionItems.isEmpty {
+            dictionary.removeValue(forKey: oldModel.header)
+            snapshot.deleteSections([oldModel.header])
+        } else {
+            dictionary[oldModel.header] = oldSectionItems
+        }
+    }
+    
+    func insertIntoNewSection(model: DataModel, dictionary: inout [String: [DataModel]], snapshot: inout ListSnapshot) {
+        if var existingSectionItems = dictionary[model.header] {
+            let insertionIndex = existingSectionItems.getInsertionIndex(of: model)
+            existingSectionItems.insert(model, at: insertionIndex)
+            dictionary[model.header] = existingSectionItems
+            
+            snapshot.reinsert(section: model.header, with: existingSectionItems)
+        } else {
+            dictionary[model.header] = [model]
+            snapshot.insertSectionInOrder(model.header, with: [model])
+        }
+    }
+    
     // MARK: - Selectors
     @objc func addButtonTapped() {
         presentEmptyDataEditingVC(ofType: self.activeData, delegate: self)
@@ -139,13 +168,31 @@ class DataListViewController: UIViewController {
 extension DataListViewController: DataEditingDelegate {
     func reload(model: DataModel) {
         var snapshot = self.dataSource.snapshot()
-        snapshot.insertAndReload(model: model)
-        #warning("update dictionaries")
-        self.dataSource.apply(snapshot, animatingDifferences: true, completion: nil)
         
-        if let indexPath = self.dataSource.indexPath(for: model) {
-            self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
+        switch self.activeData {
+        case .students:
+            deleteFromOldSection(model: model, dictionary: &self.studentSectionDictionary, snapshot: &snapshot)
+            insertIntoNewSection(model: model, dictionary: &self.studentSectionDictionary, snapshot: &snapshot)
+        case .options:
+            deleteFromOldSection(model: model, dictionary: &self.optionSectionDictionary, snapshot: &snapshot)
+            insertIntoNewSection(model: model, dictionary: &self.optionSectionDictionary, snapshot: &snapshot)
+        case .events:
+            deleteFromOldSection(model: model, dictionary: &self.eventSectionDictionary, snapshot: &snapshot)
+            insertIntoNewSection(model: model, dictionary: &self.eventSectionDictionary, snapshot: &snapshot)
+        case .contacts:
+            deleteFromOldSection(model: model, dictionary: &self.contactSectionDictionary, snapshot: &snapshot)
+            insertIntoNewSection(model: model, dictionary: &self.contactSectionDictionary, snapshot: &snapshot)
+        case .none: return
         }
+        
+        self.dataSource.apply(snapshot, animatingDifferences: true, completion: {
+            DispatchQueue.main.async {
+                self.dataSource.apply(snapshot, animatingDifferences: false)
+                if let indexPath = self.dataSource.indexPath(for: model) {
+                    self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                }
+            }
+        })
     }
 }
 
