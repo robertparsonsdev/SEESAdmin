@@ -24,11 +24,11 @@ struct ValidationChecker {
         for (key, value) in dictionary {
             let string = value as! String
             switch key {
-            case FBStudent.email.node:
+            case FBStudent.email.key:
                 if !(string ~= Validations.studentEmail.regex) {
                     errorString.append(Validations.studentEmail.error)
                 }
-            case FBStudent.broncoID.node:
+            case FBStudent.broncoID.key:
                 if !(string ~= Validations.broncoID.regex) {
                     errorString.append(Validations.broncoID.error)
                 }

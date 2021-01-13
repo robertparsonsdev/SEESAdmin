@@ -47,13 +47,13 @@ class DataEditingViewController: UITableViewController {
         self.oldSection = ""
         
         switch type {
-        case .students: self.editsDictionary = FBStudent.emptyNodes
-        case .options: break
-        case .events: break
-        case .contacts: break
+        case .students: self.editsDictionary = FBStudent.emptyKeys
+        case .options: self.editsDictionary = FBOption.emptyKeys
+        case .events: self.editsDictionary = FBEvent.emptyKeys
+        case .contacts: self.editsDictionary = FBContact.emptyKeys
         }
         
-        self.tableItems = TableItem.getItems(from: self.editsDictionary)
+        self.tableItems = TableItem.getItems(from: self.editsDictionary, for: type)
         self.editMode = false
         self.listDelegate = listDelegate
         
@@ -145,7 +145,7 @@ class DataEditingViewController: UITableViewController {
     
     private func createStudent() {
         showLoadingViewOnMainThread()
-        if let email = self.editsDictionary[FBStudent.email.node] as? String, let password = self.editsDictionary[FBStudent.broncoID.node] as? String {
+        if let email = self.editsDictionary[FBStudent.email.key] as? String, let password = self.editsDictionary[FBStudent.broncoID.key] as? String {
             NetworkManager.shared.createUser(withEmail: email, andPassword: password) { [weak self] (result) in
                 guard let self = self else { return }
                 switch result {

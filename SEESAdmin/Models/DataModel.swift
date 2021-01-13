@@ -12,52 +12,36 @@ struct DataModel: Identifiable {
     var data: [String: Any]
     let type: FBDataType
     
-    init(id: String, data: [String: Any], type: FBDataType) {
-        self.id = id
-        self.data = data
-        self.type = type
-    }
-    
-    init(id: String, type: FBDataType) {
-        self.type = type
-        self.id = id
-        
-        switch type {
-        case .students: self.data = FBStudent.emptyNodes
-        default: self.data = [:]
-        }
-    }
-    
     var path: String {
         return "/\(self.type)/\(self.id)"
     }
     
     var row: String {
         switch self.type {
-        case .students: return "\(self.data[FBStudent.lastName.node] ?? "studentError"), \(self.data[FBStudent.firstName.node] ?? "studentError")"
-        case .options: return self.data[FBOption.optionName] as? String ?? "optionError"
-        case .events: return self.data[FBEvent.eventName] as? String ?? "eventError"
-        case .contacts: return self.data[FBContact.name] as? String ?? "contactError"
+        case .students: return "\(self.data[FBStudent.lastName.key] ?? "studentError"), \(self.data[FBStudent.firstName.key] ?? "studentError")"
+        case .options: return self.data[FBOption.optionName.key] as? String ?? "optionError"
+        case .events: return self.data[FBEvent.eventName.key] as? String ?? "eventError"
+        case .contacts: return self.data[FBContact.name.key] as? String ?? "contactError"
         }
     }
     
     var section: String {
         switch self.type {
         case .students:
-            let lastName = self.data[FBStudent.lastName.node] as! String
+            let lastName = self.data[FBStudent.lastName.key] as! String
             if let letter = lastName.first {
                 return String(letter).lowercased()
             } else {
                 return "section-error"
             }
-        case .options: return self.data[FBOption.majorName] as? String ?? "section-error" // lowercased
+        case .options: return self.data[FBOption.majorName.key] as? String ?? "section-error" // lowercased
         case .events: return "events"
         case .contacts: return "contacts"
         }
     }
     
     var tableItems: [TableItem] {
-        return TableItem.getItems(from: self.data)
+        return TableItem.getItems(from: self.data, for: self.type)
     }
 }
 
@@ -81,7 +65,7 @@ extension DataModel: Comparable {
         case .students: return lhs.row < rhs.row
         case .options: return lhs.row < rhs.row
         case .events:
-            let lhsDateString = lhs.data[FBEvent.startDate] as! String, rhsDateString = rhs.data[FBEvent.startDate] as! String
+            let lhsDateString = lhs.data[FBEvent.startDate.key] as! String, rhsDateString = rhs.data[FBEvent.startDate.key] as! String
             return lhsDateString.convertToDate() < rhsDateString.convertToDate()
         case .contacts: return lhs.row < rhs.row
         }
@@ -93,23 +77,36 @@ struct TableItem {
     let row: String
     var editableView: EditableViewType = .textField
     
-    static func getItems(from dictionary: [String: Any]) -> [Self] {
+    static func getItems(from dictionary: [String: Any], for type: FBDataType) -> [Self] {
         var items: [TableItem] = []
-        for (key, value) in dictionary {
+        let dataCases: [FBDataProtocol]
+        switch type {
+        case .students: dataCases = FBStudent.allCases
+        case .options: dataCases = FBOption.allCases
+        case .events: dataCases = FBEvent.allCases
+        case .contacts: dataCases = FBContact.allCases
+        }
+        
+        for dataCase in dataCases {
+            let header = dataCase.key
             let row: String
-            switch value {
-            case is String: row = value as! String
-            case is Int: row = String(value as! Int)
-            default: row = "row-error"
+            
+            if let value = dictionary[header] {
+                switch value {
+                case is String: row = value as! String
+                case is Int: row = String(value as! Int)
+                default: row = "row-error"
+                }
+            } else {
+                row = "row-error"
             }
             
-            switch key {
-            case FBEvent.startDate, FBEvent.endDate: items.append(TableItem(header: key, row: row, editableView: .datePicker))
-            default: items.append(TableItem(header: key, row: row))
+            switch header {
+            case FBEvent.startDate.key, FBEvent.endDate.key: items.append(TableItem(header: header, row: row, editableView: .datePicker))
+            default: items.append(TableItem(header: header, row: row))
             }
         }
         
-        items.sort(by: { $0.header < $1.header })
         return items
     }
 }

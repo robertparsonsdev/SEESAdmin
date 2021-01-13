@@ -37,94 +37,137 @@ enum FBDataType: String {
     case contacts = "contacts"
 }
 
-enum FBStudent: String, CaseIterable {
-    case advisor = "advisor"
-    case advisorOffice = "advisorOffice"
-    case broncoID = "broncoID"
-    case email = "email"
-    case firstName = "firstName"
-    case lastName = "lastName"
+protocol FBDataProtocol {
+    var key: String { get }
+    static var emptyKeys: [String: Any] { get }
+}
+
+enum FBStudent: FBDataProtocol, CaseIterable {
+    case firstName
+    case lastName
+    case email
+    case broncoID
+    case advisor
+    case advisorOffice
     
-    var node: String {
+    var key: String {
         switch self {
-        case .advisor: return FBStudent.advisor.rawValue
-        case .advisorOffice: return FBStudent.advisorOffice.rawValue
-        case .broncoID: return FBStudent.broncoID.rawValue
-        case .email: return FBStudent.email.rawValue
-        case .firstName: return FBStudent.firstName.rawValue
-        case .lastName: return FBStudent.lastName.rawValue
+        case .firstName: return "first-name"
+        case .lastName: return "last-name"
+        case .email: return "email"
+        case .broncoID: return "bronco-id"
+        case .advisor: return "advisor"
+        case .advisorOffice: return "advisor-office"
         }
     }
     
-    static var emptyNodes: [String: Any] {
+    static var emptyKeys: [String: Any] {
         var dictionary: [String: Any] = [:]
-        for value in FBStudent.allCases {
-            dictionary[value.node] = ""
+        for value in Self.allCases {
+            dictionary[value.key] = ""
         }
         return dictionary
     }
 }
 
-enum FBMajor: String {
-    case biology = "Biology"
-    case biotech = "Biotechnology"
-    case chem = "Chemistry"
-    case compSci = "Computer Science"
-    case envBio = "Environmental Biology"
-    case geo = "Geology"
-    case kin = "Ginesiology"
-    case math = "Mathematics"
-    case phy = "Physics"
-    case none = "none"
+enum FBOption: FBDataProtocol, CaseIterable {
+    case majorName
+    case optionName
+    case curriculumSheet
+    case flowchart
+    case roadMap
+    
+    var key: String {
+        switch self {
+        case .majorName: return "major-name"
+        case .optionName: return "option-name"
+        case .curriculumSheet: return "curriculum-sheet"
+        case .flowchart: return "flowchart"
+        case .roadMap: return "road-map"
+        }
+    }
+    
+    static var emptyKeys: [String : Any] {
+        var dictionary: [String: Any] = [:]
+        for value in Self.allCases {
+            dictionary[value.key] = ""
+        }
+        return dictionary
+    }
 }
 
-enum FBOption {
-    static let majorName = "majorName"
-    static let optionName = "optionName"
-    static let curriculumSheet = "curriculumSheet"
-    static let flowchart = "flowchart"
-    static let roadMap = "roadMap"
+enum FBEvent: FBDataProtocol, CaseIterable {
+    case eventName
+    case startDate
+    case endDate
+    case locationName
+    case locationAddress
+    case locationCity
+    case locationState
+    case locationZIP
+    case locationCountry
+    case notes
+    
+    var key: String {
+        switch self {
+        case .eventName: return "event-name"
+        case .startDate: return "start-date"
+        case .endDate: return "end-date"
+        case .locationName: return "location-name"
+        case .locationAddress: return "location-address"
+        case .locationCity: return "location-city"
+        case .locationState: return "location-state"
+        case .locationZIP: return "location-zip"
+        case .locationCountry: return "location-country"
+        case .notes: return "notes"
+        }
+    }
+    
+    static var emptyKeys: [String : Any] {
+        var dictionary: [String: Any] = [:]
+        for value in Self.allCases {
+            dictionary[value.key] = ""
+        }
+        return dictionary
+    }
 }
 
-enum FBEvent {
-    static let eventName = "eventName"
-    static let startDate = "startDate"
-    static let endDate = "endDate"
-    static let locationName = "locationName"
-    static let locationAddress = "locationAddress"
-    static let locationCity = "locationCity"
-    static let locationState = "locationState"
-    static let locationZIP = "locationZIP"
-    static let locationCountry = "locationCountry"
-    static let notes = "notes"
-}
-
-enum FBContact {
-    static let name = "name"
-    static let title = "title"
-    static let office = "office"
-    static let phone = "phone"
-    static let email = "email"
-    static let order = "order"
-    static let monday = "monday"
-    static let tuesday = "tuesday"
-    static let wednesday = "wednesday"
-    static let thursday = "thursday"
-    static let friday = "friday"
-}
-
-enum Symbol {
-    static let home = UIImage(systemName: "house.fill")!
-    static let calendar = UIImage(systemName: "calendar")!
-    static let envelope = UIImage(systemName: "envelope.fill")!
-    static let refresh = UIImage(systemName: "arrow.clockwise")!
-    static let phone = UIImage(systemName: "phone.fill")!
-}
-
-enum ContactImage {
-    case logo
-    case alas
-    case dora
+enum FBContact: FBDataProtocol, CaseIterable {
+    case monday
+    case tuesday
+    case wednesday
+    case thursday
+    case friday
+    case name
+    case title
+    case office
+    case phone
+    case email
+    case order
+    
+    var key: String {
+        switch self {
+        case .monday: return "monday"
+        case .tuesday: return "tuesday"
+        case .wednesday: return "wednesday"
+        case .thursday: return "thursday"
+        case .friday: return "friday"
+        case .name: return "name"
+        case .title: return "title"
+        case .office: return "office"
+        case .phone: return "phone"
+        case .email: return "email"
+        case .order: return "order"
+        }
+    }
+    
+    static var emptyKeys: [String: Any] {
+        var dictionary: [String: Any] = [:]
+        for value in Self.allCases {
+            dictionary[value.key] = ""
+        }
+        return dictionary
+    }
 }
 
 enum Validations {
