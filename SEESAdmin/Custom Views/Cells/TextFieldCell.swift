@@ -31,9 +31,12 @@ class TextFieldCell: UITableViewCell {
         textField.anchor(top: nil, leading: contentView.layoutMarginsGuide.leadingAnchor, bottom: nil, trailing: contentView.layoutMarginsGuide.trailingAnchor, y: contentView.centerYAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     }
     
-    public func set(text: String, tag: Int, target: Any, action: Selector) {
+    public func set(text: String, tag: Int, target: Any, action: Selector, firstResponder: Bool) {
         self.textField.text = text
         self.textField.tag = tag
         self.textField.addTarget(target, action: action, for: .editingChanged)
+        if firstResponder {
+            self.textField.becomeFirstResponder()
+        }
     }
 }

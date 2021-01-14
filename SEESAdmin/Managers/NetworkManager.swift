@@ -16,6 +16,8 @@ class NetworkManager {
     
     func signIn() {
         Auth.auth().signIn(withEmail: "sees@cpp.edu", password: "463849276") { (result, error) in
+            guard error == nil else { print("ERROR SIGNING IN"); return }
+            
             print("signed in")
         }
     }

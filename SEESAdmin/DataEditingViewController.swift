@@ -103,7 +103,7 @@ class DataEditingViewController: UITableViewController {
         switch item.editableView {
         case .textField:
             let cell = tableView.dequeueReusableCell(withIdentifier: self.textFieldCellID, for: indexPath) as! TextFieldCell
-            cell.set(text: itemText, tag: indexPath.section, target: self, action: #selector(textFieldChanged))
+            cell.set(text: itemText, tag: indexPath.section, target: self, action: #selector(textFieldChanged), firstResponder: indexPath.section == 0)
             return cell
         case .datePicker:
             let cell = tableView.dequeueReusableCell(withIdentifier: self.dataPickerCellID, for: indexPath) as! DatePickerCell

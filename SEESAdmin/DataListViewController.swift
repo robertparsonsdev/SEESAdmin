@@ -25,11 +25,11 @@ class DataListViewController: UIViewController {
     private var dataSource: ListDataSource!
     typealias ListSnapshot = NSDiffableDataSourceSnapshot<String, DataModel>
     
-    private var activeData: FBDataType! {
+    private var activeType: FBDataType! {
         didSet {
-            guard activeData != oldValue else { return }
+            guard activeType != oldValue else { return }
             
-            switch activeData {
+            switch activeType {
             case .students: applyListSnapshot(with: self.studentSectionDictionary, animate: false)
             case .options: applyListSnapshot(with: self.optionSectionDictionary, animate: false)
             case .events: applyListSnapshot(with: self.eventSectionDictionary, animate: false)
@@ -78,8 +78,8 @@ class DataListViewController: UIViewController {
     }
     
     // MARK: - Functions
-    public func show(_ data: FBDataType) {
-        self.activeData = data
+    public func show(_ type: FBDataType) {
+        self.activeType = type
     }
     
     private func fetchData() {
@@ -93,7 +93,7 @@ class DataListViewController: UIViewController {
                 self.configureSections(with: dataDictionary[.options] ?? [], and: &self.optionSectionDictionary)
                 self.configureSections(with: dataDictionary[.events] ?? [], and: &self.eventSectionDictionary)
                 self.configureSections(with: dataDictionary[.contacts] ?? [], and: &self.contactSectionDictionary)
-                DispatchQueue.main.async { self.activeData = .students }
+                DispatchQueue.main.async { self.activeType = .students }
                 
             case .failure(let error):
                 self.presentErrorOnMainThread(withError: .unableToFetchData, optionalMessage: "\n\n\(error.localizedDescription)")
@@ -110,22 +110,22 @@ class DataListViewController: UIViewController {
         snapshot.appendSections(sections)
 
         for section in sections {
-            if let dataArray = dictionary[section] {
-                snapshot.appendItems(dataArray, toSection: section)
+            if let models = dictionary[section] {
+                snapshot.appendItems(models, toSection: section)
             }
         }
 
         self.dataSource.apply(snapshot, animatingDifferences: animate, completion: nil)
     }
     
-    private func configureSections(with dataArray: [DataModel], and dictionary: inout [String: [DataModel]]) {
-        for data in dataArray.sorted(by: { $0 < $1 }) {
-            let key = data.section
+    private func configureSections(with models: [DataModel], and dictionary: inout [String: [DataModel]]) {
+        for model in models.sorted(by: { $0 < $1 }) {
+            let key = model.section
             if dictionary[key] == nil {
                 dictionary[key] = []
             }
 
-            dictionary[key]?.append(data)
+            dictionary[key]?.append(model)
         }
     }
     
@@ -161,15 +161,13 @@ class DataListViewController: UIViewController {
         }
     }
     
-    private func applyReload(with snapshot: ListSnapshot, and model: DataModel, selectRow select: Bool) {
+    private func applyReload(with snapshot: ListSnapshot, and model: DataModel) {
         self.dataSource.apply(snapshot, animatingDifferences: true, completion: {
             DispatchQueue.main.async {
                 self.dataSource.apply(snapshot, animatingDifferences: false)
                 
-                if select {
-                    if let indexPath = self.dataSource.indexPath(for: model) {
-                        self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-                    }
+                if let indexPath = self.dataSource.indexPath(for: model) {
+                    self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
                 }
             }
         })
@@ -195,7 +193,7 @@ class DataListViewController: UIViewController {
     
     // MARK: - Selectors
     @objc func addButtonTapped() {
-        presentEmptyDataEditingVC(ofType: self.activeData, delegate: self)
+        presentEmptyDataEditingVC(ofType: self.activeType, delegate: self)
     }
 }
 
@@ -206,8 +204,10 @@ extension DataListViewController: DataListDelegate {
         var tempDictionary = getDictionary(for: model.type)
         
         insert(model: model, intoSection: model.section, withDictionary: &tempDictionary, andSnapshot: &snapshot)
-        applyReload(with: snapshot, and: model, selectRow: false)
+        applyReload(with: snapshot, and: model)
         saveDictionary(tempDictionary, for: model.type)
+        
+        pushDetailVC(with: model)
     }
     
     func reloadList(with model: DataModel, forOldSection oldSection: String) {
@@ -216,7 +216,7 @@ extension DataListViewController: DataListDelegate {
         
         if delete(modelID: model.id, fromSection: oldSection, withDictionary: &tempDictionary, andSnapshot: &snapshot) {
             insert(model: model, intoSection: model.section, withDictionary: &tempDictionary, andSnapshot: &snapshot)
-            applyReload(with: snapshot, and: model, selectRow: true)
+            applyReload(with: snapshot, and: model)
             saveDictionary(tempDictionary, for: model.type)
         }
     }
@@ -224,9 +224,13 @@ extension DataListViewController: DataListDelegate {
 
 extension DataListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let listItem = self.dataSource.itemIdentifier(for: indexPath) else { return }
+        guard let model = self.dataSource.itemIdentifier(for: indexPath) else { return }
         
-        let detailVC = DataDetailViewController(model: listItem, listDelegate: self)
+        pushDetailVC(with: model)
+    }
+    
+    private func pushDetailVC(with model: DataModel) {
+        let detailVC = DataDetailViewController(model: model, listDelegate: self)
         let navController = UINavigationController(rootViewController: detailVC)
         showDetailViewController(navController, sender: self)
     }
