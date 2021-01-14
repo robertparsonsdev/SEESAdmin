@@ -22,7 +22,7 @@ enum SEESError: Error {
         case .unableToFetchEvents: return ("Unable to Fetch Events", "Please ensure that there is an internent connection or try restarting the app.")
         case .unableToFetchContacts: return ("Unable to Fetch Contacts", "Please ensure that there is an internent connection or try restarting the app.")
         case .unableToValidate(let error): return ("Unable to Validate Input", "One or more errors occurred: \(error)")
-        case .unableToUpdateData(let error): return ("Unable to Update", "An error occurred while trying to update. Please make there is an internet connection. \n\n\(error)")
+        case .unableToUpdateData(let error): return ("Unable to Update", "An error occurred while trying to update. Please make there is an internet connection or try restarting the app. \n\n\(error)")
         case .unableToAddStudent(let error): return ("Unable to Add Student", "An error ocurred while trying to add a student. Please restart the app. \n\n\(error)")
         case .unableToAddData(let error): return ("Unable to Add Data", "An error ocurred while trying to add this data. Please restart the app. \n\n\(error)")
         case .unableToReloadList: return ("Unable to Reload List", "The updated data was saved in the database, but there was an error showing the new data. Please restart the app.")
@@ -167,23 +167,5 @@ enum FBContact: FBDataProtocol, CaseIterable {
             dictionary[value.key] = ""
         }
         return dictionary
-    }
-}
-
-enum Validations {
-    case studentEmail, broncoID
-    
-    var regex: String {
-        switch self {
-        case .studentEmail: return "^[a-zA-Z0-9]+@cpp.edu$"
-        case .broncoID: return "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$"
-        }
-    }
-    
-    var error: String {
-        switch self {
-        case .studentEmail: return "\n\nEnsure the email only contains letters and numbers and uses \"@cpp.edu\"."
-        case .broncoID: return "\n\nEnsure the Bronco ID is only digits and is 9 digits long."
-        }
     }
 }

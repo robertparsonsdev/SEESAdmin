@@ -39,3 +39,21 @@ struct ValidationChecker {
         return errorString.isEmpty ? nil : errorString
     }
 }
+
+enum Validations {
+    case studentEmail, broncoID
+    
+    var regex: String {
+        switch self {
+        case .studentEmail: return "^[a-zA-Z0-9]+@cpp.edu$"
+        case .broncoID: return "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$"
+        }
+    }
+    
+    var error: String {
+        switch self {
+        case .studentEmail: return "\n\nEnsure the email only contains letters and numbers and uses \"@cpp.edu\"."
+        case .broncoID: return "\n\nEnsure the Bronco ID is only digits and is 9 digits long."
+        }
+    }
+}

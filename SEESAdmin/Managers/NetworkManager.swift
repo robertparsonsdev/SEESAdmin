@@ -57,22 +57,4 @@ class NetworkManager {
             completed(nil)
         }
     }
-    
-    func add(at path: String, with dictionary: [String: Any], completed: @escaping (SEESError?) -> Void) {
-        updateData(at: path, with: dictionary) { (error) in
-            completed(error)
-        }
-    }
-    
-    func createUser(withEmail email: String, andPassword password: String, completed: @escaping (Result<String, SEESError>) -> Void) {
-        Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
-            guard error == nil else { completed(.failure(.unableToAddStudent(error: error!.localizedDescription))); return }
-            
-            if let id = result?.user.uid {
-                completed(.success(id))
-            } else {
-                completed(.failure(.unableToAddStudent(error: "")))
-            }
-        }
-    }
 }

@@ -22,6 +22,18 @@ class DataEditingViewController: UITableViewController {
     private var detailDelegate: DataDetailDelegate?
     private let listDelegate: DataListDelegate
     
+    private lazy var updateButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Update Data", style: .done, target: self, action: #selector(updateButtonTapped))
+        button.tintColor = .systemTeal
+        return button
+    }()
+    
+    private lazy var addButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Add Data", style: .done, target: self, action: #selector(addButtonTapped))
+        button.tintColor = .systemTeal
+        return button
+    }()
+    
     // MARK: - Initializers
     // for reloading
     init(model: DataModel, detailDelegate: DataDetailDelegate, listDelegate: DataListDelegate) {
@@ -103,7 +115,7 @@ class DataEditingViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
     }
-    
+
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
     }
@@ -116,11 +128,9 @@ class DataEditingViewController: UITableViewController {
 
         let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonTapped))
         cancelButton.tintColor = .systemRed
-        let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
-        saveButton.tintColor = .systemTeal
 
         navigationItem.leftBarButtonItem = cancelButton
-        navigationItem.rightBarButtonItem = saveButton
+        navigationItem.rightBarButtonItem = self.editMode ? self.updateButton : self.addButton
         
         switch self.modelType {
         case .students: title = editMode ? "Edit Student" : "New Student"
@@ -131,58 +141,38 @@ class DataEditingViewController: UITableViewController {
     }
     
     // MARK: - Functions
-    private func update(model: DataModel) {
+    private func updateFirebase(with model: DataModel) {
         showLoadingViewOnMainThread()
         NetworkManager.shared.updateData(at: model.path, with: model.data) { [weak self, model] (error) in
             guard let self = self else { return }
             self.dismissLoadingViewOnMainThread()
-            guard error == nil else { self.presentErrorOnMainThread(withError: error!); print("error"); return }
+            guard error == nil else { self.presentErrorOnMainThread(withError: error!); return }
 
-            self.performReloadOnMainThread(with: model)
-            self.dismissOnMainThread()
+            self.dismissAndReloadOnMainThread(with: model)
         }
     }
     
-    private func createStudent() {
-        showLoadingViewOnMainThread()
-        if let email = self.editsDictionary[FBStudent.email.key] as? String, let password = self.editsDictionary[FBStudent.broncoID.key] as? String {
-            NetworkManager.shared.createUser(withEmail: email, andPassword: password) { [weak self] (result) in
-                guard let self = self else { return }
-                switch result {
-                case .success(let id):
-                    self.model = DataModel(id: id, data: self.editsDictionary, type: self.modelType)
-                    NetworkManager.shared.updateData(at: self.model!.path, with: self.model!.data) { [weak self] (error) in
-                        guard let self = self else { return }
-                        self.dismissLoadingViewOnMainThread()
-                        if let error = error {
-                            self.presentErrorOnMainThread(withError: error)
-                        } else {
-                            self.performReloadOnMainThread(with: self.model!)
-                            self.dismissOnMainThread()
-                        }
-                    }
-                case .failure(let error):
-                    self.presentErrorOnMainThread(withError: error)
-                }
-            }
-        }
-    }
-    
-    private func performReloadOnMainThread(with model: DataModel) {
+    private func dismissAndReloadOnMainThread(with model: DataModel) {
         DispatchQueue.main.async {
             self.dismiss(animated: true) {
-                self.detailDelegate?.reloadDetail(with: model)
-                
-                if model.row != self.oldRow || model.section != self.oldSection {
-                    self.listDelegate.reloadList(with: model, forOldSection: self.oldSection)
+                if self.editMode {
+                    self.detailDelegate?.reloadDetail(with: model)
+                    if model.row != self.oldRow || model.section != self.oldSection {
+                        self.listDelegate.reloadList(with: model, forOldSection: self.oldSection)
+                    }
+                } else {
+                    self.listDelegate.add(model: model)
                 }
             }
         }
     }
     
-    private func dismissOnMainThread() {
-        DispatchQueue.main.async {
-            self.dismiss(animated: true, completion: nil)
+    private func validateEditsDictionary() -> Bool {
+        if let error = ValidationChecker.validateText(of: self.editsDictionary, for: self.modelType) {
+            presentErrorOnMainThread(withError: error)
+            return false
+        } else {
+            return true
         }
     }
     
@@ -191,28 +181,39 @@ class DataEditingViewController: UITableViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc private func saveButtonTapped() {
-        if let error = ValidationChecker.validateText(of: self.editsDictionary, for: self.modelType) {
-            presentErrorOnMainThread(withError: error)
-            return
+    @objc private func updateButtonTapped() {
+        guard validateEditsDictionary() else { return }
+        
+        if var model = self.model {
+            model.data = self.editsDictionary
+            updateFirebase(with: model)
+        } else {
+            presentErrorOnMainThread(withError: .unableToUpdateData(error: "Nil model in editing while updating."))
+        }
+    }
+    
+    @objc private func addButtonTapped() {
+        guard validateEditsDictionary() else { return }
+
+        let id: String
+        switch self.modelType {
+        case .students:
+            if let email = self.editsDictionary[FBStudent.email.key] as? String {
+                id = email.components(separatedBy: "@")[0]
+            } else {
+                presentErrorOnMainThread(withError: .unableToAddStudent(error: "Couldn't parse email."))
+                return
+            }
+        default: id = UUID().uuidString
         }
         
-        if self.editMode {
-            self.model?.data = self.editsDictionary
-            update(model: self.model!)
-        } else {
-            switch self.modelType {
-//            case .students: createStudent()
-            default:
-                self.model = DataModel(id: UUID().uuidString, data: self.editsDictionary, type: self.modelType)
-                update(model: self.model!)
-            }
-        }
+        self.model = DataModel(id: id, data: self.editsDictionary, type: self.modelType)
+        updateFirebase(with: self.model!)
     }
     
     @objc private func textFieldChanged(textField: UITextField) {
         let key = self.tableItems[textField.tag].header
-        self.editsDictionary[key] = textField.text
+        self.editsDictionary[key] = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
     @objc private func datePickerChanged(datePicker: UIDatePicker) {

@@ -129,7 +129,7 @@ class DataListViewController: UIViewController {
         }
     }
     
-    func delete(modelID id: String, fromSection oldSection: String, withDictionary dictionary: inout [String: [DataModel]], andSnapshot snapshot: inout ListSnapshot) -> Bool {
+    private func delete(modelID id: String, fromSection oldSection: String, withDictionary dictionary: inout [String: [DataModel]], andSnapshot snapshot: inout ListSnapshot) -> Bool {
         guard var oldSectionItems = dictionary[oldSection],
               let deletionIndex = oldSectionItems.firstIndex(where: { $0.id == id }),
               let oldModel = oldSectionItems.getItemAt(deletionIndex)
@@ -148,7 +148,7 @@ class DataListViewController: UIViewController {
         return true
     }
     
-    func insert(model: DataModel, intoSection newSection: String, withDictionary dictionary: inout [String: [DataModel]], andSnapshot snapshot: inout ListSnapshot) {
+    private func insert(model: DataModel, intoSection newSection: String, withDictionary dictionary: inout [String: [DataModel]], andSnapshot snapshot: inout ListSnapshot) {
         if var existingSectionItems = dictionary[newSection] {
             let insertionIndex = existingSectionItems.getInsertionIndex(of: model)
             existingSectionItems.insert(model, at: insertionIndex)
@@ -161,15 +161,36 @@ class DataListViewController: UIViewController {
         }
     }
     
-    func applyReload(with snapshot: ListSnapshot, and model: DataModel) {
+    private func applyReload(with snapshot: ListSnapshot, and model: DataModel, selectRow select: Bool) {
         self.dataSource.apply(snapshot, animatingDifferences: true, completion: {
             DispatchQueue.main.async {
                 self.dataSource.apply(snapshot, animatingDifferences: false)
-                if let indexPath = self.dataSource.indexPath(for: model) {
-                    self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                
+                if select {
+                    if let indexPath = self.dataSource.indexPath(for: model) {
+                        self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                    }
                 }
             }
         })
+    }
+    
+    private func getDictionary(for type: FBDataType) -> [String: [DataModel]] {
+        switch type {
+        case .students: return self.studentSectionDictionary
+        case .options: return self.optionSectionDictionary
+        case .events: return self.eventSectionDictionary
+        case .contacts: return self.contactSectionDictionary
+        }
+    }
+    
+    private func saveDictionary(_ dictionary: [String: [DataModel]], for type: FBDataType) {
+        switch type {
+        case .students: self.studentSectionDictionary = dictionary
+        case .options: self.optionSectionDictionary = dictionary
+        case .events: self.eventSectionDictionary = dictionary
+        case .contacts: self.contactSectionDictionary = dictionary
+        }
     }
     
     // MARK: - Selectors
@@ -180,29 +201,23 @@ class DataListViewController: UIViewController {
 
 // MARK: - Delegates
 extension DataListViewController: DataListDelegate {
+    func add(model: DataModel) {
+        var snapshot = self.dataSource.snapshot()
+        var tempDictionary = getDictionary(for: model.type)
+        
+        insert(model: model, intoSection: model.section, withDictionary: &tempDictionary, andSnapshot: &snapshot)
+        applyReload(with: snapshot, and: model, selectRow: false)
+        saveDictionary(tempDictionary, for: model.type)
+    }
+    
     func reloadList(with model: DataModel, forOldSection oldSection: String) {
         var snapshot = self.dataSource.snapshot()
-        var tempDictionary: [String: [DataModel]]
-        
-        switch self.activeData {
-        case .students: tempDictionary = self.studentSectionDictionary
-        case .options: tempDictionary = self.optionSectionDictionary
-        case .events: tempDictionary = self.eventSectionDictionary
-        case .contacts: tempDictionary = self.contactSectionDictionary
-        case .none: presentErrorOnMainThread(withError: .unableToReloadList); return
-        }
+        var tempDictionary = getDictionary(for: model.type)
         
         if delete(modelID: model.id, fromSection: oldSection, withDictionary: &tempDictionary, andSnapshot: &snapshot) {
             insert(model: model, intoSection: model.section, withDictionary: &tempDictionary, andSnapshot: &snapshot)
-            applyReload(with: snapshot, and: model)
-        }
-        
-        switch self.activeData {
-        case .students: self.studentSectionDictionary = tempDictionary
-        case .options: self.optionSectionDictionary = tempDictionary
-        case .events: self.eventSectionDictionary = tempDictionary
-        case .contacts: self.contactSectionDictionary = tempDictionary
-        case .none: presentErrorOnMainThread(withError: .unableToReloadList); return
+            applyReload(with: snapshot, and: model, selectRow: true)
+            saveDictionary(tempDictionary, for: model.type)
         }
     }
 }
@@ -227,4 +242,5 @@ class ListDataSource: UITableViewDiffableDataSource<String, DataModel> {
 // MARK: - Protocols
 protocol DataListDelegate {
     func reloadList(with model: DataModel, forOldSection oldSection: String)
+    func add(model: DataModel)
 }

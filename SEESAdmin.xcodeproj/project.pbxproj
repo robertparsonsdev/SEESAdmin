@@ -13,6 +13,7 @@
 		EE052922257DE75800200184 /* SplitViewDelgate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE052921257DE75800200184 /* SplitViewDelgate.swift */; };
 		EE3578BB25A8078E00B3AF24 /* SnapshotEXT.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3578BA25A8078E00B3AF24 /* SnapshotEXT.swift */; };
 		EE382A1D25A1167900A6809F /* EmptyStateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE382A1C25A1167900A6809F /* EmptyStateVC.swift */; };
+		EE45502A25AF9BD9008284A0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EE45502925AF9BD9008284A0 /* GoogleService-Info.plist */; };
 		EE4742B0258D3FC2009BC70E /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742AF258D3FC2009BC70E /* TextFieldCell.swift */; };
 		EE4742B5258D4168009BC70E /* DatePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742B4258D4168009BC70E /* DatePickerCell.swift */; };
 		EE4742C6258D6F0B009BC70E /* ValidationChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4742C5258D6F0B009BC70E /* ValidationChecker.swift */; };
@@ -29,7 +30,6 @@
 		EE946909257DB3C400E9730A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE946907257DB3C400E9730A /* Main.storyboard */; };
 		EE94690B257DB3C500E9730A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE94690A257DB3C500E9730A /* Assets.xcassets */; };
 		EE94690E257DB3C500E9730A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE94690C257DB3C500E9730A /* LaunchScreen.storyboard */; };
-		EE946918257DB45000E9730A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EE946917257DB45000E9730A /* GoogleService-Info.plist */; };
 		EE96E00C2583349200F4D4A3 /* UIViewControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE96E00B2583349200F4D4A3 /* UIViewControllerExt.swift */; };
 		EE96E00F258334AE00F4D4A3 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE96E00E258334AE00F4D4A3 /* UIViewExtension.swift */; };
 		EE9A5FA5258AF268002D49F8 /* DataEditingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A5FA4258AF268002D49F8 /* DataEditingViewController.swift */; };
@@ -45,6 +45,7 @@
 		EE052921257DE75800200184 /* SplitViewDelgate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewDelgate.swift; sourceTree = "<group>"; };
 		EE3578BA25A8078E00B3AF24 /* SnapshotEXT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotEXT.swift; sourceTree = "<group>"; };
 		EE382A1C25A1167900A6809F /* EmptyStateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateVC.swift; sourceTree = "<group>"; };
+		EE45502925AF9BD9008284A0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EE4742AF258D3FC2009BC70E /* TextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
 		EE4742B4258D4168009BC70E /* DatePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerCell.swift; sourceTree = "<group>"; };
 		EE4742C5258D6F0B009BC70E /* ValidationChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationChecker.swift; sourceTree = "<group>"; };
@@ -63,7 +64,6 @@
 		EE94690A257DB3C500E9730A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EE94690D257DB3C500E9730A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EE94690F257DB3C500E9730A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EE946917257DB45000E9730A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EE96E00B2583349200F4D4A3 /* UIViewControllerExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerExt.swift; sourceTree = "<group>"; };
 		EE96E00E258334AE00F4D4A3 /* UIViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		EE9A5FA4258AF268002D49F8 /* DataEditingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataEditingViewController.swift; sourceTree = "<group>"; };
@@ -181,7 +181,7 @@
 				EE94690A257DB3C500E9730A /* Assets.xcassets */,
 				EE94690C257DB3C500E9730A /* LaunchScreen.storyboard */,
 				EE94690F257DB3C500E9730A /* Info.plist */,
-				EE946917257DB45000E9730A /* GoogleService-Info.plist */,
+				EE45502925AF9BD9008284A0 /* GoogleService-Info.plist */,
 				EE05291A257DC30F00200184 /* SidebarViewController.swift */,
 				EE05291E257DE6F900200184 /* DataDetailViewController.swift */,
 				EE052921257DE75800200184 /* SplitViewDelgate.swift */,
@@ -259,7 +259,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE94690E257DB3C500E9730A /* LaunchScreen.storyboard in Resources */,
-				EE946918257DB45000E9730A /* GoogleService-Info.plist in Resources */,
+				EE45502A25AF9BD9008284A0 /* GoogleService-Info.plist in Resources */,
 				EE94690B257DB3C500E9730A /* Assets.xcassets in Resources */,
 				EE946909257DB3C400E9730A /* Main.storyboard in Resources */,
 			);
