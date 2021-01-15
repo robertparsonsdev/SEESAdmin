@@ -65,7 +65,7 @@ extension DataModel: Comparable {
         case .students: return lhs.row < rhs.row
         case .options: return lhs.row < rhs.row
         case .events:
-            let lhsDateString = lhs.data[FBEvent.startDate.key] as! String, rhsDateString = rhs.data[FBEvent.startDate.key] as! String
+            let lhsDateString = lhs.data[FBEvent.date.key] as! String, rhsDateString = rhs.data[FBEvent.date.key] as! String
             return lhsDateString.convertToDate() < rhsDateString.convertToDate()
         case .contacts: return lhs.row < rhs.row
         }
@@ -102,7 +102,7 @@ struct TableItem {
             }
             
             switch header {
-            case FBEvent.startDate.key, FBEvent.endDate.key: items.append(TableItem(header: header, row: row, editableView: .datePicker))
+            case FBEvent.date.key: items.append(TableItem(header: header, row: row, editableView: .datePicker))
             case FBOption.majorName.key: items.append(TableItem(header: header, row: row, editableView: .tableView))
             default: items.append(TableItem(header: header, row: row))
             }

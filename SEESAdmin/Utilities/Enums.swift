@@ -98,8 +98,7 @@ enum FBOption: FBDataProtocol, CaseIterable {
 
 enum FBEvent: FBDataProtocol, CaseIterable {
     case eventName
-    case startDate
-    case endDate
+    case date
     case locationName
     case locationAddress
     case locationCity
@@ -111,8 +110,7 @@ enum FBEvent: FBDataProtocol, CaseIterable {
     var key: String {
         switch self {
         case .eventName: return "event-name"
-        case .startDate: return "start-date"
-        case .endDate: return "end-date"
+        case .date: return "date"
         case .locationName: return "location-name"
         case .locationAddress: return "location-address"
         case .locationCity: return "location-city"
