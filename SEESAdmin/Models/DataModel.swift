@@ -103,6 +103,7 @@ struct TableItem {
             
             switch header {
             case FBEvent.startDate.key, FBEvent.endDate.key: items.append(TableItem(header: header, row: row, editableView: .datePicker))
+            case FBOption.majorName.key: items.append(TableItem(header: header, row: row, editableView: .tableView))
             default: items.append(TableItem(header: header, row: row))
             }
         }
@@ -112,5 +113,5 @@ struct TableItem {
 }
 
 enum EditableViewType {
-    case textField, datePicker
+    case textField, datePicker, tableView
 }

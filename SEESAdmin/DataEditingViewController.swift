@@ -10,6 +10,7 @@ import UIKit
 class DataEditingViewController: UITableViewController {
     private let textFieldCellID = "TextFieldCellID"
     private let dataPickerCellID = "DatePickerCellID"
+    private let majorCellID = "MajorCellID"
     
     private var model: DataModel?
     private let modelType: FBDataType
@@ -109,6 +110,23 @@ class DataEditingViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: self.dataPickerCellID, for: indexPath) as! DatePickerCell
             cell.set(date: itemText.convertToDate(), tag: indexPath.section, target: self, action: #selector(datePickerChanged))
             return cell
+        case .tableView:
+            let cell = tableView.dequeueReusableCell(withIdentifier: self.majorCellID, for: indexPath)
+            cell.textLabel?.text = itemText
+            cell.accessoryType = .disclosureIndicator
+            return cell
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch self.modelType {
+        case .options:
+            let item = self.tableItems[indexPath.section]
+            switch item.header {
+            case FBOption.majorName.key: self.navigationController?.pushViewController(MajorTableViewController(delegate: self), animated: true)
+            default: break
+            }
+        default: break
         }
     }
     
@@ -125,6 +143,7 @@ class DataEditingViewController: UITableViewController {
         self.tableView.backgroundColor = .systemBackground
         self.tableView.register(TextFieldCell.self, forCellReuseIdentifier: self.textFieldCellID)
         self.tableView.register(DatePickerCell.self, forCellReuseIdentifier: self.dataPickerCellID)
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: self.majorCellID)
 
         let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonTapped))
         cancelButton.tintColor = .systemRed
@@ -168,7 +187,7 @@ class DataEditingViewController: UITableViewController {
     }
     
     private func validateEditsDictionary() -> Bool {
-        if let error = ValidationChecker.validateText(of: self.editsDictionary, for: self.modelType) {
+        if let error = ValidationChecker.validateValues(of: self.editsDictionary, for: self.modelType) {
             presentErrorOnMainThread(withError: error)
             return false
         } else {
@@ -220,5 +239,18 @@ class DataEditingViewController: UITableViewController {
         let dateString = datePicker.date.convertToString()
         let key = self.tableItems[datePicker.tag].header
         self.editsDictionary[key] = dateString
+    }
+}
+
+// MARK: - Delegates
+extension DataEditingViewController: MajorTableDelegate {
+    func rowTapped(for major: FBMajor) {
+        switch self.modelType {
+        case .options:
+            self.editsDictionary[FBOption.majorName.key] = major.rawValue
+            let indexPath = IndexPath(row: 0, section: FBOption.allCases.firstIndex(of: .majorName)!)
+            self.tableView.cellForRow(at: indexPath)?.textLabel?.text = major.rawValue
+        default: break
+        }
     }
 }

@@ -169,3 +169,15 @@ enum FBContact: FBDataProtocol, CaseIterable {
         return dictionary
     }
 }
+
+enum FBMajor: String, CaseIterable {
+    case biology = "Biology"
+    case biotech = "Biotechnology"
+    case chem = "Chemistry"
+    case cs = "Computer Science"
+    case envBio = "Environmental Biology"
+    case geo = "Geology"
+    case kin = "Kinesiology"
+    case math = "Mathematics"
+    case phy = "Physics"
+}
