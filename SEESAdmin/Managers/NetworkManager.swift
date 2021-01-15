@@ -59,4 +59,8 @@ class NetworkManager {
             completed(nil)
         }
     }
+    
+    func deleteData(at path: String) {
+        self.reference.child(path).removeValue()
+    }
 }

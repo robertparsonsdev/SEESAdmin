@@ -14,6 +14,8 @@ class EmptyStateVC: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .systemBackground
+        navigationController?.navigationBar.isHidden = true
+        navigationController?.navigationBar.isUserInteractionEnabled = false
         configureLabel()
     }
 

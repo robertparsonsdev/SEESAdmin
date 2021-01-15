@@ -20,6 +20,7 @@ class DataListViewController: UIViewController {
     private var optionSectionDictionary = [String: [DataModel]]()
     private var eventSectionDictionary = [String: [DataModel]]()
     private var contactSectionDictionary = [String: [DataModel]]()
+    private var selectedModel: DataModel?
     
     private var tableView: UITableView!
     private var dataSource: ListDataSource!
@@ -161,16 +162,18 @@ class DataListViewController: UIViewController {
         }
     }
     
-    private func applyReload(with snapshot: ListSnapshot, and model: DataModel) {
-        self.dataSource.apply(snapshot, animatingDifferences: true, completion: {
-            DispatchQueue.main.async {
-                self.dataSource.apply(snapshot, animatingDifferences: false)
-                
-                if let indexPath = self.dataSource.indexPath(for: model) {
-                    self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+    private func applyReloadOnMainThread(with snapshot: ListSnapshot, and model: DataModel) {
+        DispatchQueue.main.async {
+            self.dataSource.apply(snapshot, animatingDifferences: true, completion: {
+                DispatchQueue.main.async {
+                    self.dataSource.apply(snapshot, animatingDifferences: false)
+                    
+                    if let indexPath = self.dataSource.indexPath(for: model) {
+                        self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+                    }
                 }
-            }
-        })
+            })
+        }
     }
     
     private func getDictionary(for type: FBDataType) -> [String: [DataModel]] {
@@ -204,7 +207,7 @@ extension DataListViewController: DataListDelegate {
         var tempDictionary = getDictionary(for: model.type)
         
         insert(model: model, intoSection: model.section, withDictionary: &tempDictionary, andSnapshot: &snapshot)
-        applyReload(with: snapshot, and: model)
+        applyReloadOnMainThread(with: snapshot, and: model)
         saveDictionary(tempDictionary, for: model.type)
         
         pushDetailVC(with: model)
@@ -216,7 +219,7 @@ extension DataListViewController: DataListDelegate {
         
         if delete(modelID: model.id, fromSection: oldSection, withDictionary: &tempDictionary, andSnapshot: &snapshot) {
             insert(model: model, intoSection: model.section, withDictionary: &tempDictionary, andSnapshot: &snapshot)
-            applyReload(with: snapshot, and: model)
+            applyReloadOnMainThread(with: snapshot, and: model)
             saveDictionary(tempDictionary, for: model.type)
         }
     }
@@ -230,9 +233,57 @@ extension DataListViewController: UITableViewDelegate {
     }
     
     private func pushDetailVC(with model: DataModel) {
+        self.selectedModel = model
         let detailVC = DataDetailViewController(model: model, listDelegate: self)
         let navController = UINavigationController(rootViewController: detailVC)
         showDetailViewController(navController, sender: self)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (action, view, completion) in
+            guard let self = self else { return }
+            guard let model = self.dataSource.itemIdentifier(for: indexPath) else { self.presentErrorOnMainThread(withError: .unableToDelete); completion(false); return }
+            
+            let alert = UIAlertController(title: "Delete data?", message: "Are you sure you want to permanently delete this data?", preferredStyle: .alert)
+            alert.view.tintColor = .systemTeal
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+                completion(false)
+            }))
+            alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self, model, completion] (action) in
+                guard let self = self else { return }
+                
+                self.networkManager.deleteData(at: model.path)
+                var snapshot = self.dataSource.snapshot()
+                var tempDictionary = self.getDictionary(for: model.type)
+                
+                if self.delete(modelID: model.id, fromSection: model.section, withDictionary: &tempDictionary, andSnapshot: &snapshot) {
+                    self.applyReloadOnMainThread(with: snapshot, and: model)
+                    self.saveDictionary(tempDictionary, for: model.type)
+                    
+                    if self.selectedModel == model {
+                        DispatchQueue.main.async {
+                            self.showDetailViewController(EmptyStateVC(), sender: self)
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            #warning("not working")
+                            if let selectedModel = self.selectedModel, let indexPath = self.dataSource.indexPath(for: selectedModel) {
+                                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+                            }
+                        }
+                    }
+                    completion(true)
+                } else {
+                    completion(false)
+                }
+            }))
+            
+            DispatchQueue.main.async {
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
 }
 
@@ -240,6 +291,10 @@ class ListDataSource: UITableViewDiffableDataSource<String, DataModel> {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let item = itemIdentifier(for: IndexPath(row: 0, section: section)) else { return nil }
         return item.section
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
     }
 }
 
