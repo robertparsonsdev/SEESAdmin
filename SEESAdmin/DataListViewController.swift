@@ -162,9 +162,9 @@ class DataListViewController: UIViewController {
         }
     }
     
-    private func applyReloadOnMainThread(with snapshot: ListSnapshot, and model: DataModel) {
+    private func applyReloadOnMainThread(with snapshot: ListSnapshot, and model: DataModel, animated: Bool) {
         DispatchQueue.main.async {
-            self.dataSource.apply(snapshot, animatingDifferences: true, completion: {
+            self.dataSource.apply(snapshot, animatingDifferences: animated, completion: {
                 DispatchQueue.main.async {
                     self.dataSource.apply(snapshot, animatingDifferences: false)
                     
@@ -207,7 +207,7 @@ extension DataListViewController: DataListDelegate {
         var tempDictionary = getDictionary(for: model.type)
         
         insert(model: model, intoSection: model.section, withDictionary: &tempDictionary, andSnapshot: &snapshot)
-        applyReloadOnMainThread(with: snapshot, and: model)
+        applyReloadOnMainThread(with: snapshot, and: model, animated: true)
         saveDictionary(tempDictionary, for: model.type)
         
         pushDetailVC(with: model)
@@ -219,7 +219,19 @@ extension DataListViewController: DataListDelegate {
         
         if delete(modelID: model.id, fromSection: oldSection, withDictionary: &tempDictionary, andSnapshot: &snapshot) {
             insert(model: model, intoSection: model.section, withDictionary: &tempDictionary, andSnapshot: &snapshot)
-            applyReloadOnMainThread(with: snapshot, and: model)
+            applyReloadOnMainThread(with: snapshot, and: model, animated: true)
+            saveDictionary(tempDictionary, for: model.type)
+        }
+    }
+    
+    func replace(model: DataModel) {
+        let section = model.section
+        var tempDictionary = getDictionary(for: model.type)
+        var snapshot = self.dataSource.snapshot()
+        
+        if delete(modelID: model.id, fromSection: section, withDictionary: &tempDictionary, andSnapshot: &snapshot) {
+            insert(model: model, intoSection: section, withDictionary: &tempDictionary, andSnapshot: &snapshot)
+            applyReloadOnMainThread(with: snapshot, and: model, animated: false)
             saveDictionary(tempDictionary, for: model.type)
         }
     }
@@ -257,7 +269,7 @@ extension DataListViewController: UITableViewDelegate {
                 var tempDictionary = self.getDictionary(for: model.type)
                 
                 if self.delete(modelID: model.id, fromSection: model.section, withDictionary: &tempDictionary, andSnapshot: &snapshot) {
-                    self.applyReloadOnMainThread(with: snapshot, and: model)
+                    self.applyReloadOnMainThread(with: snapshot, and: model, animated: true)
                     self.saveDictionary(tempDictionary, for: model.type)
                     
                     if self.selectedModel == model {
@@ -302,4 +314,5 @@ class ListDataSource: UITableViewDiffableDataSource<String, DataModel> {
 protocol DataListDelegate {
     func reloadList(with model: DataModel, forOldSection oldSection: String)
     func add(model: DataModel)
+    func replace(model: DataModel)
 }

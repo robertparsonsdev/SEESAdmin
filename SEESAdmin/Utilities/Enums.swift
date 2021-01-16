@@ -101,25 +101,25 @@ enum FBOption: FBDataProtocol, CaseIterable {
 enum FBEvent: FBDataProtocol, CaseIterable {
     case eventName
     case date
+    case notes
     case locationName
     case locationAddress
     case locationCity
     case locationState
     case locationZIP
     case locationCountry
-    case notes
     
     var key: String {
         switch self {
         case .eventName: return "event-name"
         case .date: return "date"
+        case .notes: return "notes"
         case .locationName: return "location-name"
         case .locationAddress: return "location-address"
         case .locationCity: return "location-city"
         case .locationState: return "location-state"
         case .locationZIP: return "location-zip"
         case .locationCountry: return "location-country"
-        case .notes: return "notes"
         }
     }
     
@@ -180,4 +180,8 @@ enum FBMajor: String, CaseIterable {
     case kin = "Kinesiology"
     case math = "Mathematics"
     case phy = "Physics"
+}
+
+enum DateFormat {
+    static let dateAndTime = "MMM d yyyy, h:mm a"
 }

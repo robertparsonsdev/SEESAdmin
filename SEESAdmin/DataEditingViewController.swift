@@ -178,6 +178,8 @@ class DataEditingViewController: UITableViewController {
                     self.detailDelegate?.reloadDetail(with: model)
                     if model.row != self.oldRow || model.section != self.oldSection {
                         self.listDelegate.reloadList(with: model, forOldSection: self.oldSection)
+                    } else {
+                        self.listDelegate.replace(model: model)
                     }
                 } else {
                     self.listDelegate.add(model: model)

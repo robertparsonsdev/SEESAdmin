@@ -17,7 +17,7 @@ extension String {
     
     func convertToDate() -> Date {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM/dd/yyyy"
+        dateFormatter.dateFormat = DateFormat.dateAndTime
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.timeZone = .current
         

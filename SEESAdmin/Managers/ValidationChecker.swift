@@ -12,27 +12,28 @@ struct ValidationChecker {
         switch data {
         case .students: return validateStudentData(with: dictionary)
         case .options: return validateOptionData(with: dictionary)
-        case .events: return nil
+        case .events: return validateEventData(with: dictionary)
         case .contacts: return nil
         }
     }
     
     private static func validateStudentData(with dictionary: [String: Any]) -> SEESError? {
         var errorString: String = ""
+        let dataType = FBStudent.self
         
-        for data in FBStudent.allCases {
+        for data in dataType.allCases {
             let key = data.key, value = dictionary[key] as! String
             
             switch key {
-            case FBStudent.firstName.key, FBStudent.lastName.key:
+            case dataType.firstName.key, dataType.lastName.key:
                 if value.isEmpty {
                     errorString.append("\n\nEnsure the student has a first and last name.")
                 }
-            case FBStudent.email.key:
+            case dataType.email.key:
                 if !(value ~= Validations.email.regex) {
                     errorString.append(Validations.email.error)
                 }
-            case FBStudent.broncoID.key:
+            case dataType.broncoID.key:
                 if !(value ~= Validations.broncoID.regex) {
                     errorString.append(Validations.broncoID.error)
                 }
@@ -45,18 +46,58 @@ struct ValidationChecker {
     
     private static func validateOptionData(with dictionary: [String: Any]) -> SEESError? {
         var errorString: String = ""
+        let dataType = FBOption.self
         
-        for data in FBOption.allCases {
+        for data in dataType.allCases {
             let key = data.key, value = dictionary[key] as! String
             
             switch key {
-            case FBOption.majorName.key, FBOption.optionName.key:
+            case dataType.majorName.key, dataType.optionName.key:
                 if value.isEmpty {
                     errorString.append("\n\nEnsure there is a major name and an option name.")
                 }
-            case FBOption.curriculumSheet.key, FBOption.flowchart.key, FBOption.roadMap.key:
+            case dataType.curriculumSheet.key, dataType.flowchart.key, dataType.roadMap.key:
                 if !(value ~= Validations.link.regex) {
                     errorString.append(Validations.link.error)
+                }
+            default: break
+            }
+        }
+        
+        return errorString.isEmpty ? nil : .unableToValidate(error: errorString)
+    }
+    
+    private static func validateEventData(with dictionary: [String: Any]) -> SEESError? {
+        var errorString: String = ""
+        let dataType = FBEvent.self
+        let address = dataType.locationAddress.key, city = dataType.locationCity.key, state = dataType.locationState.key, zip = dataType.locationZIP.key, country = dataType.locationCountry.key
+        let addressComponents = [dictionary[address] as! String, dictionary[city] as! String, dictionary[state] as! String, dictionary[zip] as! String, dictionary[country] as! String]
+        var incompleteAddress: Bool = false
+        
+        for data in dataType.allCases {
+            let key = data.key, value = dictionary[key] as! String
+            
+            switch key {
+            case dataType.eventName.key:
+                if value.isEmpty {
+                    errorString.append("\n\nEnsure there is an event name.")
+                }
+            case dataType.date.key:
+                if value.isEmpty {
+                    errorString.append("\n\nEnsure there is a date.")
+                }
+            case address, city, state, zip, country:
+                guard !incompleteAddress else { break }
+                if !value.isEmpty {
+                    for component in addressComponents {
+                        if component.isEmpty {
+                            incompleteAddress = true
+                            errorString.append("\n\nPlease ensure a complete address is entered.")
+                            break
+                        }
+                    }
+                } else {
+                    break
                 }
             default: break
             }
