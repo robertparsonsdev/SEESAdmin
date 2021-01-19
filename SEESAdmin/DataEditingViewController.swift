@@ -23,6 +23,7 @@ class DataEditingViewController: UITableViewController {
     private let editMode: Bool
     private var detailDelegate: DataDetailDelegate?
     private let listDelegate: DataListDelegate
+    private var rowAlreadySeen: Bool = false
     
     private lazy var updateButton: UIBarButtonItem = {
         let button = UIBarButtonItem(title: "Update Data", style: .done, target: self, action: #selector(updateButtonTapped))
@@ -105,7 +106,8 @@ class DataEditingViewController: UITableViewController {
         switch item.editableView {
         case .textField:
             let cell = tableView.dequeueReusableCell(withIdentifier: self.textFieldCellID, for: indexPath) as! TextFieldCell
-            cell.set(text: itemText, tag: indexPath.section, target: self, action: #selector(textFieldChanged), firstResponder: indexPath.section == 0)
+            cell.set(text: itemText, tag: indexPath.section, target: self, action: #selector(textFieldChanged), firstResponder: indexPath.section == 0 && !self.rowAlreadySeen)
+            self.rowAlreadySeen = true
             return cell
         case .datePicker:
             let cell = tableView.dequeueReusableCell(withIdentifier: self.dataPickerCellID, for: indexPath) as! DatePickerCell
@@ -141,7 +143,8 @@ class DataEditingViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44
+        let item = self.tableItems[indexPath.section]
+        return item.editableView == .datePicker ? 350 : 44
     }
 
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -24,9 +24,9 @@ class DatePickerCell: UITableViewCell {
     // MARK: - Configureation Functions
     private func configure() {
         self.selectionStyle = .none
+        self.datePicker.preferredDatePickerStyle = .inline
         
         contentView.addSubview(datePicker)
-        datePicker.anchor(top: contentView.topAnchor, leading: contentView.leadingAnchor, bottom: nil, trailing: nil, paddingTop: 0, paddingLeft: 17, paddingBottom: 0, paddingRight: 0, width: 0, height: frame.height)
     }
     
     // MARK: - Setters

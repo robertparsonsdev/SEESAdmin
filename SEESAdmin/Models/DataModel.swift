@@ -36,6 +36,13 @@ struct DataModel: Identifiable {
             }
         case .options: return self.data[FBOption.majorName.key] as? String ?? "section-error" // lowercased
         case .events: return "events"
+//            let dateString = self.data[FBEvent.date.key] as! String
+//            let date = dateString.convertToDate()
+//            let month = Calendar.current.component(.month, from: date)
+//            let year = Calendar.current.component(.year, from: date)
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.dateFormat = "LLLL"
+//            return "\(year * 2 + month) \(dateFormatter.string(from: date))"
         case .contacts: return "contacts"
         }
     }
@@ -108,8 +115,6 @@ struct TableItem {
                 items.append(TableItem(header: header, row: row, editableView: .tableView))
             case FBContact.monday.key, FBContact.tuesday.key, FBContact.wednesday.key, FBContact.thursday.key, FBContact.friday.key:
                 items.append(TableItem(header: header, row: row, editableView: .timeRange))
-//            case FBContact.fullName.key:
-//                items.append(TableItem(header: header, row: row))
             default:
                 items.append(TableItem(header: header, row: row))
             }
