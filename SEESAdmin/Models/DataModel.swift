@@ -21,7 +21,7 @@ struct DataModel: Identifiable {
         case .students: return "\(self.data[FBStudent.lastName.key] ?? "studentError"), \(self.data[FBStudent.firstName.key] ?? "studentError")"
         case .options: return self.data[FBOption.optionName.key] as? String ?? "optionError"
         case .events: return self.data[FBEvent.eventName.key] as? String ?? "eventError"
-        case .contacts: return self.data[FBContact.name.key] as? String ?? "contactError"
+        case .contacts: return self.data[FBContact.fullName.key] as? String ?? "contactError"
         }
     }
     
@@ -108,6 +108,8 @@ struct TableItem {
                 items.append(TableItem(header: header, row: row, editableView: .tableView))
             case FBContact.monday.key, FBContact.tuesday.key, FBContact.wednesday.key, FBContact.thursday.key, FBContact.friday.key:
                 items.append(TableItem(header: header, row: row, editableView: .timeRange))
+//            case FBContact.fullName.key:
+//                items.append(TableItem(header: header, row: row))
             default:
                 items.append(TableItem(header: header, row: row))
             }

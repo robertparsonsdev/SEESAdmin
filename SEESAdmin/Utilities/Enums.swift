@@ -138,7 +138,7 @@ enum FBContact: FBDataProtocol, CaseIterable {
     case wednesday
     case thursday
     case friday
-    case name
+    case fullName
     case title
     case office
     case phone
@@ -152,7 +152,7 @@ enum FBContact: FBDataProtocol, CaseIterable {
         case .wednesday: return "wednesday"
         case .thursday: return "thursday"
         case .friday: return "friday"
-        case .name: return "name"
+        case .fullName: return "full-name"
         case .title: return "title"
         case .office: return "office"
         case .phone: return "phone"
