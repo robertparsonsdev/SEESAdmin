@@ -102,9 +102,14 @@ struct TableItem {
             }
             
             switch header {
-            case FBEvent.date.key: items.append(TableItem(header: header, row: row, editableView: .datePicker))
-            case FBOption.majorName.key: items.append(TableItem(header: header, row: row, editableView: .tableView))
-            default: items.append(TableItem(header: header, row: row))
+            case FBEvent.date.key:
+                items.append(TableItem(header: header, row: row, editableView: .datePicker))
+            case FBOption.majorName.key:
+                items.append(TableItem(header: header, row: row, editableView: .tableView))
+            case FBContact.monday.key, FBContact.tuesday.key, FBContact.wednesday.key, FBContact.thursday.key, FBContact.friday.key:
+                items.append(TableItem(header: header, row: row, editableView: .timeRange))
+            default:
+                items.append(TableItem(header: header, row: row))
             }
         }
         
@@ -113,5 +118,5 @@ struct TableItem {
 }
 
 enum EditableViewType {
-    case textField, datePicker, tableView
+    case textField, datePicker, tableView, timeRange
 }

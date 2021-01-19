@@ -19,8 +19,16 @@ extension String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = DateFormat.dateAndTime
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.timeZone = .current
         
-        return dateFormatter.date(from: self) ?? Calendar.current.date(byAdding: .nanosecond, value: 0, to: Date())!
+        return dateFormatter.date(from: self) ?? Date.currentDate()
+    }
+    
+    func converToTime() -> Date {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateStyle = .none
+        dateFormatter.timeStyle = .short
+        
+        return dateFormatter.date(from: self) ?? Date.currentDate()
     }
 }

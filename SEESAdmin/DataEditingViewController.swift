@@ -11,6 +11,7 @@ class DataEditingViewController: UITableViewController {
     private let textFieldCellID = "TextFieldCellID"
     private let dataPickerCellID = "DatePickerCellID"
     private let majorCellID = "MajorCellID"
+    private let timeRangeCellID = "TimeRangeCellID"
     
     private var model: DataModel?
     private let modelType: FBDataType
@@ -115,6 +116,15 @@ class DataEditingViewController: UITableViewController {
             cell.textLabel?.text = itemText
             cell.accessoryType = .disclosureIndicator
             return cell
+        case .timeRange:
+            let cell = tableView.dequeueReusableCell(withIdentifier: self.timeRangeCellID, for: indexPath) as! TimeRangeCell
+            let times = itemText.components(separatedBy: "-")
+            if let startTime = times.getItemAt(0)?.converToTime(), let endTime = times.getItemAt(1)?.converToTime() {
+                cell.set(startTime: startTime, endTime: endTime, day: item.header, delegate: self)
+            } else {
+                cell.set(startTime: nil, endTime: nil, day: item.header, delegate: self)
+            }
+            return cell
         }
     }
     
@@ -144,6 +154,7 @@ class DataEditingViewController: UITableViewController {
         self.tableView.register(TextFieldCell.self, forCellReuseIdentifier: self.textFieldCellID)
         self.tableView.register(DatePickerCell.self, forCellReuseIdentifier: self.dataPickerCellID)
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: self.majorCellID)
+        self.tableView.register(TimeRangeCell.self, forCellReuseIdentifier: self.timeRangeCellID)
 
         let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonTapped))
         cancelButton.tintColor = .systemRed
@@ -238,7 +249,7 @@ class DataEditingViewController: UITableViewController {
     }
     
     @objc private func datePickerChanged(datePicker: UIDatePicker) {
-        let dateString = datePicker.date.convertToString()
+        let dateString = datePicker.date.convertDateToString()
         let key = self.tableItems[datePicker.tag].header
         self.editsDictionary[key] = dateString
     }
@@ -253,6 +264,16 @@ extension DataEditingViewController: MajorTableDelegate {
             let indexPath = IndexPath(row: 0, section: FBOption.allCases.firstIndex(of: .majorName)!)
             self.tableView.cellForRow(at: indexPath)?.textLabel?.text = major.rawValue
         default: break
+        }
+    }
+}
+
+extension DataEditingViewController: TimeRangeDelegate {
+    func rangeChanged(startTime: Date?, endTime: Date?, day: String) {
+        if let startTime = startTime?.convertTimeToString(), let endTime = endTime?.convertTimeToString() {
+            self.editsDictionary[day] = "\(startTime)-\(endTime)"
+        } else {
+            self.editsDictionary[day] = ""
         }
     }
 }
