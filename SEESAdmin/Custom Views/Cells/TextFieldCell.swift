@@ -24,6 +24,8 @@ class TextFieldCell: UITableViewCell {
         selectionStyle = .none
 
         textField.clearButtonMode = .whileEditing
+        textField.autocorrectionType = .no
+        
         self.textLabel?.removeFromSuperview()
         self.detailTextLabel?.removeFromSuperview()
         
@@ -34,7 +36,7 @@ class TextFieldCell: UITableViewCell {
     public func set(text: String, tag: Int, target: Any, action: Selector, firstResponder: Bool) {
         self.textField.text = text
         self.textField.tag = tag
-        self.textField.addTarget(target, action: action, for: .editingChanged)
+        self.textField.addTarget(target, action: action, for: .allEditingEvents)
         if firstResponder {
             self.textField.becomeFirstResponder()
         }
