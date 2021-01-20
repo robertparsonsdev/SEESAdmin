@@ -43,14 +43,24 @@ extension NSDiffableDataSourceSnapshot where ItemIdentifierType == DataModel, Se
 //        }
 //    }
     
-    mutating func reinsert(section: String, with models: [DataModel]) {
+    mutating func reinsert(section: String, with models: [DataModel], for type: FBDataType) {
         deleteSections([section])
-        insertSectionInOrder(section, with: models)
+        insertSectionInOrder(section, with: models, for: type)
     }
     
-    mutating func insertSectionInOrder(_ section: String, with models: [DataModel]) {
-        let sections = sectionIdentifiers
-        let index = sections.getInsertionIndex(of: section)
+    mutating func insertSectionInOrder(_ section: String, with models: [DataModel], for type: FBDataType) {
+        let sections: [String]
+        let index: Array<String>.Index
+        
+        switch type {
+        case .events:
+            let dateSections = sectionIdentifiers.map { $0.convertToMonthYear() }
+            index = dateSections.getInsertionIndex(of: section.convertToMonthYear())
+            sections = dateSections.map { $0.convertToEventHeader() }
+        default:
+            sections = sectionIdentifiers
+            index = sections.getInsertionIndex(of: section)
+        }
         
         if index == 0, let firstSection = sections.first {
             insertSections([section], beforeSection: firstSection)

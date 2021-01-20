@@ -7,16 +7,17 @@
 
 import Foundation
 
+fileprivate var dateFormatter = DateFormatter()
+
 extension Date {
     func convertDateToString() -> String {
-        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = DateFormat.dateAndTime
         
         return dateFormatter.string(from: self)
     }
     
     func convertTimeToString() -> String {
-        let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.timeStyle = .short
         dateFormatter.dateStyle = .none
@@ -28,5 +29,12 @@ extension Date {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.day, .month, .year, .hour, .minute, .second], from: Date())
         return calendar.date(from: components)!
+    }
+    
+    func convertToEventHeader() -> String {
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "MMMM yyyy"
+        
+        return dateFormatter.string(from: self)
     }
 }

@@ -106,8 +106,15 @@ class DataListViewController: UIViewController {
     
     private func applyListSnapshot(with dictionary: [String: [DataModel]], animate: Bool) {
         var snapshot = ListSnapshot()
+        let sections: [String]
         
-        let sections = Array(dictionary.keys).sorted(by: { $0 < $1 })
+        switch self.activeType {
+        case .events:
+            sections = Array(dictionary.keys).sorted(by: { $0.convertToMonthYear() < $1.convertToMonthYear() })
+        default:
+            sections = Array(dictionary.keys).sorted(by: { $0 < $1 })
+        }
+        
         snapshot.appendSections(sections)
 
         for section in sections {
@@ -155,10 +162,10 @@ class DataListViewController: UIViewController {
             existingSectionItems.insert(model, at: insertionIndex)
             dictionary[newSection] = existingSectionItems
             
-            snapshot.reinsert(section: newSection, with: existingSectionItems)
+            snapshot.reinsert(section: newSection, with: existingSectionItems, for: model.type)
         } else {
             dictionary[newSection] = [model]
-            snapshot.insertSectionInOrder(newSection, with: [model])
+            snapshot.insertSectionInOrder(newSection, with: [model], for: model.type)
         }
     }
     

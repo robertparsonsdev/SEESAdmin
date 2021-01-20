@@ -8,6 +8,8 @@
 
 import Foundation
 
+fileprivate var dateFormatter = DateFormatter()
+
 extension String {
     static func ~= (lhs: String, rhs: String) -> Bool {
         guard let regex = try? NSRegularExpression(pattern: rhs) else { return false }
@@ -16,18 +18,23 @@ extension String {
     }
     
     func convertToDate() -> Date {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = DateFormat.dateAndTime
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = DateFormat.dateAndTime
         
         return dateFormatter.date(from: self) ?? Date.currentDate()
     }
     
     func converToTime() -> Date {
-        let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateStyle = .none
         dateFormatter.timeStyle = .short
+        
+        return dateFormatter.date(from: self) ?? Date.currentDate()
+    }
+    
+    func convertToMonthYear() -> Date {
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "MMMM yyyy"
         
         return dateFormatter.date(from: self) ?? Date.currentDate()
     }

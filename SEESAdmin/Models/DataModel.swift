@@ -34,16 +34,14 @@ struct DataModel: Identifiable {
             } else {
                 return "section-error"
             }
-        case .options: return self.data[FBOption.majorName.key] as? String ?? "section-error" // lowercased
-        case .events: return "events"
-//            let dateString = self.data[FBEvent.date.key] as! String
-//            let date = dateString.convertToDate()
-//            let month = Calendar.current.component(.month, from: date)
-//            let year = Calendar.current.component(.year, from: date)
-//            let dateFormatter = DateFormatter()
-//            dateFormatter.dateFormat = "LLLL"
-//            return "\(year * 2 + month) \(dateFormatter.string(from: date))"
-        case .contacts: return "contacts"
+        case .options:
+            return self.data[FBOption.majorName.key] as? String ?? "section-error" // lowercased
+        case .events:
+            let dateString = self.data[FBEvent.date.key] as! String
+            let date = dateString.convertToDate()
+            return date.convertToEventHeader()
+        case .contacts:
+            return "contacts"
         }
     }
     
