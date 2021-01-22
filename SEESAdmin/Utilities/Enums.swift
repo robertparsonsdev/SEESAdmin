@@ -43,7 +43,7 @@ enum FBDataType: String {
 
 protocol FBDataProtocol {
     var key: String { get }
-    static var emptyKeys: [String: Any] { get }
+    static var emptyKeys: [String: String] { get }
 }
 
 enum FBStudent: FBDataProtocol, CaseIterable {
@@ -65,8 +65,8 @@ enum FBStudent: FBDataProtocol, CaseIterable {
         }
     }
     
-    static var emptyKeys: [String: Any] {
-        var dictionary: [String: Any] = [:]
+    static var emptyKeys: [String: String] {
+        var dictionary: [String: String] = [:]
         for value in Self.allCases {
             dictionary[value.key] = ""
         }
@@ -91,8 +91,8 @@ enum FBOption: FBDataProtocol, CaseIterable {
         }
     }
     
-    static var emptyKeys: [String : Any] {
-        var dictionary: [String: Any] = [:]
+    static var emptyKeys: [String : String] {
+        var dictionary: [String: String] = [:]
         for value in Self.allCases {
             dictionary[value.key] = ""
         }
@@ -125,8 +125,8 @@ enum FBEvent: FBDataProtocol, CaseIterable {
         }
     }
     
-    static var emptyKeys: [String : Any] {
-        var dictionary: [String: Any] = [:]
+    static var emptyKeys: [String : String] {
+        var dictionary: [String: String] = [:]
         for value in Self.allCases {
             dictionary[value.key] = ""
         }
@@ -163,8 +163,8 @@ enum FBContact: FBDataProtocol, CaseIterable {
         }
     }
     
-    static var emptyKeys: [String: Any] {
-        var dictionary: [String: Any] = [:]
+    static var emptyKeys: [String: String] {
+        var dictionary: [String: String] = [:]
         for value in Self.allCases {
             dictionary[value.key] = ""
         }

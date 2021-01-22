@@ -15,7 +15,7 @@ class DataEditingViewController: UITableViewController {
     
     private var model: DataModel?
     private let modelType: FBDataType
-    private var editsDictionary: [String: Any] = [:]
+    private var editsDictionary: [String: String] = [:]
     private let oldRow: String
     private let oldSection: String
 
@@ -60,15 +60,24 @@ class DataEditingViewController: UITableViewController {
         self.modelType = type
         self.oldRow = ""
         self.oldSection = ""
+        let types: [FBDataProtocol]
         
         switch type {
-        case .students: self.editsDictionary = FBStudent.emptyKeys
-        case .options: self.editsDictionary = FBOption.emptyKeys
-        case .events: self.editsDictionary = FBEvent.emptyKeys
-        case .contacts: self.editsDictionary = FBContact.emptyKeys
+        case .students:
+            self.editsDictionary = FBStudent.emptyKeys
+            types = FBStudent.allCases
+        case .options:
+            self.editsDictionary = FBOption.emptyKeys
+            types = FBOption.allCases
+        case .events:
+            self.editsDictionary = FBEvent.emptyKeys
+            types = FBEvent.allCases
+        case .contacts:
+            self.editsDictionary = FBContact.emptyKeys
+            types = FBContact.allCases
         }
         
-        self.tableItems = TableItem.getItems(from: self.editsDictionary, for: type)
+        self.tableItems = TableItem.getItems(from: self.editsDictionary, for: types)
         self.editMode = false
         self.listDelegate = listDelegate
         
@@ -101,7 +110,7 @@ class DataEditingViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = self.tableItems[indexPath.section]
-        let itemText = self.editsDictionary[item.header] as? String ?? ""
+        let itemText = self.editsDictionary[item.header] ?? ""
 
         switch item.editableView {
         case .textField:
@@ -233,7 +242,7 @@ class DataEditingViewController: UITableViewController {
         let id: String
         switch self.modelType {
         case .students:
-            if let email = self.editsDictionary[FBStudent.email.key] as? String {
+            if let email = self.editsDictionary[FBStudent.email.key] {
                 id = email.components(separatedBy: "@")[0]
             } else {
                 presentErrorOnMainThread(withError: .unableToAddStudent(error: "Couldn't parse email."))

@@ -46,13 +46,13 @@ class NetworkManager {
     private func decode(_ dictionary: [String: Any], for type: FBDataType) -> [DataModel] {
         var data: [DataModel] = []
         for (key, value) in dictionary {
-            data.append(DataModel(id: key, data: value as! [String: Any], type: type))
+            data.append(DataModel(id: key, data: value as! [String: String], type: type))
         }
         
         return data
     }
     
-    func updateData(at path: String, with dictionary: [String: Any], completed: @escaping (SEESError?) -> Void) {
+    func updateData(at path: String, with dictionary: [String: String], completed: @escaping (SEESError?) -> Void) {
         self.reference.child(path).updateChildValues(dictionary) { (error, reference) in
             guard error == nil else { completed(.unableToUpdateData(error: error!.localizedDescription)); return }
             

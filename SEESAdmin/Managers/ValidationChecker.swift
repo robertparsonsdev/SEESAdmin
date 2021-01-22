@@ -8,7 +8,7 @@
 import Foundation
 
 struct ValidationChecker {
-    static func validateValues(of dictionary: [String: Any], for data: FBDataType) -> SEESError? {
+    static func validateValues(of dictionary: [String: String], for data: FBDataType) -> SEESError? {
         switch data {
         case .students: return validateStudentData(with: dictionary)
         case .options: return validateOptionData(with: dictionary)
@@ -17,12 +17,12 @@ struct ValidationChecker {
         }
     }
     
-    private static func validateStudentData(with dictionary: [String: Any]) -> SEESError? {
+    private static func validateStudentData(with dictionary: [String: String]) -> SEESError? {
         var errorString: String = ""
         let dataType = FBStudent.self
         
         for data in dataType.allCases {
-            let key = data.key, value = dictionary[key] as! String
+            let key = data.key, value = dictionary[key]!
             
             switch key {
             case dataType.firstName.key, dataType.lastName.key:
@@ -44,12 +44,12 @@ struct ValidationChecker {
         return errorString.isEmpty ? nil : .unableToValidate(error: errorString)
     }
     
-    private static func validateOptionData(with dictionary: [String: Any]) -> SEESError? {
+    private static func validateOptionData(with dictionary: [String: String]) -> SEESError? {
         var errorString: String = ""
         let dataType = FBOption.self
         
         for data in dataType.allCases {
-            let key = data.key, value = dictionary[key] as! String
+            let key = data.key, value = dictionary[key]!
             
             switch key {
             case dataType.majorName.key, dataType.optionName.key:
@@ -67,15 +67,15 @@ struct ValidationChecker {
         return errorString.isEmpty ? nil : .unableToValidate(error: errorString)
     }
     
-    private static func validateEventData(with dictionary: [String: Any]) -> SEESError? {
+    private static func validateEventData(with dictionary: [String: String]) -> SEESError? {
         var errorString: String = ""
         let dataType = FBEvent.self
         let address = dataType.locationAddress.key, city = dataType.locationCity.key, state = dataType.locationState.key, zip = dataType.locationZIP.key, country = dataType.locationCountry.key
-        let addressComponents = [dictionary[address] as! String, dictionary[city] as! String, dictionary[state] as! String, dictionary[zip] as! String, dictionary[country] as! String]
+        let addressComponents = [dictionary[address]!, dictionary[city]!, dictionary[state]!, dictionary[zip]!, dictionary[country]!]
         var incompleteAddress: Bool = false
         
         for data in dataType.allCases {
-            let key = data.key, value = dictionary[key] as! String
+            let key = data.key, value = dictionary[key]!
             
             switch key {
             case dataType.eventName.key, dataType.date.key:
@@ -102,12 +102,12 @@ struct ValidationChecker {
         return errorString.isEmpty ? nil : .unableToValidate(error: errorString)
     }
     
-    private static func validateContactData(with dictionary: [String: Any]) -> SEESError? {
+    private static func validateContactData(with dictionary: [String: String]) -> SEESError? {
         var errorString: String = ""
         let dataType = FBContact.self
         
         for data in dataType.allCases {
-            let key = data.key, value = dictionary[key] as! String
+            let key = data.key, value = dictionary[key]!
             
             switch key {
             case dataType.fullName.key, dataType.title.key, dataType.office.key:

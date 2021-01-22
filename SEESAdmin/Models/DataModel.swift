@@ -9,7 +9,7 @@ import Foundation
 
 struct DataModel: Identifiable {
     let id: String
-    var data: [String: Any]
+    var data: [String: String]
     let type: FBDataType
     
     var path: String {
@@ -19,34 +19,45 @@ struct DataModel: Identifiable {
     var row: String {
         switch self.type {
         case .students: return "\(self.data[FBStudent.lastName.key] ?? "studentError"), \(self.data[FBStudent.firstName.key] ?? "studentError")"
-        case .options: return self.data[FBOption.optionName.key] as? String ?? "optionError"
-        case .events: return self.data[FBEvent.eventName.key] as? String ?? "eventError"
-        case .contacts: return self.data[FBContact.fullName.key] as? String ?? "contactError"
+        case .options: return self.data[FBOption.optionName.key] ?? "optionError"
+        case .events: return self.data[FBEvent.eventName.key] ?? "eventError"
+        case .contacts: return self.data[FBContact.fullName.key] ?? "contactError"
         }
     }
     
     var section: String {
         switch self.type {
         case .students:
-            let lastName = self.data[FBStudent.lastName.key] as! String
-            if let letter = lastName.first {
-                return String(letter).lowercased()
-            } else {
-                return "section-error"
+            if let lastName = self.data[FBStudent.lastName.key] {
+                if let letter = lastName.first {
+                    return String(letter).lowercased()
+                }
             }
+            return "last name initial error"
         case .options:
-            return self.data[FBOption.majorName.key] as? String ?? "section-error" // lowercased
+            return self.data[FBOption.majorName.key]?.lowercased() ?? "major name error"
         case .events:
-            let dateString = self.data[FBEvent.date.key] as! String
-            let date = dateString.convertToDate()
-            return date.convertToEventHeader()
+            if let dateString = self.data[FBEvent.date.key] {
+                let date = dateString.convertToDate()
+                return date.convertToEventHeader()
+            }
+            return "event date error"
         case .contacts:
             return "contacts"
         }
     }
     
     var tableItems: [TableItem] {
-        return TableItem.getItems(from: self.data, for: self.type)
+        switch self.type {
+        case .students:
+            return TableItem.getItems(from: self.data, for: FBStudent.allCases)
+        case .options:
+            return TableItem.getItems(from: self.data, for: FBOption.allCases)
+        case .events:
+            return TableItem.getItems(from: self.data, for: FBEvent.allCases)
+        case .contacts:
+            return TableItem.getItems(from: self.data, for: FBContact.allCases)
+        }
     }
 }
 
@@ -67,12 +78,20 @@ extension DataModel: Comparable {
         guard lhs.type == rhs.type else { return false }
         
         switch lhs.type {
-        case .students: return lhs.row < rhs.row
-        case .options: return lhs.row < rhs.row
+        case .students:
+            return lhs.row < rhs.row
+        case .options:
+            return lhs.row < rhs.row
         case .events:
-            let lhsDateString = lhs.data[FBEvent.date.key] as! String, rhsDateString = rhs.data[FBEvent.date.key] as! String
+            let lhsDateString = lhs.data[FBEvent.date.key]!, rhsDateString = rhs.data[FBEvent.date.key]!
             return lhsDateString.convertToDate() < rhsDateString.convertToDate()
-        case .contacts: return lhs.row < rhs.row
+        case .contacts:
+            if let leftOrder = lhs.data[FBContact.order.key], let rightOrder = rhs.data[FBContact.order.key] {
+                if let leftInt = Int(leftOrder), let rightInt = Int(rightOrder) {
+                    return leftInt < rightInt
+                }
+            }
+            return lhs.row < rhs.row
         }
     }
 }
@@ -82,26 +101,15 @@ struct TableItem {
     let row: String
     var editableView: EditableViewType = .textField
     
-    static func getItems(from dictionary: [String: Any], for type: FBDataType) -> [Self] {
+    static func getItems(from dictionary: [String: String], for types: [FBDataProtocol]) -> [Self] {
         var items: [TableItem] = []
-        let dataCases: [FBDataProtocol]
-        switch type {
-        case .students: dataCases = FBStudent.allCases
-        case .options: dataCases = FBOption.allCases
-        case .events: dataCases = FBEvent.allCases
-        case .contacts: dataCases = FBContact.allCases
-        }
         
-        for dataCase in dataCases {
-            let header = dataCase.key
+        for type in types {
+            let header = type.key
             let row: String
             
             if let value = dictionary[header] {
-                switch value {
-                case is String: row = value as! String
-                case is Int: row = String(value as! Int)
-                default: row = "row-error"
-                }
+                row = value
             } else {
                 row = "row-error"
             }
